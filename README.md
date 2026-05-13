@@ -133,7 +133,3 @@ open http://localhost:8081/swagger-ui
 2. When modifying a spec file, check downstream files for impacts (follow the dependency chain)
 3. Each spec file has an "Out of Scope" section — use it to understand boundaries between files
 4. Keep the numbering and naming convention consistent: `NNN_description.md`
-
-## License
-
-[Add your license here]
