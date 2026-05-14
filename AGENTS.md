@@ -15,7 +15,7 @@ specs/005_api_endpoints.md      → Controllers, DTOs, mappers, OpenAPI
 specs/006_security.md           → JWT auth, roles, ownership, CORS
 specs/007_error_handling.md     → Global exception handler, error responses
 specs/008_integrations.md       → REST clients, Resilience4j, Kafka config, health
-specs/009_testing.md            → Unit, integration, E2E tests, WireMock, Testcontainers
+specs/009_testing.md            → Unit, integration, E2E tests, WireMock, embedded PostgreSQL, KafkaContainer
 specs/010_deployment.md         → Dockerfile, Docker Compose, profiles, CI, logging
 ```
 
@@ -131,7 +131,7 @@ src/test/java/com/cargo/booking/
 - **Table names**: `lowercase_snake_case`
 - **API prefix**: `/api/v1`
 - **Logging**: SLF4J. INFO for business events, WARN for client errors, ERROR for system failures. Never log sensitive data (email, phone, tokens).
-- **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure.
+- **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure. Integration tests use embedded PostgreSQL and KafkaContainer.
 
 ## Key Domain Rules
 
@@ -171,7 +171,7 @@ JWT-based stateless auth. Three roles:
 | OPERATOR      | View all bookings, confirm/start/complete                   |
 | ADMIN         | Everything                                                  |
 
-Customers have ownership checks — they can only see and cancel their own bookings. Swagger UI and health endpoints are public.
+Customers have ownership checks — they can only see and cancel their own bookings. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
 
 ## Error Response Format
 
@@ -213,7 +213,7 @@ docker-compose logs -f booking-service
 
 ## Git Workflow
 
-- Branch from `main` or `develop`
+- Branch from the repository's default branch. This is normally `main` or `develop`; use `master` if that is the configured default branch.
 - Run `./mvnw compile` and relevant tests before committing
 - Commit messages: concise, imperative mood (e.g. "Add booking cancellation endpoint")
 - One logical change per commit
