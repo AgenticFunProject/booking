@@ -1,0 +1,229 @@
+# Booking Service
+
+Cargo booking microservice built with Spring Boot 3.4.x and Java 21. Accepts booking requests, manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED), and emits domain events to Kafka.
+
+## Specifications
+
+This project is built from sequential specification files. **Read them in order before writing any code.** Each file depends on all previous files.
+
+```
+specs/001_project_setup.md      → Maven project, dependencies, packages, conventions
+specs/002_domain_model.md       → Entities, enums, validations, Flyway migrations
+specs/003_data_access.md        → Repositories, queries, specifications, pagination
+specs/004_business_rules.md     → Services, state machine, events, client interfaces
+specs/005_api_endpoints.md      → Controllers, DTOs, mappers, OpenAPI
+specs/006_security.md           → JWT auth, roles, ownership, CORS
+specs/007_error_handling.md     → Global exception handler, error responses
+specs/008_integrations.md       → REST clients, Resilience4j, Kafka config, health
+specs/009_testing.md            → Unit, integration, E2E tests, WireMock, Testcontainers
+specs/010_deployment.md         → Dockerfile, Docker Compose, profiles, CI, logging
+```
+
+When working on a specific layer, re-read that file and all files it depends on. The `# Depends on:` header in each file lists its dependencies explicitly.
+
+## Build & Test
+
+```bash
+# Build (skip tests)
+./mvnw clean package -DskipTests
+
+# Run all tests
+./mvnw test
+
+# Run only unit tests
+./mvnw test -Dgroups="!integration,!e2e"
+
+# Run only integration tests
+./mvnw test -Dgroups="integration"
+
+# Run only E2E tests
+./mvnw test -Dgroups="e2e"
+
+# Run a single test class
+./mvnw test -Dtest="BookingServiceCreateTest"
+
+# Type-check / compile without running
+./mvnw compile
+
+# Run locally with stub clients
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+Always run `./mvnw compile` after editing Java files to catch errors early. Run the relevant test class after any change, not the full suite.
+
+## Issue Tracking (Beads)
+
+This project uses `bd` (beads) for issue tracking. Do not use markdown TODO lists or TASKS.md files for task tracking.
+
+```bash
+# Get workflow context and command guidance
+bd prime
+
+# View ready tasks
+bd ready
+
+# Show details of a specific task
+bd show <id>
+
+# Claim a task before working on it
+bd update <id> --claim
+
+# Close a completed task
+bd close <id>
+
+# Save a persistent insight about the project
+bd remember "insight"
+```
+
+When starting work, run `bd prime` first to understand current state. Always `bd update <id> --claim` before starting a task and `bd close <id>` when done. Use `bd remember` to persist useful discoveries about the codebase — do not create MEMORY.md files.
+
+## Project Structure
+
+```
+src/main/java/com/cargo/booking/
+├── BookingServiceApplication.java       # Entry point
+├── controller/                          # REST controllers
+├── service/                             # Business logic
+├── repository/                          # Spring Data JPA repositories
+├── model/
+│   ├── entity/                          # JPA entities (Booking, BookingEquipmentLine)
+│   └── enums/                           # BookingStatus, EquipmentType
+├── dto/
+│   ├── request/                         # Inbound DTOs (Java records)
+│   └── response/                        # Outbound DTOs (Java records)
+├── event/                               # Domain events and Kafka publisher
+├── config/                              # Spring configuration beans
+├── exception/                           # Custom exceptions and global handler
+├── client/                              # External service clients (Schedule, Equipment, Quote)
+│   └── dto/                             # DTOs for external API responses
+├── mapper/                              # Entity ↔ DTO mapping
+└── security/                            # JWT filter, token provider, helpers
+
+src/main/resources/
+├── application.yml                      # Base config
+├── application-local.yml                # Local dev (stubs, console logging)
+├── application-dev.yml                  # Dev environment
+├── application-prod.yml                 # Production (hardened)
+├── db/migration/                        # Flyway SQL scripts
+└── logback-spring.xml                   # Logging configuration
+
+src/test/java/com/cargo/booking/
+├── testutil/                            # TestDataBuilder, JwtTestHelper
+├── service/                             # Unit tests (Mockito)
+├── controller/                          # MockMvc tests
+├── repository/                          # @DataJpaTest tests
+├── client/                              # WireMock tests
+├── event/                               # Kafka event tests
+├── security/                            # Auth integration tests
+├── exception/                           # Error handling tests
+└── BookingLifecycleE2ETest.java         # Full lifecycle E2E
+```
+
+## Conventions & Patterns
+
+- **Java 21 LTS**, Spring Boot 3.4.x, Maven
+- **Layered architecture**: Controller → Service → Repository. No skipping layers.
+- **DTOs are Java records** (immutable). Never expose JPA entities in API responses.
+- **Constructor injection** only. No `@Autowired` on fields.
+- **Lombok**: `@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor` on entities. `@RequiredArgsConstructor` on services/controllers.
+- **Entity IDs**: UUID with `@GeneratedValue(strategy = GenerationType.UUID)`
+- **Timestamps**: `Instant` in UTC, serialized as ISO-8601. Use `@CreationTimestamp` / `@UpdateTimestamp`.
+- **Table names**: `lowercase_snake_case`
+- **API prefix**: `/api/v1`
+- **Logging**: SLF4J. INFO for business events, WARN for client errors, ERROR for system failures. Never log sensitive data (email, phone, tokens).
+- **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure.
+
+## Key Domain Rules
+
+The booking state machine is strict. Only these transitions are legal:
+
+```
+PENDING     → CONFIRMED, CANCELLED
+CONFIRMED   → IN_PROGRESS, CANCELLED
+IN_PROGRESS → COMPLETED
+```
+
+All other transitions must throw `IllegalStateTransitionException`. Validate transitions before changing status.
+
+Equipment release failures during cancellation must NOT block the cancel — log a warning and proceed.
+
+Kafka event publish failures must NOT roll back the booking transaction — log an error and proceed.
+
+## External Service Clients
+
+Three external APIs will be called synchronously. **Only interfaces and local stubs exist today.** The real services are owned by other teams and may not be implemented yet.
+
+| Client          | Purpose                              | Failure behavior                         |
+|-----------------|--------------------------------------|------------------------------------------|
+| ScheduleClient  | Validate schedule exists and is open | Throw `ScheduleNotAvailableException`    |
+| EquipmentClient | Reserve/release containers           | Throw `EquipmentReservationException`    |
+| QuoteClient     | Validate quote matches booking       | Throw `QuoteNotValidException`           |
+
+Each client is defined as a **Java interface** with a **stub implementation** (`@Profile("local")`) that returns dummy data. Real implementations will be added later when the external services are available. See `specs/004_business_rules.md` for the interface contracts and `specs/008_integrations.md` for the planned real implementation design.
+
+## Security
+
+JWT-based stateless auth. Three roles:
+
+| Role          | Can do                                                      |
+|---------------|-------------------------------------------------------------|
+| CUSTOMER      | Create bookings, view/cancel own bookings only              |
+| OPERATOR      | View all bookings, confirm/start/complete                   |
+| ADMIN         | Everything                                                  |
+
+Customers have ownership checks — they can only see and cancel their own bookings. Swagger UI and health endpoints are public.
+
+## Error Response Format
+
+All errors follow this structure:
+
+```json
+{
+  "timestamp": "ISO-8601",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Booking not found with reference BKG-2026-00042",
+  "path": "/api/v1/bookings/BKG-2026-00042"
+}
+```
+
+Validation errors (400) add a `violations` array with field-level details.
+
+## Infrastructure
+
+```bash
+# Start PostgreSQL, Kafka, Kafka UI
+docker-compose up -d
+
+# Build and run the service container
+docker build -t booking-service .
+docker-compose up -d booking-service
+
+# View logs
+docker-compose logs -f booking-service
+```
+
+| Service    | Port  |
+|------------|-------|
+| App        | 8081  |
+| PostgreSQL | 5432  |
+| Kafka      | 9092  |
+| Kafka UI   | 8080  |
+| Swagger UI | 8081/swagger-ui |
+
+## Git Workflow
+
+- Branch from `main` or `develop`
+- Run `./mvnw compile` and relevant tests before committing
+- Commit messages: concise, imperative mood (e.g. "Add booking cancellation endpoint")
+- One logical change per commit
+
+## Do NOT
+
+- Do not use field injection (`@Autowired` on fields)
+- Do not expose JPA entities directly in REST responses
+- Do not catch generic `Exception` in service methods — let it bubble to the global handler
+- Do not hardcode configuration values — use application.yml with environment variable fallbacks
+- Do not log sensitive customer data (email, phone, JWT tokens)
+- Do not skip writing tests — every service method and controller endpoint needs test coverage
+- Do not modify the Flyway migration files once they've been applied — create new migration files instead
