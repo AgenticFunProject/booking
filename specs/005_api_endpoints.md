@@ -199,8 +199,8 @@ Feature: API Endpoints
     Then a valid request body looks like:
       """json
       {
-        "scheduleId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-        "quoteId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "scheduleId": 1001,
+        "quoteId": 2001,
         "customer": {
           "name": "Acme Shipping Co.",
           "email": "logistics@acme.com",
@@ -254,11 +254,11 @@ Feature: API Endpoints
     Then a valid response (HTTP 200) looks like:
       """json
       {
-        "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+        "id": 42,
         "bookingReference": "BKG-2026-00042",
         "status": "CONFIRMED",
-        "scheduleId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-        "quoteId": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "scheduleId": 1001,
+        "quoteId": 2001,
         "customer": {
           "name": "Acme Shipping Co.",
           "email": "logistics@acme.com",

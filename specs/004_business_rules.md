@@ -59,7 +59,7 @@ Feature: Business Rules and Service Layer
       | 8    | Publish a "booking.created" event via BookingEventPublisher             |
       | 9    | Return the saved booking                                                |
     And the entire operation must be wrapped in @Transactional
-    And the event must be published after the transaction commits (use @TransactionalEventListener or publish after save)
+    And the event must be published after the transaction commits (use @TransactionalEventListener with AFTER_COMMIT phase)
 
   @business @create
   Scenario: Create booking — schedule not found or closed
@@ -81,7 +81,7 @@ Feature: Business Rules and Service Layer
   Scenario: Create booking — empty equipment list
     Given a booking request with an empty equipment list
     When the BookingService.createBooking() method is called
-    Then it must throw a ValidationException with message "At least one equipment line is required"
+    Then it must throw a BookingValidationException with message "At least one equipment line is required"
     And the booking must NOT be persisted
 
   # ---------------------------------------------------------------------------
@@ -325,7 +325,7 @@ Feature: Business Rules and Service Layer
   @business @client @dto
   Scenario: DTOs used by external service clients
     Given the client interfaces above
-    Then the following DTOs must be created in "com.cargo.booking.dto":
+    Then the following DTOs must be created in "com.cargo.booking.client.dto":
       | class             | fields                                                    | notes                     |
       | ScheduleDTO       | id (Long), routeName (String), departureDate (Instant), status (String) | Returned by ScheduleClient |
       | EquipmentLineDTO  | type (String), quantity (int)                             | Used in EquipmentClient    |

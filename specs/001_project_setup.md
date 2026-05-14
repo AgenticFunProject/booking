@@ -51,7 +51,7 @@ Feature: Project Setup and Configuration
       | org.postgresql   | postgresql         | runtime  | PostgreSQL JDBC driver           |
       | org.flywaydb     | flyway-core        | compile  | Database migration management    |
       | org.flywaydb     | flyway-database-postgresql | compile | Flyway PostgreSQL support |
-      | io.zonky.test    | embedded-postgres  | test     | Embedded PostgreSQL for tests    |
+      | io.zonky.test    | embedded-database-spring-test | test | Spring test integration for embedded PostgreSQL |
 
   @setup @dependencies
   Scenario: Utility and documentation dependencies
@@ -124,7 +124,7 @@ Feature: Project Setup and Configuration
       | spring.datasource.driver-class-name | org.postgresql.Driver   |
       | spring.jpa.hibernate.ddl-auto  | validate                     |
       | spring.flyway.enabled          | true                         |
-      | spring.kafka.bootstrap-servers | ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092} |
+      | spring.kafka.bootstrap-servers | Provided by KafkaContainer test bootstrap |
 
   # ---------------------------------------------------------------------------
   # Main Application Class

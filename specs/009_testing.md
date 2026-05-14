@@ -29,7 +29,7 @@ Feature: Testing Strategy
       | groupId                          | artifactId                           | scope | purpose                                |
       | org.springframework.boot         | spring-boot-starter-test             | test  | Core test support (JUnit 5, Mockito, AssertJ) |
       | org.springframework.security     | spring-security-test                 | test  | MockMvc security testing               |
-      | org.springframework.kafka        | spring-kafka-test                    | test  | Embedded Kafka for event tests         |
+      | org.springframework.kafka        | spring-kafka-test                    | test  | Kafka test utilities                   |
       | org.testcontainers               | testcontainers                       | test  | Testcontainers core                    |
       | org.testcontainers               | kafka                                | test  | Kafka Testcontainer                    |
       | org.testcontainers               | junit-jupiter                        | test  | JUnit 5 Testcontainers integration     |
@@ -50,13 +50,13 @@ Feature: Testing Strategy
       | spring.datasource.driver-class-name           | org.postgresql.Driver       | PostgreSQL driver                    |
       | spring.jpa.hibernate.ddl-auto                 | validate                    | Validate schema created by Flyway    |
       | spring.flyway.enabled                         | true                        | Run migrations in tests              |
-      | spring.kafka.bootstrap-servers                | ${spring.embedded.kafka.brokers:localhost:9092} | Embedded Kafka     |
+      | spring.kafka.bootstrap-servers                | Provided by KafkaContainer test bootstrap | Kafka broker for tests |
       | app.security.jwt.secret                       | test-secret-key-that-is-at-least-256-bits-long-for-hs256 | Test JWT key |
       | app.security.jwt.issuer                       | test-issuer                 | Test JWT issuer                      |
       | app.security.jwt.expiration-ms                | 3600000                     | 1 hour for tests                     |
 
   @testing @config
-  Scenario: Base integration test class with embedded PostgreSQL and Testcontainers Kafka
+  Scenario: Base integration test class with embedded PostgreSQL and KafkaContainer
     Given an abstract class "BaseIntegrationTest" in package "com.cargo.booking"
     Then it must be annotated with:
       | annotation                                                      |
@@ -359,7 +359,7 @@ Feature: Testing Strategy
   @testing @integration @kafka
   Scenario: Kafka event publishing integration tests
     Given a test class "BookingEventPublisherTest" in package "com.cargo.booking.event"
-    Then it must use @EmbeddedKafka or KafkaContainer from Testcontainers
+    Then it must use KafkaContainer from Testcontainers
     And it must verify:
       | test method                                           | description                                        |
       | shouldPublishBookingCreatedEvent()                   | Event published to "booking.created" topic           |
@@ -400,7 +400,7 @@ Feature: Testing Strategy
   @testing @e2e
   Scenario: Full booking lifecycle end-to-end test
     Given a test class "BookingLifecycleE2ETest" in package "com.cargo.booking"
-    Then it must extend BaseIntegrationTest (Testcontainers with PostgreSQL and Kafka)
+    Then it must extend BaseIntegrationTest (embedded PostgreSQL and KafkaContainer)
     And it must use the "local" profile so that stub clients are active (no real external services)
     And it must use TestRestTemplate or WebTestClient with a real JWT token
     And it must verify the complete happy path:
