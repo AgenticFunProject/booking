@@ -1,5 +1,5 @@
 # File: 005_api_endpoints.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt, 003_data_access.md, 004_business_rules.md
+# Depends on: 001_project_setup.md, 002_domain_model.md, 003_data_access.md, 004_business_rules.md
 # Produces: REST controllers, request/response DTOs, mapper classes, API documentation annotations
 # Context: Defines the REST API contract for the Cargo Booking Service. The AI agent must have
 #          processed 001–004 so that entities, repositories, services, and conventions are known.
@@ -15,8 +15,8 @@ Feature: API Endpoints
     And request DTOs reside in "com.cargo.booking.dto.request"
     And response DTOs reside in "com.cargo.booking.dto.response"
     And mapper classes reside in "com.cargo.booking.mapper"
-    And the API prefix is "/api/v1" as defined in 001_project_setup.txt
-    And all conventions from 001_project_setup.txt apply
+    And the API prefix is "/api/v1" as defined in 001_project_setup.md
+    And all conventions from 001_project_setup.md apply
 
   # ---------------------------------------------------------------------------
   # Request DTOs
@@ -27,8 +27,8 @@ Feature: API Endpoints
     Given a record "CreateBookingRequest" in package "com.cargo.booking.dto.request"
     Then it must be a Java record with the following fields:
       | field      | type                  | validation              | description                        |
-      | scheduleId | UUID                  | @NotNull                | The schedule to book               |
-      | quoteId    | UUID                  | @NotNull                | The associated quote               |
+      | scheduleId | Long                  | @NotNull                | The schedule to book               |
+      | quoteId    | Long                  | @NotNull                | The associated quote               |
       | customer   | CustomerRequest       | @NotNull @Valid         | Nested customer details            |
       | cargo      | CargoRequest          | @NotNull @Valid         | Nested cargo details               |
       | equipment  | List<EquipmentRequest>| @NotEmpty @Valid        | At least one equipment line needed |
@@ -68,11 +68,11 @@ Feature: API Endpoints
     Given a record "BookingResponse" in package "com.cargo.booking.dto.response"
     Then it must be a Java record with the following fields:
       | field             | type                       | description                           |
-      | id                | UUID                       | Internal booking ID                   |
+      | id                | Long                       | Internal booking ID                   |
       | bookingReference  | String                     | Human-readable reference              |
       | status            | String                     | Current booking status                |
-      | scheduleId        | UUID                       | The linked schedule                   |
-      | quoteId           | UUID                       | The linked quote                      |
+      | scheduleId        | Long                       | The linked schedule                   |
+      | quoteId           | Long                       | The linked quote                      |
       | customer          | CustomerResponse           | Nested customer details               |
       | cargo             | CargoResponse              | Nested cargo details                  |
       | equipment         | List<EquipmentResponse>    | List of equipment lines               |
@@ -137,7 +137,7 @@ Feature: API Endpoints
     Then it must be annotated with @Component
     And it must provide the following mapping methods:
       | method                                                       | from                    | to                      |
-      | toEntity(CreateBookingRequest request, String reference, UUID customerId) | CreateBookingRequest   | Booking                 |
+      | toEntity(CreateBookingRequest request, String reference, Long customerId) | CreateBookingRequest   | Booking                 |
       | toResponse(Booking entity)                                   | Booking                 | BookingResponse         |
       | toCreatedResponse(Booking entity)                            | Booking                 | BookingCreatedResponse  |
       | toEquipmentLineEntity(EquipmentRequest request)              | EquipmentRequest        | BookingEquipmentLine    |
@@ -149,7 +149,7 @@ Feature: API Endpoints
       | Map cargo fields from the nested CargoRequest                           |
       | Convert each EquipmentRequest to a BookingEquipmentLine and associate   |
       | Set the bookingReference from the provided reference parameter          |
-      | Generate a customerId (UUID) or accept it as a parameter                |
+      | Generate a customerId (Long) or accept it as a parameter                |
     And the mapper must NOT use any reflection-based mapping libraries (keep it explicit)
 
   # ---------------------------------------------------------------------------
@@ -241,10 +241,10 @@ Feature: API Endpoints
       @Operation(summary = "Get booking by ID or reference")
       public BookingResponse getBookingById(@PathVariable("id") String id)
       """
-    And the "id" parameter must accept both a UUID and a booking reference (BKG-YYYY-NNNNN)
+    And the "id" parameter must accept both a numeric Long value and a booking reference (BKG-YYYY-NNNNN)
     And the controller must detect the format:
       | input format    | action                                  |
-      | UUID format     | Call bookingService.getBookingById()     |
+      | Numeric format  | Call bookingService.getBookingById()     |
       | BKG-YYYY-NNNNN | Call bookingService.getBookingByReference() |
     And the result must be mapped to BookingResponse and returned with HTTP 200
 
@@ -292,7 +292,7 @@ Feature: API Endpoints
       @GetMapping
       @Operation(summary = "List bookings for a customer")
       public PagedResponse<BookingResponse> getBookingsByCustomer(
-          @RequestParam UUID customerId,
+          @RequestParam Long customerId,
           @RequestParam(required = false) BookingStatus status,
           @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
       )
@@ -308,7 +308,7 @@ Feature: API Endpoints
     Given the GET /api/v1/bookings endpoint
     Then the following query parameters must be supported:
       | parameter   | type          | required | default             | description                    |
-      | customerId  | UUID          | yes      | —                   | Filter by customer             |
+      | customerId  | Long          | yes      | —                   | Filter by customer             |
       | status      | BookingStatus | no       | null (all statuses) | Filter by booking status       |
       | page        | int           | no       | 0                   | Page number (zero-based)       |
       | size        | int           | no       | 20                  | Page size (max 100)            |
@@ -329,7 +329,7 @@ Feature: API Endpoints
       """
       @PatchMapping("/{id}/cancel")
       @Operation(summary = "Cancel a booking")
-      public BookingResponse cancelBooking(@PathVariable("id") UUID id)
+      public BookingResponse cancelBooking(@PathVariable("id") Long id)
       """
     And it must:
       | step | action                                                  |
@@ -351,7 +351,7 @@ Feature: API Endpoints
       """
       @PatchMapping("/{id}/confirm")
       @Operation(summary = "Confirm a booking")
-      public BookingResponse confirmBooking(@PathVariable("id") UUID id)
+      public BookingResponse confirmBooking(@PathVariable("id") Long id)
       """
     And it must call bookingService.confirmBooking(id) and return BookingResponse with HTTP 200
 
@@ -365,7 +365,7 @@ Feature: API Endpoints
       """
       @PatchMapping("/{id}/start")
       @Operation(summary = "Mark booking as in progress")
-      public BookingResponse startBooking(@PathVariable("id") UUID id)
+      public BookingResponse startBooking(@PathVariable("id") Long id)
       """
     And it must call bookingService.startBooking(id) and return BookingResponse with HTTP 200
 
@@ -379,7 +379,7 @@ Feature: API Endpoints
       """
       @PatchMapping("/{id}/complete")
       @Operation(summary = "Mark booking as completed")
-      public BookingResponse completeBooking(@PathVariable("id") UUID id)
+      public BookingResponse completeBooking(@PathVariable("id") Long id)
       """
     And it must call bookingService.completeBooking(id) and return BookingResponse with HTTP 200
 

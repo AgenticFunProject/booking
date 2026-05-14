@@ -1,5 +1,5 @@
 # File: 006_security.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt, 005_api_endpoints.md
+# Depends on: 001_project_setup.md, 002_domain_model.md, 005_api_endpoints.md
 # Produces: Security configuration, JWT filter, authentication entry point, role-based access,
 #           CORS configuration, security-related DTOs
 # Context: Defines authentication and authorization for the Cargo Booking Service. Since this
@@ -16,7 +16,7 @@ Feature: Security
     Given the base package is "com.cargo.booking"
     And security classes reside in "com.cargo.booking.security"
     And all endpoints from 005_api_endpoints.md are known
-    And the API prefix is "/api/v1" as defined in 001_project_setup.txt
+    And the API prefix is "/api/v1" as defined in 001_project_setup.md
 
   # ---------------------------------------------------------------------------
   # Security Dependency
@@ -84,7 +84,7 @@ Feature: Security
     And it must provide the following methods:
       | method                                          | returns                  | description                                      |
       | validateToken(String token)                     | boolean                  | Validates signature, expiration, and issuer       |
-      | getUserIdFromToken(String token)                | UUID                     | Extracts the subject claim as a UUID              |
+      | getUserIdFromToken(String token)                | Long                     | Extracts the subject claim as a Long              |
       | getUsernameFromToken(String token)              | String                   | Extracts the "username" or "name" claim           |
       | getRolesFromToken(String token)                 | List<String>             | Extracts the "roles" claim as a list of strings   |
       | getAuthentication(String token)                 | Authentication           | Builds a UsernamePasswordAuthenticationToken      |
@@ -234,11 +234,11 @@ Feature: Security
     Given a utility class "SecurityContextHelper" in package "com.cargo.booking.security"
     Then it must provide the following static methods:
       | method                          | returns      | description                                     |
-      | getCurrentUserId()              | UUID         | Extracts the user ID from SecurityContext        |
+      | getCurrentUserId()              | Long         | Extracts the user ID from SecurityContext        |
       | getCurrentUsername()            | String       | Extracts the username from SecurityContext       |
       | getCurrentRoles()              | List<String> | Extracts the roles from SecurityContext          |
       | hasRole(String role)           | boolean      | Checks if the current user has a specific role   |
-      | isOwnerOrPrivileged(UUID ownerId) | boolean   | Returns true if user is the owner or has OPERATOR/ADMIN role |
+      | isOwnerOrPrivileged(Long ownerId) | boolean   | Returns true if user is the owner or has OPERATOR/ADMIN role |
 
   # ---------------------------------------------------------------------------
   # CORS Configuration
@@ -268,7 +268,7 @@ Feature: Security
     And it must provide an option to disable JWT validation for integration tests
     And it must provide a utility method or builder to create mock Authentication objects with:
       | field    | description                                |
-      | userId   | The UUID to use as the authenticated user  |
+      | userId   | The Long to use as the authenticated user  |
       | username | The username claim                         |
       | roles    | List of roles to assign                    |
     And tests must be able to use @WithMockUser or a custom annotation @WithMockJwt for convenience

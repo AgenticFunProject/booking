@@ -1,6 +1,6 @@
 # Booking Service
 
-Cargo booking microservice built with Spring Boot 3.4.x and Java 21. Accepts booking requests, manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED), and emits domain events to Kafka.
+Cargo booking microservice built with Spring Boot 4.0.6 and Java 21. Accepts booking requests, manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED), and emits domain events to Kafka.
 
 ## Specifications
 
@@ -121,12 +121,12 @@ src/test/java/com/cargo/booking/
 
 ## Conventions & Patterns
 
-- **Java 21 LTS**, Spring Boot 3.4.x, Maven
+- **Java 21 LTS**, Spring Boot 4.0.6, Maven
 - **Layered architecture**: Controller → Service → Repository. No skipping layers.
 - **DTOs are Java records** (immutable). Never expose JPA entities in API responses.
 - **Constructor injection** only. No `@Autowired` on fields.
 - **Lombok**: `@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor` on entities. `@RequiredArgsConstructor` on services/controllers.
-- **Entity IDs**: UUID with `@GeneratedValue(strategy = GenerationType.UUID)`
+- **Entity IDs**: Long with `@GeneratedValue(strategy = GenerationType.IDENTITY)`
 - **Timestamps**: `Instant` in UTC, serialized as ISO-8601. Use `@CreationTimestamp` / `@UpdateTimestamp`.
 - **Table names**: `lowercase_snake_case`
 - **API prefix**: `/api/v1`

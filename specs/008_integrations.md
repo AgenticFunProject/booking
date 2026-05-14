@@ -1,5 +1,5 @@
 # File: 008_integrations.md
-# Depends on: 001_project_setup.txt, 004_business_rules.md, 007_error_handling.md
+# Depends on: 001_project_setup.md, 004_business_rules.md, 007_error_handling.md
 # Produces: Integration configuration properties, RestClient infrastructure, Resilience4j setup,
 #           Kafka producer fine-tuning, dead letter topic, health indicators, logging interceptor
 # Context: Defines the integration PATTERNS and infrastructure for the Cargo Booking Service.

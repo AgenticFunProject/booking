@@ -1,4 +1,4 @@
-# File: 001_project_setup.txt
+# File: 001_project_setup.md
 # Depends on: None (this is the foundation file)
 # Produces: Maven project structure, pom.xml, application configuration, base packages
 # Context: Cargo Booking Service — a microservice that manages cargo booking requests,
@@ -24,7 +24,7 @@ Feature: Project Setup and Configuration
     Given I am creating a new Spring Boot project
     Then the build tool must be Maven
     And the Java version must be 21 (latest LTS)
-    And the Spring Boot version must be 3.4.x (latest stable 3.4 release)
+    And the Spring Boot version must be 4.0.6
     And the pom.xml must set <maven.compiler.source> and <maven.compiler.target> to 21
     And the packaging must be "jar"
 
@@ -51,7 +51,7 @@ Feature: Project Setup and Configuration
       | org.postgresql   | postgresql         | runtime  | PostgreSQL JDBC driver           |
       | org.flywaydb     | flyway-core        | compile  | Database migration management    |
       | org.flywaydb     | flyway-database-postgresql | compile | Flyway PostgreSQL support |
-      | com.h2database   | h2                 | test     | In-memory DB for tests           |
+      | io.zonky.test    | embedded-postgres  | test     | Embedded PostgreSQL for tests    |
 
   @setup @dependencies
   Scenario: Utility and documentation dependencies
@@ -120,10 +120,10 @@ Feature: Project Setup and Configuration
     Given the file "src/test/resources/application-test.yml"
     Then it must override the following for tests:
       | property                       | value                        |
-      | spring.datasource.url          | jdbc:h2:mem:booking_test_db  |
-      | spring.datasource.driver-class-name | org.h2.Driver           |
-      | spring.jpa.hibernate.ddl-auto  | create-drop                  |
-      | spring.flyway.enabled          | false                        |
+      | spring.datasource.url          | Provided by embedded PostgreSQL test bootstrap |
+      | spring.datasource.driver-class-name | org.postgresql.Driver   |
+      | spring.jpa.hibernate.ddl-auto  | validate                     |
+      | spring.flyway.enabled          | true                         |
       | spring.kafka.bootstrap-servers | ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092} |
 
   # ---------------------------------------------------------------------------
@@ -150,12 +150,12 @@ Feature: Project Setup and Configuration
       | Use constructor injection (not field injection) for all Spring beans                  |
       | All REST endpoints must be prefixed with "/api/v1"                                   |
       | All timestamps must be stored and returned in UTC using ISO-8601 format               |
-      | Entity IDs must be UUIDs generated with @GeneratedValue(strategy = GenerationType.UUID) |
+      | Entity IDs must be Long values generated with @GeneratedValue(strategy = GenerationType.IDENTITY) |
       | Use records for DTOs where the DTO is immutable                                       |
       | Never expose JPA entities directly in API responses — always map to DTOs              |
       | Database table names must be lowercase_snake_case                                     |
       | Boolean fields must not be prefixed with "is" at the entity level                     |
-      | All public service methods must have SLF4J logging at DEBUG or INFO level             |
+      | Use SLF4J logging for meaningful business events, state transitions, external calls, and failures; avoid mechanical logging on every method |
 
   @setup @conventions
   Scenario: Error response structure convention
@@ -180,12 +180,12 @@ Feature: Project Setup and Configuration
     Given this is the project setup file only
     Then the following are NOT defined here and will be addressed in later files:
       | topic                        | deferred to           |
-      | Entity field definitions     | 002_domain_model.txt  |
-      | Repository interfaces        | 003_data_access.txt   |
-      | Service layer logic          | 004_business_rules.txt|
-      | Controller implementations   | 005_api_endpoints.txt |
-      | Security configuration       | 006_security.txt      |
-      | Error handling details       | 007_error_handling.txt|
-      | External service clients     | 008_integrations.txt  |
-      | Test scenarios               | 009_testing.txt       |
-      | Docker / deployment config   | 010_deployment.txt    |
+      | Entity field definitions     | 002_domain_model.md  |
+      | Repository interfaces        | 003_data_access.md   |
+      | Service layer logic          | 004_business_rules.md|
+      | Controller implementations   | 005_api_endpoints.md |
+      | Security configuration       | 006_security.md      |
+      | Error handling details       | 007_error_handling.md|
+      | External service clients     | 008_integrations.md  |
+      | Test scenarios               | 009_testing.md       |
+      | Docker / deployment config   | 010_deployment.md    |

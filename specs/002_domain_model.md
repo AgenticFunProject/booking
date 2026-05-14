@@ -1,8 +1,8 @@
-# File: 002_domain_model.txt
-# Depends on: 001_project_setup.txt
+# File: 002_domain_model.md
+# Depends on: 001_project_setup.md
 # Produces: JPA entities, enums, embeddable types, Flyway migration scripts
 # Context: Defines the Booking aggregate and all supporting value objects for the
-#          Cargo Booking Service. The AI agent must have processed 001_project_setup.txt
+#          Cargo Booking Service. The AI agent must have processed 001_project_setup.md
 #          before this file so that package names, conventions, and dependencies are known.
 
 Feature: Domain Model
@@ -15,7 +15,7 @@ Feature: Domain Model
     And all entities reside in "com.cargo.booking.model.entity"
     And all enums reside in "com.cargo.booking.model.enums"
     And database table names use lowercase_snake_case
-    And Lombok annotations are used as defined in 001_project_setup.txt
+    And Lombok annotations are used as defined in 001_project_setup.md
 
   # ---------------------------------------------------------------------------
   # Enums
@@ -53,12 +53,12 @@ Feature: Domain Model
     Then it must be annotated with @Entity, @Table, @Data, @Builder, @NoArgsConstructor, @AllArgsConstructor
     And it must have the following fields:
       | field            | javaType       | column              | nullable | unique | notes                                          |
-      | id               | UUID           | id                  | false    | true   | @Id, @GeneratedValue(strategy = GenerationType.UUID) |
+      | id               | Long           | id                  | false    | true   | @Id, @GeneratedValue(strategy = GenerationType.IDENTITY) |
       | bookingReference | String         | booking_reference   | false    | true   | Human-readable, format BKG-YYYY-NNNNN          |
       | status           | BookingStatus  | status              | false    | false  | @Enumerated(EnumType.STRING), default PENDING   |
-      | scheduleId       | UUID           | schedule_id         | false    | false  | References external Schedules API               |
-      | quoteId          | UUID           | quote_id            | false    | false  | References external Quotes API                  |
-      | customerId       | UUID           | customer_id         | false    | false  | Identifies the customer                         |
+      | scheduleId       | Long           | schedule_id         | false    | false  | References external Schedules API               |
+      | quoteId          | Long           | quote_id            | false    | false  | References external Quotes API                  |
+      | customerId       | Long           | customer_id         | false    | false  | Identifies the customer                         |
       | customerName     | String         | customer_name       | false    | false  | Max length 255                                  |
       | customerEmail    | String         | customer_email      | false    | false  | Max length 255, must be valid email format      |
       | customerPhone    | String         | customer_phone      | true     | false  | Max length 50                                   |
@@ -97,7 +97,7 @@ Feature: Domain Model
     Then it must be annotated with @Entity, @Table, @Data, @Builder, @NoArgsConstructor, @AllArgsConstructor
     And it must have the following fields:
       | field     | javaType      | column       | nullable | notes                                                  |
-      | id        | UUID          | id           | false    | @Id, @GeneratedValue(strategy = GenerationType.UUID)   |
+      | id        | Long          | id           | false    | @Id, @GeneratedValue(strategy = GenerationType.IDENTITY)   |
       | type      | EquipmentType | type         | false    | @Enumerated(EnumType.STRING)                           |
       | quantity  | Integer       | quantity     | false    | Must be greater than 0                                 |
 
@@ -225,7 +225,7 @@ Feature: Domain Model
     And it must create all indexes defined in the indexing scenario
     And all column types must match PostgreSQL equivalents:
       | javaType      | postgresType              |
-      | UUID          | UUID                      |
+      | Long          | BIGINT                    |
       | String        | VARCHAR(n)                |
       | BookingStatus | VARCHAR(20)               |
       | EquipmentType | VARCHAR(20)               |
@@ -253,8 +253,8 @@ Feature: Domain Model
     Given this is the domain model file only
     Then the following are NOT defined here and will be addressed in later files:
       | topic                                  | deferred to            |
-      | Repository interfaces and queries      | 003_data_access.txt    |
-      | State transition orchestration logic   | 004_business_rules.txt |
-      | Request/Response DTOs                  | 005_api_endpoints.txt  |
-      | Mapping between entities and DTOs      | 005_api_endpoints.txt  |
-      | Domain event payloads                  | 004_business_rules.txt |
+      | Repository interfaces and queries      | 003_data_access.md    |
+      | State transition orchestration logic   | 004_business_rules.md |
+      | Request/Response DTOs                  | 005_api_endpoints.md  |
+      | Mapping between entities and DTOs      | 005_api_endpoints.md  |
+      | Domain event payloads                  | 004_business_rules.md |

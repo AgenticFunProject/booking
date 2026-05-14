@@ -1,5 +1,5 @@
 # File: 009_testing.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt, 003_data_access.md,
+# Depends on: 001_project_setup.md, 002_domain_model.md, 003_data_access.md,
 #             004_business_rules.md, 005_api_endpoints.md, 006_security.md,
 #             007_error_handling.md, 008_integrations.md
 # Produces: Unit tests, integration tests, test configuration, test utilities, test data builders,
@@ -16,7 +16,7 @@ Feature: Testing Strategy
     Given the base test package is "com.cargo.booking"
     And all test classes reside under "src/test/java/com/cargo/booking"
     And the test profile "test" is activated via application-test.yml (defined in 001)
-    And the test dependencies from 001 include spring-boot-starter-test and H2
+    And the test dependencies from 001 include spring-boot-starter-test and embedded PostgreSQL
 
   # ---------------------------------------------------------------------------
   # Additional Test Dependencies
@@ -31,10 +31,10 @@ Feature: Testing Strategy
       | org.springframework.security     | spring-security-test                 | test  | MockMvc security testing               |
       | org.springframework.kafka        | spring-kafka-test                    | test  | Embedded Kafka for event tests         |
       | org.testcontainers               | testcontainers                       | test  | Testcontainers core                    |
-      | org.testcontainers               | postgresql                           | test  | PostgreSQL Testcontainer               |
       | org.testcontainers               | kafka                                | test  | Kafka Testcontainer                    |
       | org.testcontainers               | junit-jupiter                        | test  | JUnit 5 Testcontainers integration     |
       | org.wiremock                     | wiremock-standalone                   | test  | WireMock for external API mocking      |
+      | io.zonky.test                    | embedded-database-spring-test         | test  | Spring test integration for embedded PostgreSQL |
     And the Testcontainers BOM must be managed in the dependencyManagement section
 
   # ---------------------------------------------------------------------------
@@ -46,29 +46,29 @@ Feature: Testing Strategy
     Given the file "src/test/resources/application-test.yml"
     Then it must include (extending what 001 defines):
       | property                                      | value                       | purpose                              |
-      | spring.datasource.url                         | jdbc:h2:mem:booking_test_db | In-memory DB for unit/slice tests    |
-      | spring.datasource.driver-class-name           | org.h2.Driver               | H2 driver                           |
-      | spring.jpa.hibernate.ddl-auto                 | create-drop                 | Auto-create schema for tests         |
-      | spring.flyway.enabled                         | false                       | Skip Flyway in H2 tests             |
+      | spring.datasource.url                         | Provided by embedded PostgreSQL test bootstrap | PostgreSQL-compatible test database |
+      | spring.datasource.driver-class-name           | org.postgresql.Driver       | PostgreSQL driver                    |
+      | spring.jpa.hibernate.ddl-auto                 | validate                    | Validate schema created by Flyway    |
+      | spring.flyway.enabled                         | true                        | Run migrations in tests              |
       | spring.kafka.bootstrap-servers                | ${spring.embedded.kafka.brokers:localhost:9092} | Embedded Kafka     |
       | app.security.jwt.secret                       | test-secret-key-that-is-at-least-256-bits-long-for-hs256 | Test JWT key |
       | app.security.jwt.issuer                       | test-issuer                 | Test JWT issuer                      |
       | app.security.jwt.expiration-ms                | 3600000                     | 1 hour for tests                     |
 
   @testing @config
-  Scenario: Base integration test class with Testcontainers
+  Scenario: Base integration test class with embedded PostgreSQL and Testcontainers Kafka
     Given an abstract class "BaseIntegrationTest" in package "com.cargo.booking"
     Then it must be annotated with:
       | annotation                                                      |
       | @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) |
       | @ActiveProfiles("test")                                         |
       | @Testcontainers                                                 |
+    And it must start an embedded PostgreSQL database shared by integration tests
     And it must define the following shared containers:
       | container                   | image                    | configuration                       |
-      | PostgreSQLContainer         | postgres:16-alpine       | Database: booking_test_db           |
       | KafkaContainer              | confluentinc/cp-kafka    | Default settings                    |
-    And it must use @DynamicPropertySource to inject container connection details into Spring context
-    And the containers must be static (shared across all test classes extending this base)
+    And it must use @DynamicPropertySource to inject embedded PostgreSQL and Kafka connection details into Spring context
+    And the embedded database and containers must be static (shared across all test classes extending this base)
 
   # ---------------------------------------------------------------------------
   # Test Utilities
@@ -90,9 +90,9 @@ Feature: Testing Strategy
       | field            | default value                                |
       | bookingReference | "BKG-2026-00001"                              |
       | status           | PENDING                                       |
-      | scheduleId       | UUID.fromString("aaaa-...-0001")              |
-      | quoteId          | UUID.fromString("bbbb-...-0001")              |
-      | customerId       | UUID.fromString("cccc-...-0001")              |
+      | scheduleId       | 1001L                                           |
+      | quoteId          | 2001L                                           |
+      | customerId       | 3001L                                           |
       | customerName     | "Test Customer"                                |
       | customerEmail    | "test@example.com"                            |
       | cargoDescription | "Test cargo"                                   |
@@ -105,11 +105,11 @@ Feature: Testing Strategy
     Given a class "JwtTestHelper" in package "com.cargo.booking.testutil"
     Then it must provide methods to generate valid JWT tokens for testing:
       | method                                                                 | returns | description                       |
-      | generateToken(UUID userId, String username, List<String> roles)       | String  | Valid JWT token for test user      |
-      | generateCustomerToken(UUID userId)                                    | String  | Token with ROLE_CUSTOMER           |
-      | generateOperatorToken(UUID userId)                                    | String  | Token with ROLE_OPERATOR           |
-      | generateAdminToken(UUID userId)                                       | String  | Token with ROLE_ADMIN              |
-      | generateExpiredToken(UUID userId)                                     | String  | Expired JWT for negative tests     |
+      | generateToken(Long userId, String username, List<String> roles)       | String  | Valid JWT token for test user      |
+      | generateCustomerToken(Long userId)                                    | String  | Token with ROLE_CUSTOMER           |
+      | generateOperatorToken(Long userId)                                    | String  | Token with ROLE_OPERATOR           |
+      | generateAdminToken(Long userId)                                       | String  | Token with ROLE_ADMIN              |
+      | generateExpiredToken(Long userId)                                     | String  | Expired JWT for negative tests     |
     And it must use the test JWT secret from application-test.yml
     And it must set the issuer to "test-issuer"
 
@@ -120,7 +120,7 @@ Feature: Testing Strategy
   @testing @unit @domain
   Scenario: BookingStatus state transition tests
     Given a test class "BookingStatusTest" in package "com.cargo.booking.model.enums"
-    Then it must verify all valid transitions from 002_domain_model.txt:
+    Then it must verify all valid transitions from 002_domain_model.md:
       | test method                             | from        | to          | expected |
       | shouldAllowPendingToConfirmed()         | PENDING     | CONFIRMED   | allowed  |
       | shouldAllowPendingToCancelled()         | PENDING     | CANCELLED   | allowed  |
@@ -282,7 +282,7 @@ Feature: Testing Strategy
     Given the BookingControllerTest class
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
-      | shouldGetBookingByIdAndReturn200()                  | 200    | Valid UUID, booking found                        |
+      | shouldGetBookingByIdAndReturn200()                  | 200    | Valid numeric ID, booking found                  |
       | shouldGetBookingByReferenceAndReturn200()           | 200    | Valid BKG reference, booking found               |
       | shouldReturn404WhenBookingNotFound()                | 404    | Unknown ID returns 404                           |
       | shouldReturn401WhenNotAuthenticated()               | 401    | No token                                         |

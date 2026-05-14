@@ -1,5 +1,5 @@
 # File: 004_business_rules.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt, 003_data_access.md
+# Depends on: 001_project_setup.md, 002_domain_model.md, 003_data_access.md
 # Produces: Service classes, domain event classes, event publisher, booking reference generator,
 #           state machine logic, validation services, external service client interfaces
 # Context: Defines the business logic, orchestration, state transitions, and domain event
@@ -16,8 +16,8 @@ Feature: Business Rules and Service Layer
     And service classes reside in "com.cargo.booking.service"
     And event classes reside in "com.cargo.booking.event"
     And client interfaces reside in "com.cargo.booking.client"
-    And all conventions from 001_project_setup.txt apply
-    And all entities and enums from 002_domain_model.txt are available
+    And all conventions from 001_project_setup.md apply
+    And all entities and enums from 002_domain_model.md are available
     And all repositories from 003_data_access.md are available
 
   # ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ Feature: Business Rules and Service Layer
 
   @business @read
   Scenario: Get booking by ID
-    Given a valid booking ID (UUID)
+    Given a valid booking ID (Long)
     When the BookingService.getBookingById() method is called
     Then it must use the repository method findWithEquipmentLinesById() to eagerly load equipment lines
     And if the booking is not found it must throw a BookingNotFoundException
@@ -174,7 +174,7 @@ Feature: Business Rules and Service Layer
   @business @lifecycle
   Scenario: Reject invalid state transitions
     Given a booking with any status
-    When a state transition is attempted that is not in the allowed transitions from 002_domain_model.txt
+    When a state transition is attempted that is not in the allowed transitions from 002_domain_model.md
     Then the service must throw an IllegalStateTransitionException
     And the exception message must include the current status and the attempted target status
     And the booking must NOT be modified
@@ -190,7 +190,7 @@ Feature: Business Rules and Service Layer
     Then a method must exist that validates whether a transition is allowed:
       | method signature                                                    |
       | void validateTransition(BookingStatus current, BookingStatus target) |
-    And it must use the transition rules defined in 002_domain_model.txt
+    And it must use the transition rules defined in 002_domain_model.md
     And it must throw IllegalStateTransitionException for any disallowed transition
     And this method must be called before any status change in all lifecycle methods
 
@@ -224,7 +224,7 @@ Feature: Business Rules and Service Layer
     Then it must contain the following common fields:
       | field             | type    | description                           |
       | bookingReference  | String  | The human-readable booking reference  |
-      | scheduleId        | UUID    | The schedule this booking is linked to|
+      | scheduleId        | Long    | The schedule this booking is linked to|
       | status            | String  | The booking status after the event    |
       | timestamp         | Instant | When the event occurred (UTC)         |
 
@@ -290,8 +290,8 @@ Feature: Business Rules and Service Layer
     Given an interface "ScheduleClient" in package "com.cargo.booking.client"
     Then it must define the following methods:
       | method                                        | returns  | description                                   |
-      | validateSchedule(UUID scheduleId)             | boolean  | Returns true if schedule exists and is open    |
-      | getScheduleDetails(UUID scheduleId)           | ScheduleDTO | Fetches schedule details for validation     |
+      | validateSchedule(Long scheduleId)             | boolean  | Returns true if schedule exists and is open    |
+      | getScheduleDetails(Long scheduleId)           | ScheduleDTO | Fetches schedule details for validation     |
     And a stub implementation "ScheduleClientStub" must be created in the same package
     And the stub must be annotated with @Service and @Profile("local")
     And the stub must always return true / a dummy ScheduleDTO for local development
@@ -302,8 +302,8 @@ Feature: Business Rules and Service Layer
     Given an interface "EquipmentClient" in package "com.cargo.booking.client"
     Then it must define the following methods:
       | method                                                              | returns | description                              |
-      | reserveEquipment(UUID bookingId, List<EquipmentLineDTO> equipment)  | void    | Reserve containers for a confirmed booking|
-      | releaseEquipment(UUID bookingId)                                    | void    | Release containers on cancellation        |
+      | reserveEquipment(Long bookingId, List<EquipmentLineDTO> equipment)  | void    | Reserve containers for a confirmed booking|
+      | releaseEquipment(Long bookingId)                                    | void    | Release containers on cancellation        |
     And a stub implementation "EquipmentClientStub" must be created
     And the stub must be annotated with @Service and @Profile("local")
     And the stub must log the reservation/release action without calling any external service
@@ -313,7 +313,7 @@ Feature: Business Rules and Service Layer
     Given an interface "QuoteClient" in package "com.cargo.booking.client"
     Then it must define the following methods:
       | method                                                        | returns  | description                                    |
-      | validateQuote(UUID quoteId, UUID scheduleId, BigDecimal weightKg) | boolean  | Returns true if quote is valid and matches booking |
+      | validateQuote(Long quoteId, Long scheduleId, BigDecimal weightKg) | boolean  | Returns true if quote is valid and matches booking |
     And a stub implementation "QuoteClientStub" must be created
     And the stub must be annotated with @Service and @Profile("local")
     And the stub must always return true for local development
@@ -327,7 +327,7 @@ Feature: Business Rules and Service Layer
     Given the client interfaces above
     Then the following DTOs must be created in "com.cargo.booking.dto":
       | class             | fields                                                    | notes                     |
-      | ScheduleDTO       | id (UUID), routeName (String), departureDate (Instant), status (String) | Returned by ScheduleClient |
+      | ScheduleDTO       | id (Long), routeName (String), departureDate (Instant), status (String) | Returned by ScheduleClient |
       | EquipmentLineDTO  | type (String), quantity (int)                             | Used in EquipmentClient    |
     And these must be Java records (immutable)
 

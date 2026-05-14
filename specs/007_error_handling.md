@@ -1,5 +1,5 @@
 # File: 007_error_handling.md
-# Depends on: 001_project_setup.txt, 004_business_rules.md, 005_api_endpoints.md, 006_security.md
+# Depends on: 001_project_setup.md, 004_business_rules.md, 005_api_endpoints.md, 006_security.md
 # Produces: Global exception handler, error response DTOs, exception-to-HTTP-status mapping,
 #           validation error formatting, logging configuration for errors
 # Context: Defines how the Cargo Booking Service handles and formats all error responses.
@@ -14,7 +14,7 @@ Feature: Error Handling
   Background:
     Given the base package is "com.cargo.booking"
     And exception handling classes reside in "com.cargo.booking.exception"
-    And the error response structure was defined in 001_project_setup.txt
+    And the error response structure was defined in 001_project_setup.md
     And all custom exceptions are defined in 004_business_rules.md
     And security error handling (401, 403) is defined in 006_security.md
 
@@ -32,7 +32,7 @@ Feature: Error Handling
       | error      | String        | HTTP reason phrase (e.g. "Not Found")          |
       | message    | String        | Human-readable error description               |
       | path       | String        | The request URI that caused the error          |
-    And it must match the error structure convention from 001_project_setup.txt
+    And it must match the error structure convention from 001_project_setup.md
 
   @error @dto
   Scenario: ValidationErrorResponse DTO
@@ -213,7 +213,7 @@ Feature: Error Handling
       | annotation                                                          | status | error       |
       | @ExceptionHandler(MethodArgumentTypeMismatchException.class)        | 400    | Bad Request |
     And the message must indicate the parameter name and expected type
-    And example: "Parameter 'id' must be a valid UUID"
+    And example: "Parameter 'id' must be a valid numeric ID"
     And the exception must be logged at WARN level
 
   # ---------------------------------------------------------------------------

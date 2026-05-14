@@ -1,5 +1,5 @@
 # File: 010_deployment.md
-# Depends on: 001_project_setup.txt, 006_security.md, 008_integrations.md, 009_testing.md
+# Depends on: 001_project_setup.md, 006_security.md, 008_integrations.md, 009_testing.md
 # Produces: Dockerfile, Docker Compose, environment-specific profiles, logging configuration,
 #           CI pipeline definition, health check scripts, README
 # Context: Defines how the Cargo Booking Service is built, containerized, and deployed.
@@ -15,8 +15,8 @@ Feature: Deployment and Infrastructure
     Given the application name is "booking-service"
     And the base package is "com.cargo.booking"
     And the build tool is Maven
-    And Java version is 21 (from 001_project_setup.txt)
-    And the application port is 8081 (from 001_project_setup.txt)
+    And Java version is 21 (from 001_project_setup.md)
+    And the application port is 8081 (from 001_project_setup.md)
 
   # ---------------------------------------------------------------------------
   # Dockerfile
@@ -174,7 +174,7 @@ Feature: Deployment and Infrastructure
       | local       | Local development with stubs                      | Stub clients, local DB, console logging       |
       | dev         | Development/staging environment                   | Real clients, dev DB, JSON logging            |
       | prod        | Production environment                            | Real clients, prod DB, JSON logging, strict   |
-      | test        | Automated testing                                 | H2 or Testcontainers, embedded Kafka          |
+      | test        | Automated testing                                 | Embedded PostgreSQL, embedded Kafka          |
 
   @deployment @profiles
   Scenario: Profile-specific application properties
@@ -184,7 +184,7 @@ Feature: Deployment and Infrastructure
       | application-local.yml                  | Explicit local settings, verbose logging               |
       | application-dev.yml                    | Dev environment URLs, JSON logging                     |
       | application-prod.yml                   | Prod URLs, JSON logging, stricter security             |
-      | application-test.yml                   | H2 DB, embedded Kafka, test JWT secret                 |
+      | application-test.yml                   | Embedded PostgreSQL, embedded Kafka, test JWT secret   |
 
   @deployment @profiles
   Scenario: Production profile hardening
@@ -235,7 +235,7 @@ Feature: Deployment and Infrastructure
     Given the Booking Service request handling
     Then a filter or interceptor must add the following to the MDC:
       | mdc key        | source                                           |
-      | requestId      | X-Request-ID header, or generated UUID if absent |
+      | requestId      | X-Request-ID header, or generated correlation ID if absent |
       | userId         | Extracted from JWT (authenticated requests only) |
       | bookingRef     | Set by the service layer when available           |
     And the MDC must be cleared after each request
@@ -331,7 +331,7 @@ Feature: Deployment and Infrastructure
         "-jar", "app.jar"]
       """
     And these settings ensure the JVM respects container memory limits
-    And -Djava.security.egd speeds up random number generation for UUID and JWT
+    And -Djava.security.egd speeds up random number generation for JWT and correlation IDs
 
   # ---------------------------------------------------------------------------
   # Graceful Shutdown
@@ -364,7 +364,7 @@ Feature: Deployment and Infrastructure
       | API Documentation    | Link to Swagger UI at http://localhost:8081/swagger-ui         |
       | Environment Variables| Table from the env vars scenario above                        |
       | Running Tests        | mvnw test, mvnw test -Dgroups="integration"                  |
-      | Project Structure    | Package layout from 001_project_setup.txt                     |
+      | Project Structure    | Package layout from 001_project_setup.md                     |
       | Architecture         | Brief description of layers and external dependencies         |
       | Kafka Topics         | Table of events from 004_business_rules.md                    |
       | Contributing         | Branch naming, PR process, test requirements                  |
@@ -439,8 +439,8 @@ Feature: Deployment and Infrastructure
     Given all specification files have been processed
     Then the AI agent has built the Booking Service from the following sequence:
       | file                      | produces                                              |
-      | 001_project_setup.txt     | Maven project, dependencies, packages, conventions    |
-      | 002_domain_model.txt      | Entities, enums, validations, migrations              |
+      | 001_project_setup.md     | Maven project, dependencies, packages, conventions    |
+      | 002_domain_model.md      | Entities, enums, validations, migrations              |
       | 003_data_access.md        | Repositories, queries, specifications                 |
       | 004_business_rules.md     | Services, events, clients, exceptions                 |
       | 005_api_endpoints.md      | Controllers, DTOs, mappers, OpenAPI                   |
