@@ -59,7 +59,7 @@ Key elements in each file:
 | Framework | Spring Boot 4.0.6 |
 | Build Tool | Maven |
 | Database | PostgreSQL 16 |
-| Auth | JWT (stateless) |
+| Auth | Optional JWT (stateless) |
 | Resilience | Resilience4j (circuit breaker, retry) |
 | API Docs | SpringDoc OpenAPI (Swagger UI) |
 | Migrations | Flyway |

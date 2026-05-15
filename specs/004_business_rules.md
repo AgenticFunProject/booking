@@ -43,40 +43,41 @@ Feature: Business Rules and Service Layer
 
   @business @create
   Scenario: Create a new booking - happy path
-    Given a valid booking request with scheduleId, quoteId, customer details, cargo, and equipment
-    And an authenticated customerId extracted from the JWT subject
-    When the BookingService.createBooking() method is called with the request and authenticated customerId
+    Given a valid booking request with customerId, scheduleId, quoteId, customer details, cargo, and equipment
+    When the BookingService.createBooking() method is called with the request
     Then the service must perform these steps in order:
       | step | action                                                                  |
       | 1    | Validate the equipment list is not empty                                |
-      | 2    | Validate the schedule exists and is open by calling ScheduleClient      |
-      | 3    | Validate the quote is valid and matches the booking by calling QuoteClient |
-      | 4    | Generate a unique booking reference using BookingReferenceGenerator     |
-      | 5    | Build a Booking entity with status PENDING and customerId from the JWT  |
-      | 6    | Build BookingEquipmentLine entities from the equipment list             |
-      | 7    | Associate equipment lines with the booking                              |
-      | 8    | Save the booking (cascade saves equipment lines)                        |
-      | 9    | Return the saved booking                                                |
+      | 2    | Validate the request customerId is present                              |
+      | 3    | Validate the schedule exists and is open by calling ScheduleClient      |
+      | 4    | Validate the quote is valid and matches the booking by calling QuoteClient |
+      | 5    | Generate a unique booking reference using BookingReferenceGenerator     |
+      | 6    | Build a Booking entity with status PENDING and customerId from the request |
+      | 7    | Build BookingEquipmentLine entities from the equipment list             |
+      | 8    | Associate equipment lines with the booking                              |
+      | 9    | Save the booking (cascade saves equipment lines)                        |
+      | 10   | Return the saved booking                                                |
     And the entire operation must be wrapped in @Transactional
+    And authentication/authorization, when enabled, must be enforced before the service call by the API/security layer
 
   @business @create
   Scenario: Create booking - schedule not found or closed
     Given a booking request with an invalid or closed scheduleId
-    When the BookingService.createBooking() method is called with the request and authenticated customerId
+    When the BookingService.createBooking() method is called with the request
     Then it must throw a ScheduleNotAvailableException with a descriptive message
     And the booking must NOT be persisted
 
   @business @create
   Scenario: Create booking - quote invalid or expired
     Given a booking request with an invalid or expired quoteId
-    When the BookingService.createBooking() method is called with the request and authenticated customerId
+    When the BookingService.createBooking() method is called with the request
     Then it must throw a QuoteNotValidException with a descriptive message
     And the booking must NOT be persisted
 
   @business @create
   Scenario: Create booking - empty equipment list
     Given a booking request with an empty equipment list
-    When the BookingService.createBooking() method is called with the request and authenticated customerId
+    When the BookingService.createBooking() method is called with the request
     Then it must throw a BookingValidationException with message "At least one equipment line is required"
     And the booking must NOT be persisted
 

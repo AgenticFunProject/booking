@@ -45,6 +45,7 @@ Feature: Testing Strategy
       | spring.datasource.driver-class-name           | org.postgresql.Driver       | PostgreSQL driver                    |
       | spring.jpa.hibernate.ddl-auto                 | validate                    | Validate schema created by Flyway    |
       | spring.flyway.enabled                         | true                        | Run migrations in tests              |
+      | app.security.enabled                          | true                        | Security is enabled by default in tests |
       | app.security.jwt.secret                       | test-secret-key-that-is-at-least-256-bits-long-for-hs256 | Test JWT key |
       | app.security.jwt.issuer                       | test-issuer                 | Test JWT issuer                      |
       | app.security.jwt.expiration-ms                | 3600000                     | 1 hour for tests                     |
@@ -253,11 +254,15 @@ Feature: Testing Strategy
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
       | shouldCreateBookingAndReturn201()                   | 201    | Valid request, authenticated as CUSTOMER         |
+      | shouldCreateBookingAsAdminForAnyCustomer()          | 201    | ADMIN can create with any valid request.customerId |
+      | shouldCreateBookingWhenSecurityDisabled()            | 201    | Valid request without JWT when app.security.enabled=false |
       | shouldReturn400WhenRequestBodyInvalid()             | 400    | Missing required fields                          |
+      | shouldReturn400WhenCustomerIdMissingFromCreateRequest() | 400 | Missing customerId in request body                |
       | shouldReturn400WhenEmailInvalid()                   | 400    | Malformed email in customer request              |
       | shouldReturn400WhenEquipmentListEmpty()             | 400    | Empty equipment array                            |
       | shouldReturn401WhenNoAuthToken()                    | 401    | Request without Authorization header             |
       | shouldReturn403WhenOperatorTriesToCreate()          | 403    | OPERATOR role cannot create bookings             |
+      | shouldReturn403WhenCustomerCreatesForAnotherCustomer() | 403 | request.customerId does not match JWT subject     |
       | shouldReturn422WhenScheduleNotAvailable()           | 422    | Service throws ScheduleNotAvailableException     |
       | shouldReturn422WhenQuoteNotValid()                  | 422    | Service throws QuoteNotValidException            |
 
@@ -278,7 +283,7 @@ Feature: Testing Strategy
       | test method                                          | status | description                                    |
       | shouldListBookingsByCustomerAndReturn200()          | 200    | Valid customerId, paginated results              |
       | shouldListAllBookingsForOperatorWhenCustomerIdMissing() | 200 | OPERATOR may omit customerId                     |
-      | shouldReturn400WhenCustomerIdMissingForCustomer()   | 400    | CUSTOMER must provide their own customerId        |
+      | shouldReturn400WhenCustomerIdMissingForCustomer()   | 400    | CUSTOMER must provide customerId query parameter when security is enabled |
       | shouldReturn403WhenCustomerIdDoesNotMatchCustomer() | 403    | CUSTOMER cannot list another customer's bookings  |
       | shouldFilterByStatus()                              | 200    | customerId + status filter                       |
 
@@ -369,24 +374,25 @@ Feature: Testing Strategy
     Given a test class "BookingLifecycleE2ETest" in package "com.cargo.booking"
     Then it must extend BaseIntegrationTest (embedded PostgreSQL)
     And it must use both the "test" and "local" profiles so that test infrastructure and stub clients are active
-    And it must use TestRestTemplate or WebTestClient with a real JWT token
+    And it must run with app.security.enabled=false to verify the service works without JWT security
+    And it must use TestRestTemplate or WebTestClient without requiring Authorization headers
     And it must verify the complete happy path:
       | step | action                                                     | expected                           |
-      | 1    | POST /api/v1/bookings with valid request as CUSTOMER       | 201, status=PENDING, reference set |
-      | 2    | GET /api/v1/bookings/{id} as CUSTOMER                      | 200, full booking details          |
-      | 3    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 200, status=CONFIRMED              |
-      | 4    | PATCH /api/v1/bookings/{id}/start as OPERATOR              | 200, status=IN_PROGRESS            |
-      | 5    | PATCH /api/v1/bookings/{id}/complete as OPERATOR           | 200, status=COMPLETED              |
-      | 6    | GET /api/v1/bookings?customerId={jwtUserId} as CUSTOMER    | 200, list includes this booking    |
+      | 1    | POST /api/v1/bookings with valid request.customerId         | 201, status=PENDING, reference set |
+      | 2    | GET /api/v1/bookings/{id}                                  | 200, full booking details          |
+      | 3    | PATCH /api/v1/bookings/{id}/confirm                        | 200, status=CONFIRMED              |
+      | 4    | PATCH /api/v1/bookings/{id}/start                          | 200, status=IN_PROGRESS            |
+      | 5    | PATCH /api/v1/bookings/{id}/complete                       | 200, status=COMPLETED              |
+      | 6    | GET /api/v1/bookings?customerId={request.customerId}        | 200, list includes this booking    |
 
   @testing @e2e
   Scenario: Cancellation flow end-to-end test
     Given the BookingLifecycleE2ETest class
     Then it must also verify the cancellation flow:
       | step | action                                                     | expected                            |
-      | 1    | POST /api/v1/bookings with valid request as CUSTOMER       | 201, status=PENDING                 |
-      | 2    | PATCH /api/v1/bookings/{id}/cancel as CUSTOMER             | 200, status=CANCELLED               |
-      | 3    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 409, cannot confirm cancelled booking|
+      | 1    | POST /api/v1/bookings with valid request.customerId         | 201, status=PENDING                 |
+      | 2    | PATCH /api/v1/bookings/{id}/cancel                         | 200, status=CANCELLED               |
+      | 3    | PATCH /api/v1/bookings/{id}/confirm                        | 409, cannot confirm cancelled booking|
 
   # ---------------------------------------------------------------------------
   # Test Naming and Organization Conventions

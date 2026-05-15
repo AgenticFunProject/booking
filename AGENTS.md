@@ -159,7 +159,7 @@ Each client is defined as a **Java interface** with a **stub implementation** (`
 
 ## Security
 
-JWT-based stateless auth. Three roles:
+JWT-based stateless auth can be enabled for protected deployments. Local/unsecured mode can disable security and rely on request data such as `customerId`. Three roles apply when security is enabled:
 
 | Role          | Can do                                                      |
 |---------------|-------------------------------------------------------------|
@@ -167,7 +167,7 @@ JWT-based stateless auth. Three roles:
 | OPERATOR      | View all bookings, confirm/start/complete                   |
 | ADMIN         | Everything                                                  |
 
-Customers have ownership checks — they can only see and cancel their own bookings. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
+Customers have ownership checks when security is enabled — they can only see and cancel their own bookings. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
 
 ## Error Response Format
 

@@ -27,6 +27,7 @@ Feature: API Endpoints
     Given a record "CreateBookingRequest" in package "com.cargo.booking.dto.request"
     Then it must be a Java record with the following fields:
       | field      | type                  | validation              | description                        |
+      | customerId | Long                  | @NotNull                | Customer/account that owns the booking |
       | scheduleId | Long                  | @NotNull                | The schedule to book               |
       | quoteId    | Long                  | @NotNull                | The associated quote               |
       | customer   | CustomerRequest       | @NotNull @Valid         | Nested customer details            |
@@ -86,6 +87,7 @@ Feature: API Endpoints
       | field             | type    | description                           |
       | id                | Long    | Internal booking ID                   |
       | bookingReference  | String  | Human-readable reference              |
+      | customerId        | Long    | Customer/account that owns the booking |
       | status            | String  | Always "PENDING" for a new booking    |
       | createdAt         | Instant | When the booking was created (UTC)    |
     And this is the slim response returned after creating a booking (matches the API spec)
@@ -138,7 +140,7 @@ Feature: API Endpoints
     Then it must be annotated with @Component
     And it must provide the following mapping methods:
       | method                                                       | from                    | to                      |
-      | toEntity(CreateBookingRequest request, String reference, Long customerId) | CreateBookingRequest   | Booking                 |
+      | toEntity(CreateBookingRequest request, String reference)      | CreateBookingRequest   | Booking                 |
       | toResponse(Booking entity)                                   | Booking                 | BookingResponse         |
       | toCreatedResponse(Booking entity)                            | Booking                 | BookingCreatedResponse  |
       | toEquipmentLineEntity(EquipmentRequest request)              | EquipmentRequest        | BookingEquipmentLine    |
@@ -150,7 +152,7 @@ Feature: API Endpoints
       | Map cargo fields from the nested CargoRequest                           |
       | Convert each EquipmentRequest to a BookingEquipmentLine and associate   |
       | Set the bookingReference from the provided reference parameter          |
-      | Set customerId only from the provided authenticated user ID parameter    |
+      | Set customerId from request.customerId                                  |
     And the mapper must NOT use any reflection-based mapping libraries (keep it explicit)
 
   # ---------------------------------------------------------------------------
@@ -190,10 +192,12 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                       |
-      | 1    | Resolve the authenticated user ID from the security context  |
-      | 2    | Call bookingService.createBooking() with the request and authenticated user ID |
-      | 3    | Map the result to BookingCreatedResponse using the mapper    |
-      | 4    | Return the response with HTTP 201 Created                    |
+      | 1    | If security is enabled and requester has CUSTOMER role, verify request.customerId matches the authenticated user ID |
+      | 2    | If security is enabled and requester has ADMIN role, allow any valid request.customerId |
+      | 3    | If security is disabled, accept request.customerId as the booking owner |
+      | 4    | Call bookingService.createBooking() with the request         |
+      | 5    | Map the result to BookingCreatedResponse using the mapper    |
+      | 6    | Return the response with HTTP 201 Created                    |
 
   @api @endpoint @create
   Scenario: Create booking — request body example
@@ -201,6 +205,7 @@ Feature: API Endpoints
     Then a valid request body looks like:
       """json
       {
+        "customerId": 3001,
         "scheduleId": 1001,
         "quoteId": 2001,
         "customer": {
@@ -223,6 +228,7 @@ Feature: API Endpoints
       {
         "id": 42,
         "bookingReference": "BKG-2026-00042",
+        "customerId": 3001,
         "status": "PENDING",
         "createdAt": "2026-03-31T10:00:00Z"
       }
@@ -302,12 +308,13 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                                |
-      | 1    | Resolve the authenticated user's role and user ID                       |
-      | 2    | For CUSTOMER, require customerId to match the authenticated user ID      |
-      | 3    | For OPERATOR or ADMIN, allow customerId to be omitted to list all bookings |
-      | 4    | Call bookingService.getBookings(customerId, status, pageable)            |
-      | 5    | Map each booking entity to BookingResponse                              |
-      | 6    | Wrap in PagedResponse and return with HTTP 200                          |
+      | 1    | If security is enabled, resolve the authenticated user's role and user ID |
+      | 2    | If security is enabled and role is CUSTOMER, require customerId to match the authenticated user ID |
+      | 3    | If security is enabled and role is OPERATOR or ADMIN, allow customerId to be omitted to list all bookings |
+      | 4    | If security is disabled, allow customerId to be provided as a filter or omitted to list all bookings |
+      | 5    | Call bookingService.getBookings(customerId, status, pageable)            |
+      | 6    | Map each booking entity to BookingResponse                              |
+      | 7    | Wrap in PagedResponse and return with HTTP 200                          |
 
   @api @endpoint @read
   Scenario: List bookings — query parameter validation
@@ -319,8 +326,8 @@ Feature: API Endpoints
       | page        | int           | no       | 0                   | Page number (zero-based)       |
       | size        | int           | no       | 20                  | Page size (max 100)            |
       | sort        | String        | no       | createdAt,desc      | Sort field and direction       |
-    And if customerId is missing for a CUSTOMER request the API must return HTTP 400 with a validation error
-    And if customerId does not match the authenticated CUSTOMER user ID the API must return HTTP 403
+    And if security is enabled and customerId is missing for a CUSTOMER request the API must return HTTP 400 with a validation error
+    And if security is enabled and customerId does not match the authenticated CUSTOMER user ID the API must return HTTP 403
 
   # ---------------------------------------------------------------------------
   # PATCH /api/v1/bookings/{id}/cancel

@@ -115,9 +115,10 @@ Feature: Deployment and Infrastructure
       | environment   | DB_USERNAME=booking_user             |
       | environment   | DB_PASSWORD=booking_pass             |
       | environment   | SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db |
+      | environment   | SECURITY_ENABLED=false               |
       | environment   | JWT_SECRET=${JWT_SECRET:-dev-secret-key-that-is-at-least-256-bits-long-for-hs256} |
       | restart       | unless-stopped                       |
-    And it must use the "local" profile so stub clients are activated
+    And it must use the "local" profile so stub clients are activated and JWT security is disabled by default
 
   @deployment @compose
   Scenario: Docker Compose volumes
@@ -135,7 +136,7 @@ Feature: Deployment and Infrastructure
     Given the Booking Service
     Then the following Spring profiles must be supported:
       | profile     | purpose                                           | configuration                                |
-      | local       | Local development with stubs                      | Stub clients, local DB, console logging       |
+      | local       | Local development with stubs                      | Stub clients, local DB, security disabled, console logging |
       | dev         | Development/staging environment                   | Real clients, dev DB, JSON logging            |
       | prod        | Production environment                            | Real clients, prod DB, JSON logging, strict   |
       | test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
@@ -145,7 +146,7 @@ Feature: Deployment and Infrastructure
     Given the following profile-specific config files must exist:
       | file                                   | key overrides                                          |
       | application.yml                        | Base config (defaults to local-friendly values)        |
-      | application-local.yml                  | Explicit local settings, verbose logging               |
+      | application-local.yml                  | Explicit local settings, security disabled, verbose logging |
       | application-dev.yml                    | Dev environment URLs, JSON logging                     |
       | application-prod.yml                   | Prod URLs, JSON logging, stricter security             |
       | application-test.yml                   | Embedded PostgreSQL, test JWT secret                   |
@@ -217,6 +218,7 @@ Feature: Deployment and Infrastructure
       | DB_USERNAME               | yes      | booking_user                     | Database username              |
       | DB_PASSWORD               | yes      | booking_pass                     | Database password              |
       | SPRING_DATASOURCE_URL     | yes      | jdbc:postgresql://localhost:5432/booking_db | JDBC URL          |
+      | SECURITY_ENABLED          | no       | true                              | Enable JWT authentication and authorization |
       | JWT_SECRET                | yes      | (dev default in yml)             | JWT signing key (min 256 bits) |
       | JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
       | SCHEDULE_API_URL          | no       | http://localhost:8082            | Schedules API base URL         |

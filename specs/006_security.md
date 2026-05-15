@@ -2,10 +2,11 @@
 # Depends on: 001_project_setup.md, 002_domain_model.md, 005_api_endpoints.md
 # Produces: Security configuration, JWT filter, authentication entry point, role-based access,
 #           CORS configuration, security-related DTOs
-# Context: Defines authentication and authorization for the Cargo Booking Service. Since this
-#          is a microservice behind an API gateway, it validates JWTs issued by an external
-#          identity provider rather than managing users directly. The AI agent must have
-#          processed 001–005 so that endpoints and conventions are known.
+# Context: Defines optional authentication and authorization for the Cargo Booking Service.
+#          When security is enabled, it validates JWTs issued by an external identity
+#          provider. When security is disabled, the service must still work using request
+#          data such as customerId. The AI agent must have processed 001–005 so that
+#          endpoints and conventions are known.
 
 Feature: Security
   As an AI code generator
@@ -42,9 +43,19 @@ Feature: Security
     Given the file "src/main/resources/application.yml"
     Then it must include the following security-related properties:
       | property                          | value                                        | description                      |
+      | app.security.enabled              | ${SECURITY_ENABLED:true}                     | Enables JWT auth and authorization |
       | app.security.jwt.secret           | ${JWT_SECRET:default-dev-secret-key-min-256-bits-long-for-hs256} | HMAC signing key     |
       | app.security.jwt.issuer           | ${JWT_ISSUER:cargo-platform}                 | Expected token issuer            |
       | app.security.jwt.expiration-ms    | ${JWT_EXPIRATION:3600000}                    | Token validity (1 hour default)  |
+
+  @security @config
+  Scenario: Security can be disabled for local or unsecured deployments
+    Given app.security.enabled is false
+    Then the SecurityFilterChain must permit all API requests
+    And JwtAuthenticationFilter must not require or validate tokens
+    And customerId must come from request data or query parameters
+    And no ownership checks based on JWT subject must run
+    And this mode is intended for local development, demos, or deployments where authentication is handled outside this service
 
   @security @config
   Scenario: JwtProperties configuration class
@@ -211,24 +222,30 @@ Feature: Security
 
   @security @ownership
   Scenario: Customers can only access their own bookings
-    Given a request from a user with role ROLE_CUSTOMER
+    Given security is enabled
+    And a request from a user with role ROLE_CUSTOMER
     When the user calls GET /api/v1/bookings
     Then the customerId query parameter must match the authenticated user's ID from the JWT
     And if it does not match, the service must return HTTP 403 Forbidden
-    And customer-created bookings must store customerId from the JWT subject, never from request body input
+    And when the user calls POST /api/v1/bookings, request.customerId must match the authenticated user's ID from the JWT
+    And if it does not match, the service must return HTTP 403 Forbidden
+    And the Booking entity must store customerId from the request after this authorization check passes
 
   @security @ownership
   Scenario: Customers can only view and cancel their own bookings
-    Given a request from a user with role ROLE_CUSTOMER
+    Given security is enabled
+    And a request from a user with role ROLE_CUSTOMER
     When the user calls GET /api/v1/bookings/{id} or PATCH /api/v1/bookings/{id}/cancel
     Then the service must verify that the booking's customerId matches the authenticated user's ID
     And if it does not match, the service must return HTTP 403 Forbidden
 
   @security @ownership
   Scenario: Operators and admins can access all bookings
-    Given a request from a user with role ROLE_OPERATOR or ROLE_ADMIN
-    When the user accesses any booking endpoint
-    Then no ownership check is required — they may access and manage any booking
+    Given security is enabled
+    And a request from a user with role ROLE_OPERATOR or ROLE_ADMIN
+    When the user accesses a booking endpoint allowed by the endpoint-level access rules
+    Then no customer ownership check is required
+    And they may act on behalf of the customer identified by request.customerId or query parameter customerId
 
   @security @ownership
   Scenario: SecurityContextHelper utility
