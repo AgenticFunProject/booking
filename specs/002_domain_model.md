@@ -262,4 +262,4 @@ Feature: Domain Model
       | State transition orchestration logic   | 004_business_rules.md |
       | Request/Response DTOs                  | 005_api_endpoints.md  |
       | Mapping between entities and DTOs      | 005_api_endpoints.md  |
-      | Domain event payloads                  | 004_business_rules.md |
+      | Messaging payloads                     | Out of scope for v1   |

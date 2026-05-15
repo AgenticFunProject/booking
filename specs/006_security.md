@@ -137,8 +137,7 @@ Feature: Security
         "status": 401,
         "error": "Unauthorized",
         "message": "Authentication is required to access this resource",
-        "path": "/api/v1/bookings",
-        "requestId": null
+        "path": "/api/v1/bookings"
       }
       """
 
@@ -162,8 +161,7 @@ Feature: Security
         "status": 403,
         "error": "Forbidden",
         "message": "You do not have permission to perform this action",
-        "path": "/api/v1/bookings/123/confirm",
-        "requestId": null
+        "path": "/api/v1/bookings/123/confirm"
       }
       """
 
@@ -317,5 +315,5 @@ Feature: Security
       | topic                                          | deferred to           |
       | Error response mapping for security exceptions | 007_error_handling.md |
       | User management / registration                 | Out of scope for v1   |
-      | OAuth2 / OIDC integration with identity provider| 008_integrations.md  |
+      | OAuth2 / OIDC integration with identity provider| Out of scope for v1  |
       | Security-related integration tests             | 009_testing.md        |

@@ -1,8 +1,8 @@
 # File: 001_project_setup.md
 # Depends on: None (this is the foundation file)
 # Produces: Maven project structure, pom.xml, application configuration, base packages
-# Context: Cargo Booking Service — a microservice that manages cargo booking requests,
-#          lifecycle state transitions, and emits domain events for downstream consumers.
+# Context: Cargo Booking Service — a microservice that manages cargo booking requests
+#          and lifecycle state transitions.
 
 Feature: Project Setup and Configuration
   As an AI code generator
@@ -41,7 +41,6 @@ Feature: Project Setup and Configuration
       | org.springframework.boot       | spring-boot-starter-data-jpa       | JPA / Hibernate persistence        |
       | org.springframework.boot       | spring-boot-starter-validation     | Bean validation (Jakarta)          |
       | org.springframework.boot       | spring-boot-starter-actuator       | Health checks and metrics          |
-      | org.springframework.kafka       | spring-kafka                       | Kafka for domain event emission    |
 
   @setup @dependencies
   Scenario: Database dependencies
@@ -79,11 +78,12 @@ Feature: Project Setup and Configuration
       | com.cargo.booking.model.enums    | Enums (e.g. BookingStatus)                   |
       | com.cargo.booking.dto.request    | Inbound request DTOs                         |
       | com.cargo.booking.dto.response   | Outbound response DTOs                       |
-      | com.cargo.booking.event          | Domain event classes and publisher            |
       | com.cargo.booking.config         | Spring configuration beans                   |
       | com.cargo.booking.exception      | Custom exceptions and global error handler   |
-      | com.cargo.booking.client         | Feign/REST clients for external services     |
+      | com.cargo.booking.client         | REST clients for external services           |
+      | com.cargo.booking.client.dto     | DTOs for external service interfaces         |
       | com.cargo.booking.mapper         | Entity-to-DTO mapping logic                  |
+      | com.cargo.booking.security       | JWT authentication and authorization helpers |
 
   # ---------------------------------------------------------------------------
   # Application Configuration
@@ -104,13 +104,6 @@ Feature: Project Setup and Configuration
       | spring.jpa.open-in-view                     | false                                      |
       | spring.flyway.enabled                       | true                                       |
       | spring.flyway.locations                     | classpath:db/migration                     |
-      | spring.kafka.bootstrap-servers              | ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092} |
-      | spring.kafka.producer.key-serializer        | org.apache.kafka.common.serialization.StringSerializer |
-      | spring.kafka.producer.value-serializer      | org.springframework.kafka.support.serializer.JsonSerializer |
-      | spring.kafka.consumer.group-id              | booking-service-group                    |
-      | spring.kafka.consumer.auto-offset-reset     | earliest                                 |
-      | spring.kafka.consumer.key-deserializer      | org.apache.kafka.common.serialization.StringDeserializer |
-      | spring.kafka.consumer.value-deserializer    | org.springframework.kafka.support.serializer.JsonDeserializer |
       | springdoc.api-docs.path                     | /api-docs                                  |
       | springdoc.swagger-ui.path                   | /swagger-ui                                |
       | management.endpoints.web.exposure.include   | health,info,metrics                        |
@@ -124,7 +117,6 @@ Feature: Project Setup and Configuration
       | spring.datasource.driver-class-name | org.postgresql.Driver   |
       | spring.jpa.hibernate.ddl-auto  | validate                     |
       | spring.flyway.enabled          | true                         |
-      | spring.kafka.bootstrap-servers | Provided by KafkaContainer test bootstrap |
 
   # ---------------------------------------------------------------------------
   # Main Application Class
@@ -155,7 +147,7 @@ Feature: Project Setup and Configuration
       | Never expose JPA entities directly in API responses — always map to DTOs              |
       | Database table names must be lowercase_snake_case                                     |
       | Boolean fields must not be prefixed with "is" at the entity level                     |
-      | Use SLF4J logging for meaningful business events, state transitions, external calls, and failures; avoid mechanical logging on every method |
+      | Use SLF4J logging for meaningful business actions, state transitions, external calls, and failures; avoid mechanical logging on every method |
 
   @setup @conventions
   Scenario: Error response structure convention
@@ -168,7 +160,7 @@ Feature: Project Setup and Configuration
         "error": "HTTP reason phrase",
         "message": "Human-readable description",
         "path": "Request URI",
-        "requestId": "Optional X-Request-ID correlation value, or null"
+        "requestId": "Optional X-Request-ID correlation value; omit when absent"
       }
       """
 
@@ -188,5 +180,6 @@ Feature: Project Setup and Configuration
       | Security configuration       | 006_security.md      |
       | Error handling details       | 007_error_handling.md|
       | External service clients     | 008_integrations.md  |
+      | Messaging / event streaming  | Out of scope for v1  |
       | Test scenarios               | 009_testing.md       |
       | Docker / deployment config   | 010_deployment.md    |

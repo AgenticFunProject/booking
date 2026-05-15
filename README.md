@@ -4,7 +4,7 @@
 
 This repository contains a set of **sequential specification files** that describe a complete **Cargo Booking Service** built with Spring Boot. The specifications are written in a Gherkin-inspired format designed to be consumed by a generative AI agent, which will use them to scaffold and build the application from scratch.
 
-The service accepts and manages cargo booking requests, coordinates a shipment lifecycle, and emits domain events for downstream systems.
+The service accepts and manages cargo booking requests and coordinates a shipment lifecycle. Messaging/event streaming is intentionally out of scope for v1.
 
 ## How it works
 
@@ -32,12 +32,12 @@ After processing all files, the result is a fully runnable Spring Boot microserv
 | `001_project_setup.md` | Maven project, Java 21, dependencies, package structure, coding conventions |
 | `002_domain_model.md` | JPA entities, enums, validations, state machine, Flyway migrations |
 | `003_data_access.md` | Repository interfaces, custom queries, pagination, specifications |
-| `004_business_rules.md` | Service layer, booking lifecycle, domain events (Kafka), external client interfaces |
+| `004_business_rules.md` | Service layer, booking lifecycle, external client interfaces |
 | `005_api_endpoints.md` | REST controllers, request/response DTOs, mappers, OpenAPI documentation |
 | `006_security.md` | JWT authentication, role-based authorization, ownership checks, CORS |
 | `007_error_handling.md` | Global exception handler, error response structure, validation errors |
-| `008_integrations.md` | External API clients (Schedule, Equipment, Quote), Resilience4j, Kafka producer config |
-| `009_testing.md` | Unit tests, integration tests, E2E tests, WireMock, Testcontainers, test utilities |
+| `008_integrations.md` | External API clients (Schedule, Equipment, Quote), Resilience4j, health config |
+| `009_testing.md` | Unit tests, integration tests, E2E tests, WireMock, embedded PostgreSQL, test utilities |
 | `010_deployment.md` | Dockerfile, Docker Compose, Spring profiles, logging, CI pipeline, README |
 
 ## File format
@@ -59,12 +59,11 @@ Key elements in each file:
 | Framework | Spring Boot 4.0.6 |
 | Build Tool | Maven |
 | Database | PostgreSQL 16 |
-| Messaging | Apache Kafka |
 | Auth | JWT (stateless) |
 | Resilience | Resilience4j (circuit breaker, retry) |
 | API Docs | SpringDoc OpenAPI (Swagger UI) |
 | Migrations | Flyway |
-| Testing | JUnit 5, Mockito, Testcontainers, WireMock |
+| Testing | JUnit 5, Mockito, embedded PostgreSQL, WireMock |
 | Containerization | Docker, Docker Compose |
 | CI | GitHub Actions |
 
@@ -83,21 +82,11 @@ CANCELLED    CANCELLED
 |--------|------|-------------|
 | POST | /api/v1/bookings | Create a new booking |
 | GET | /api/v1/bookings/{id} | Get booking by ID or reference |
-| GET | /api/v1/bookings?customerId= | List bookings for a customer |
+| GET | /api/v1/bookings?customerId= | List bookings, optionally filtered by customer |
 | PATCH | /api/v1/bookings/{id}/cancel | Cancel a booking |
 | PATCH | /api/v1/bookings/{id}/confirm | Confirm a booking |
 | PATCH | /api/v1/bookings/{id}/start | Mark booking as in progress |
 | PATCH | /api/v1/bookings/{id}/complete | Mark booking as completed |
-
-## Domain Events (Kafka Topics)
-
-| Topic | Trigger |
-|-------|---------|
-| `booking.created` | New booking submitted |
-| `booking.confirmed` | Booking confirmed, equipment reserved |
-| `booking.cancelled` | Booking cancelled |
-| `booking.in_progress` | Shipment started |
-| `booking.completed` | Shipment delivered |
 
 ## External Dependencies
 
@@ -114,7 +103,7 @@ Stub implementations are provided for local development (`@Profile("local")`).
 Once the AI agent has generated the codebase from these specs:
 
 ```bash
-# Start infrastructure (PostgreSQL, Kafka, Kafka UI)
+# Start infrastructure (PostgreSQL and app)
 docker-compose up -d
 
 # Run the application locally with stubs

@@ -1,6 +1,6 @@
 # Booking Service
 
-Cargo booking microservice built with Spring Boot 4.0.6 and Java 21. Accepts booking requests, manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED), and emits domain events to Kafka.
+Cargo booking microservice built with Spring Boot 4.0.6 and Java 21. Accepts booking requests and manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED). Messaging/event streaming is out of scope for v1.
 
 ## Specifications
 
@@ -10,12 +10,12 @@ This project is built from sequential specification files. **Read them in order 
 specs/001_project_setup.md      → Maven project, dependencies, packages, conventions
 specs/002_domain_model.md       → Entities, enums, validations, Flyway migrations
 specs/003_data_access.md        → Repositories, queries, specifications, pagination
-specs/004_business_rules.md     → Services, state machine, events, client interfaces
+specs/004_business_rules.md     → Services, state machine, client interfaces
 specs/005_api_endpoints.md      → Controllers, DTOs, mappers, OpenAPI
 specs/006_security.md           → JWT auth, roles, ownership, CORS
 specs/007_error_handling.md     → Global exception handler, error responses
-specs/008_integrations.md       → REST clients, Resilience4j, Kafka config, health
-specs/009_testing.md            → Unit, integration, E2E tests, WireMock, embedded PostgreSQL, KafkaContainer
+specs/008_integrations.md       → REST clients, Resilience4j, health
+specs/009_testing.md            → Unit, integration, E2E tests, WireMock, embedded PostgreSQL
 specs/010_deployment.md         → Dockerfile, Docker Compose, profiles, CI, logging
 ```
 
@@ -91,7 +91,6 @@ src/main/java/com/cargo/booking/
 ├── dto/
 │   ├── request/                         # Inbound DTOs (Java records)
 │   └── response/                        # Outbound DTOs (Java records)
-├── event/                               # Domain events and Kafka publisher
 ├── config/                              # Spring configuration beans
 ├── exception/                           # Custom exceptions and global handler
 ├── client/                              # External service clients (Schedule, Equipment, Quote)
@@ -113,7 +112,6 @@ src/test/java/com/cargo/booking/
 ├── controller/                          # MockMvc tests
 ├── repository/                          # @DataJpaTest tests
 ├── client/                              # WireMock tests
-├── event/                               # Kafka event tests
 ├── security/                            # Auth integration tests
 ├── exception/                           # Error handling tests
 └── BookingLifecycleE2ETest.java         # Full lifecycle E2E
@@ -130,8 +128,8 @@ src/test/java/com/cargo/booking/
 - **Timestamps**: `Instant` in UTC, serialized as ISO-8601. Use `@CreationTimestamp` / `@UpdateTimestamp`.
 - **Table names**: `lowercase_snake_case`
 - **API prefix**: `/api/v1`
-- **Logging**: SLF4J. INFO for business events, WARN for client errors, ERROR for system failures. Never log sensitive data (email, phone, tokens).
-- **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure. Integration tests use embedded PostgreSQL and KafkaContainer.
+- **Logging**: SLF4J. INFO for business actions, WARN for client errors, ERROR for system failures. Never log sensitive data (email, phone, tokens).
+- **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure. Integration tests use embedded PostgreSQL.
 
 ## Key Domain Rules
 
@@ -146,8 +144,6 @@ IN_PROGRESS → COMPLETED
 All other transitions must throw `IllegalStateTransitionException`. Validate transitions before changing status.
 
 Equipment release failures during cancellation must NOT block the cancel — log a warning and proceed.
-
-Kafka event publish failures must NOT roll back the booking transaction — log an error and proceed.
 
 ## External Service Clients
 
@@ -192,7 +188,7 @@ Validation errors (400) add a `violations` array with field-level details.
 ## Infrastructure
 
 ```bash
-# Start PostgreSQL, Kafka, Kafka UI
+# Start PostgreSQL and the application
 docker-compose up -d
 
 # Build and run the service container
@@ -207,8 +203,6 @@ docker-compose logs -f booking-service
 |------------|-------|
 | App        | 8081  |
 | PostgreSQL | 5432  |
-| Kafka      | 9092  |
-| Kafka UI   | 8080  |
 | Swagger UI | 8081/swagger-ui |
 
 ## Git Workflow

@@ -162,8 +162,9 @@ Feature: Data Access Layer
       | rule                                                                                              |
       | All read-only queries should use @Transactional(readOnly = true) at the service layer             |
       | All write operations should use @Transactional at the service layer                               |
-      | Repository interfaces themselves must NOT declare @Transactional (leave it to the service layer)  |
-      | The deleteByBookingId method is the only exception — it needs @Modifying and @Transactional       |
+      | Repository interfaces themselves must NOT declare @Transactional unless the method performs a custom modifying query |
+      | deleteByBookingId needs @Modifying and @Transactional                                            |
+      | getNextReferenceSeqForYear needs @Modifying and @Transactional because it atomically updates the yearly counter |
 
   # ---------------------------------------------------------------------------
   # Specifications for Dynamic Filtering (Optional Advanced Queries)

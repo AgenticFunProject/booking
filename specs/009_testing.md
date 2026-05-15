@@ -3,7 +3,7 @@
 #             004_business_rules.md, 005_api_endpoints.md, 006_security.md,
 #             007_error_handling.md, 008_integrations.md
 # Produces: Unit tests, integration tests, test configuration, test utilities, test data builders,
-#           WireMock stubs, Testcontainers setup, MockMvc tests
+#           WireMock stubs, embedded PostgreSQL setup, MockMvc tests
 # Context: Defines the complete testing strategy for the Cargo Booking Service. The AI agent
 #          must have processed 001–008 so that all layers, exceptions, and integrations are known.
 
@@ -29,13 +29,8 @@ Feature: Testing Strategy
       | groupId                          | artifactId                           | scope | purpose                                |
       | org.springframework.boot         | spring-boot-starter-test             | test  | Core test support (JUnit 5, Mockito, AssertJ) |
       | org.springframework.security     | spring-security-test                 | test  | MockMvc security testing               |
-      | org.springframework.kafka        | spring-kafka-test                    | test  | Kafka test utilities                   |
-      | org.testcontainers               | testcontainers                       | test  | Testcontainers core                    |
-      | org.testcontainers               | kafka                                | test  | Kafka Testcontainer                    |
-      | org.testcontainers               | junit-jupiter                        | test  | JUnit 5 Testcontainers integration     |
       | org.wiremock                     | wiremock-standalone                   | test  | WireMock for external API mocking      |
       | io.zonky.test                    | embedded-database-spring-test         | test  | Spring test integration for embedded PostgreSQL |
-    And the Testcontainers BOM must be managed in the dependencyManagement section
 
   # ---------------------------------------------------------------------------
   # Test Configuration
@@ -50,25 +45,20 @@ Feature: Testing Strategy
       | spring.datasource.driver-class-name           | org.postgresql.Driver       | PostgreSQL driver                    |
       | spring.jpa.hibernate.ddl-auto                 | validate                    | Validate schema created by Flyway    |
       | spring.flyway.enabled                         | true                        | Run migrations in tests              |
-      | spring.kafka.bootstrap-servers                | Provided by KafkaContainer test bootstrap | Kafka broker for tests |
       | app.security.jwt.secret                       | test-secret-key-that-is-at-least-256-bits-long-for-hs256 | Test JWT key |
       | app.security.jwt.issuer                       | test-issuer                 | Test JWT issuer                      |
       | app.security.jwt.expiration-ms                | 3600000                     | 1 hour for tests                     |
 
   @testing @config
-  Scenario: Base integration test class with embedded PostgreSQL and KafkaContainer
+  Scenario: Base integration test class with embedded PostgreSQL
     Given an abstract class "BaseIntegrationTest" in package "com.cargo.booking"
     Then it must be annotated with:
       | annotation                                                      |
       | @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) |
       | @ActiveProfiles("test")                                         |
-      | @Testcontainers                                                 |
     And it must start an embedded PostgreSQL database shared by integration tests
-    And it must define the following shared containers:
-      | container                   | image                    | configuration                       |
-      | KafkaContainer              | confluentinc/cp-kafka    | Default settings                    |
-    And it must use @DynamicPropertySource to inject embedded PostgreSQL and Kafka connection details into Spring context
-    And the embedded database and containers must be static (shared across all test classes extending this base)
+    And it must use @DynamicPropertySource to inject embedded PostgreSQL connection details into Spring context
+    And the embedded database must be static (shared across all test classes extending this base)
     And tests that need local stub clients must activate both "test" and "local" profiles with @ActiveProfiles({"test", "local"})
 
   # ---------------------------------------------------------------------------
@@ -159,7 +149,6 @@ Feature: Testing Strategy
       | dependency                | purpose                                 |
       | BookingRepository         | Verify save is called with correct data |
       | BookingReferenceGenerator | Return predictable references           |
-      | BookingEventPublisher     | Verify event is published               |
       | ScheduleClient            | Control schedule validation result      |
       | EquipmentClient           | Not called during creation              |
       | QuoteClient               | Control quote validation result         |
@@ -168,12 +157,10 @@ Feature: Testing Strategy
       | shouldCreateBookingSuccessfully()                     | Happy path — valid request, all validations pass  |
       | shouldSetStatusToPending()                            | New booking always starts as PENDING              |
       | shouldGenerateUniqueReference()                       | Reference comes from BookingReferenceGenerator    |
-      | shouldPublishBookingCreatedEvent()                    | Verify event publisher is called after save       |
       | shouldThrowWhenScheduleNotAvailable()                 | ScheduleClient returns false                     |
       | shouldThrowWhenQuoteNotValid()                        | QuoteClient returns false                        |
       | shouldThrowWhenEquipmentListEmpty()                   | Request with empty equipment list                |
       | shouldNotPersistBookingWhenValidationFails()          | Verify repository.save() is never called on failure |
-      | shouldNotPublishEventWhenValidationFails()            | Verify publisher is never called on failure       |
 
   @testing @unit @service
   Scenario: BookingService state transition tests
@@ -183,7 +170,6 @@ Feature: Testing Strategy
       | test method                                            | scenario                                         |
       | shouldConfirmPendingBooking()                         | PENDING → CONFIRMED happy path                    |
       | shouldReserveEquipmentOnConfirmation()                | Verify EquipmentClient.reserveEquipment() called  |
-      | shouldPublishConfirmedEvent()                         | Verify event published after confirmation         |
       | shouldThrowWhenConfirmingNonPendingBooking()          | CONFIRMED → CONFIRMED should fail                 |
       | shouldNotChangeStatusWhenEquipmentReservationFails()  | Status remains PENDING if equipment fails         |
       | shouldStartConfirmedBooking()                         | CONFIRMED → IN_PROGRESS happy path                |
@@ -191,7 +177,6 @@ Feature: Testing Strategy
       | shouldCancelPendingBooking()                          | PENDING → CANCELLED without equipment release     |
       | shouldCancelConfirmedBooking()                        | CONFIRMED → CANCELLED with equipment release      |
       | shouldCancelEvenWhenEquipmentReleaseFails()           | Cancellation proceeds despite release failure     |
-      | shouldPublishCancelledEvent()                         | Verify event published after cancellation         |
       | shouldThrowWhenCancellingCompletedBooking()           | COMPLETED → CANCELLED should fail                 |
 
   @testing @unit @service
@@ -230,7 +215,6 @@ Feature: Testing Strategy
   Scenario: BookingRepository integration tests
     Given a test class "BookingRepositoryTest" in package "com.cargo.booking.repository"
     Then it must be annotated with @DataJpaTest and @ActiveProfiles("test")
-    And it must use @AutoConfigureTestDatabase(replace = Replace.NONE) if Testcontainers is used
     And it must include the following test cases:
       | test method                                          | description                                        |
       | shouldSaveAndFindBookingById()                      | Save a booking, retrieve by ID, verify fields       |
@@ -293,7 +277,9 @@ Feature: Testing Strategy
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
       | shouldListBookingsByCustomerAndReturn200()          | 200    | Valid customerId, paginated results              |
-      | shouldReturn400WhenCustomerIdMissing()              | 400    | Required query param missing                     |
+      | shouldListAllBookingsForOperatorWhenCustomerIdMissing() | 200 | OPERATOR may omit customerId                     |
+      | shouldReturn400WhenCustomerIdMissingForCustomer()   | 400    | CUSTOMER must provide their own customerId        |
+      | shouldReturn403WhenCustomerIdDoesNotMatchCustomer() | 403    | CUSTOMER cannot list another customer's bookings  |
       | shouldFilterByStatus()                              | 200    | customerId + status filter                       |
 
   @testing @integration @controller
@@ -352,25 +338,6 @@ Feature: Testing Strategy
       | shouldAllowOperatorToAccessAnyBooking()                 | OPERATOR can view any booking                     |
       | shouldAllowAdminFullAccess()                            | ADMIN can access all endpoints                    |
 
-  # ---------------------------------------------------------------------------
-  # Integration Tests — Kafka Events
-  # ---------------------------------------------------------------------------
-
-  @testing @integration @kafka
-  Scenario: Kafka event publishing integration tests
-    Given a test class "BookingEventPublisherTest" in package "com.cargo.booking.event"
-    Then it must use KafkaContainer from Testcontainers
-    And it must verify:
-      | test method                                           | description                                        |
-      | shouldPublishBookingCreatedEvent()                   | Event published to "booking.created" topic           |
-      | shouldPublishBookingConfirmedEvent()                 | Event published to "booking.confirmed" topic         |
-      | shouldPublishBookingCancelledEvent()                 | Event published to "booking.cancelled" topic         |
-      | shouldPublishBookingCompletedEvent()                 | Event published to "booking.completed" topic         |
-      | shouldUseBookingReferenceAsMessageKey()              | Kafka message key is the bookingReference            |
-      | shouldSerializeEventPayloadAsJson()                  | Message value is valid JSON with expected fields     |
-    And each test must consume from the topic using a test KafkaConsumer to verify the message
-
-  # ---------------------------------------------------------------------------
   # Integration Tests — External Service Clients (Deferred)
   # ---------------------------------------------------------------------------
 
@@ -400,7 +367,7 @@ Feature: Testing Strategy
   @testing @e2e
   Scenario: Full booking lifecycle end-to-end test
     Given a test class "BookingLifecycleE2ETest" in package "com.cargo.booking"
-    Then it must extend BaseIntegrationTest (embedded PostgreSQL and KafkaContainer)
+    Then it must extend BaseIntegrationTest (embedded PostgreSQL)
     And it must use both the "test" and "local" profiles so that test infrastructure and stub clients are active
     And it must use TestRestTemplate or WebTestClient with a real JWT token
     And it must verify the complete happy path:
@@ -408,11 +375,9 @@ Feature: Testing Strategy
       | 1    | POST /api/v1/bookings with valid request as CUSTOMER       | 201, status=PENDING, reference set |
       | 2    | GET /api/v1/bookings/{id} as CUSTOMER                      | 200, full booking details          |
       | 3    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 200, status=CONFIRMED              |
-      | 4    | Verify "booking.confirmed" event on Kafka topic            | Event payload matches booking      |
-      | 5    | PATCH /api/v1/bookings/{id}/start as OPERATOR              | 200, status=IN_PROGRESS            |
-      | 6    | PATCH /api/v1/bookings/{id}/complete as OPERATOR           | 200, status=COMPLETED              |
-      | 7    | Verify "booking.completed" event on Kafka topic            | Event payload matches booking      |
-      | 8    | GET /api/v1/bookings?customerId={jwtUserId} as CUSTOMER    | 200, list includes this booking    |
+      | 4    | PATCH /api/v1/bookings/{id}/start as OPERATOR              | 200, status=IN_PROGRESS            |
+      | 5    | PATCH /api/v1/bookings/{id}/complete as OPERATOR           | 200, status=COMPLETED              |
+      | 6    | GET /api/v1/bookings?customerId={jwtUserId} as CUSTOMER    | 200, list includes this booking    |
 
   @testing @e2e
   Scenario: Cancellation flow end-to-end test
@@ -421,8 +386,7 @@ Feature: Testing Strategy
       | step | action                                                     | expected                            |
       | 1    | POST /api/v1/bookings with valid request as CUSTOMER       | 201, status=PENDING                 |
       | 2    | PATCH /api/v1/bookings/{id}/cancel as CUSTOMER             | 200, status=CANCELLED               |
-      | 3    | Verify "booking.cancelled" event on Kafka topic            | Event payload matches booking       |
-      | 4    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 409, cannot confirm cancelled booking|
+      | 3    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 409, cannot confirm cancelled booking|
 
   # ---------------------------------------------------------------------------
   # Test Naming and Organization Conventions

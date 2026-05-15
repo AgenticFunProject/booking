@@ -79,13 +79,13 @@ Feature: Deployment and Infrastructure
       """
 
   # ---------------------------------------------------------------------------
-  # Docker Compose — Local Development
+  # Docker Compose - Local Development
   # ---------------------------------------------------------------------------
 
   @deployment @compose
   Scenario: Docker Compose for local development
     Given a file "docker-compose.yml" in the project root
-    Then it must define the following services:
+    Then it must define PostgreSQL and the Booking Service application
 
   @deployment @compose
   Scenario: PostgreSQL service
@@ -103,44 +103,6 @@ Feature: Deployment and Infrastructure
       | restart       | unless-stopped                       |
 
   @deployment @compose
-  Scenario: Kafka and Zookeeper services
-    Given the docker-compose.yml file
-    Then it must define a "zookeeper" service:
-      | setting       | value                                |
-      | image         | confluentinc/cp-zookeeper:7.6.0      |
-      | container_name| booking-zookeeper                    |
-      | ports         | 2181:2181                            |
-      | environment   | ZOOKEEPER_CLIENT_PORT=2181           |
-    And it must define a "kafka" service:
-      | setting       | value                                |
-      | image         | confluentinc/cp-kafka:7.6.0          |
-      | container_name| booking-kafka                        |
-      | ports         | 9092:9092                            |
-      | depends_on    | zookeeper                            |
-      | environment   | KAFKA_BROKER_ID=1                    |
-      | environment   | KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 |
-      | environment   | KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092 |
-      | environment   | KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092 |
-      | environment   | KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT |
-      | environment   | KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT |
-      | environment   | KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 |
-      | healthcheck   | kafka-topics --bootstrap-server kafka:29092 --list |
-      | restart       | unless-stopped                       |
-
-  @deployment @compose
-  Scenario: Kafka UI service (optional developer tool)
-    Given the docker-compose.yml file
-    Then it must define a "kafka-ui" service:
-      | setting       | value                                |
-      | image         | provectuslabs/kafka-ui:latest        |
-      | container_name| booking-kafka-ui                     |
-      | ports         | 8080:8080                            |
-      | depends_on    | kafka                                |
-      | environment   | KAFKA_CLUSTERS_0_NAME=local          |
-      | environment   | KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092 |
-      | restart       | unless-stopped                       |
-
-  @deployment @compose
   Scenario: Booking Service application container
     Given the docker-compose.yml file
     Then it must define a "booking-service" service:
@@ -148,12 +110,11 @@ Feature: Deployment and Infrastructure
       | build         | . (current directory Dockerfile)     |
       | container_name| booking-service                      |
       | ports         | 8081:8081                            |
-      | depends_on    | postgres (condition: service_healthy), kafka (condition: service_healthy) |
+      | depends_on    | postgres (condition: service_healthy) |
       | environment   | SPRING_PROFILES_ACTIVE=local         |
       | environment   | DB_USERNAME=booking_user             |
       | environment   | DB_PASSWORD=booking_pass             |
       | environment   | SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db |
-      | environment   | KAFKA_BOOTSTRAP_SERVERS=kafka:29092  |
       | environment   | JWT_SECRET=${JWT_SECRET:-dev-secret-key-that-is-at-least-256-bits-long-for-hs256} |
       | restart       | unless-stopped                       |
     And it must use the "local" profile so stub clients are activated
@@ -177,7 +138,7 @@ Feature: Deployment and Infrastructure
       | local       | Local development with stubs                      | Stub clients, local DB, console logging       |
       | dev         | Development/staging environment                   | Real clients, dev DB, JSON logging            |
       | prod        | Production environment                            | Real clients, prod DB, JSON logging, strict   |
-      | test        | Automated testing                                 | Embedded PostgreSQL, embedded Kafka          |
+      | test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
 
   @deployment @profiles
   Scenario: Profile-specific application properties
@@ -187,7 +148,7 @@ Feature: Deployment and Infrastructure
       | application-local.yml                  | Explicit local settings, verbose logging               |
       | application-dev.yml                    | Dev environment URLs, JSON logging                     |
       | application-prod.yml                   | Prod URLs, JSON logging, stricter security             |
-      | application-test.yml                   | Embedded PostgreSQL, embedded Kafka, test JWT secret   |
+      | application-test.yml                   | Embedded PostgreSQL, test JWT secret                   |
 
   @deployment @profiles
   Scenario: Production profile hardening
@@ -238,7 +199,7 @@ Feature: Deployment and Infrastructure
     Given the Booking Service request handling
     Then a filter or interceptor must add the following to the MDC:
       | mdc key        | source                                           |
-      | requestId      | X-Request-ID header, or generated correlation ID if absent |
+      | requestId      | X-Request-ID header when present; generated correlation ID for logs if absent |
       | userId         | Extracted from JWT (authenticated requests only) |
       | bookingRef     | Set by the service layer when available           |
     And the MDC must be cleared after each request
@@ -256,7 +217,6 @@ Feature: Deployment and Infrastructure
       | DB_USERNAME               | yes      | booking_user                     | Database username              |
       | DB_PASSWORD               | yes      | booking_pass                     | Database password              |
       | SPRING_DATASOURCE_URL     | yes      | jdbc:postgresql://localhost:5432/booking_db | JDBC URL          |
-      | KAFKA_BOOTSTRAP_SERVERS   | yes      | localhost:9092                   | Kafka bootstrap servers        |
       | JWT_SECRET                | yes      | (dev default in yml)             | JWT signing key (min 256 bits) |
       | JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
       | SCHEDULE_API_URL          | no       | http://localhost:8082            | Schedules API base URL         |
@@ -314,8 +274,7 @@ Feature: Deployment and Infrastructure
     Then it must define the following services for integration tests:
       | service     | image                        | ports     | env                              |
       | postgres    | postgres:16-alpine           | 5432:5432 | POSTGRES_DB=booking_test_db      |
-      | kafka       | confluentinc/cp-kafka:7.6.0  | 9092:9092 | Standard single-node config      |
-    And test environment variables must point to these CI services
+    And test environment variables must point to the CI PostgreSQL service
 
   # ---------------------------------------------------------------------------
   # JVM Tuning
@@ -347,7 +306,6 @@ Feature: Deployment and Infrastructure
       | property                                      | value    | purpose                                     |
       | server.shutdown                               | graceful | Wait for in-flight requests to complete     |
       | spring.lifecycle.timeout-per-shutdown-phase    | 30s      | Max wait time before forced shutdown        |
-    And the Kafka producer must flush pending messages during shutdown
     And the application must handle SIGTERM gracefully in the Docker container
 
   # ---------------------------------------------------------------------------
@@ -369,7 +327,6 @@ Feature: Deployment and Infrastructure
       | Running Tests        | mvnw test, mvnw test -Dgroups="integration"                  |
       | Project Structure    | Package layout from 001_project_setup.md                     |
       | Architecture         | Brief description of layers and external dependencies         |
-      | Kafka Topics         | Table of events from 004_business_rules.md                    |
       | Contributing         | Branch naming, PR process, test requirements                  |
 
   # ---------------------------------------------------------------------------
@@ -445,11 +402,11 @@ Feature: Deployment and Infrastructure
       | 001_project_setup.md     | Maven project, dependencies, packages, conventions    |
       | 002_domain_model.md      | Entities, enums, validations, migrations              |
       | 003_data_access.md        | Repositories, queries, specifications                 |
-      | 004_business_rules.md     | Services, events, clients, exceptions                 |
+      | 004_business_rules.md     | Services, lifecycle, clients, exceptions              |
       | 005_api_endpoints.md      | Controllers, DTOs, mappers, OpenAPI                   |
       | 006_security.md           | JWT auth, roles, ownership, CORS                      |
       | 007_error_handling.md     | Global exception handler, error responses             |
-      | 008_integrations.md       | Real clients, resilience, Kafka config, health        |
+      | 008_integrations.md       | Real clients, resilience, health                      |
       | 009_testing.md            | Unit, integration, E2E tests, test utilities          |
       | 010_deployment.md         | Docker, Compose, CI, profiles, logging, README        |
     And the application should be fully runnable with "docker-compose up -d"

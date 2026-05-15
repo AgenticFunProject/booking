@@ -281,42 +281,46 @@ Feature: API Endpoints
       """
 
   # ---------------------------------------------------------------------------
-  # GET /api/v1/bookings?customerId=
+  # GET /api/v1/bookings
   # ---------------------------------------------------------------------------
 
   @api @endpoint @read
-  Scenario: List bookings for a customer endpoint
+  Scenario: List bookings endpoint
     Given the BookingController
     Then it must define the following endpoint:
       | method | path | httpMethod |
-      | getBookingsByCustomer | "" (empty, inherits base path) | GET |
+      | getBookings | "" (empty, inherits base path) | GET |
     And the method signature must be:
       """
       @GetMapping
-      @Operation(summary = "List bookings for a customer")
-      public PagedResponse<BookingResponse> getBookingsByCustomer(
-          @RequestParam Long customerId,
+      @Operation(summary = "List bookings")
+      public PagedResponse<BookingResponse> getBookings(
+          @RequestParam(required = false) Long customerId,
           @RequestParam(required = false) BookingStatus status,
           @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
       )
       """
     And it must:
       | step | action                                                                |
-      | 1    | Call bookingService.getBookingsByCustomer(customerId, status, pageable)|
-      | 2    | Map each booking entity to BookingResponse                             |
-      | 3    | Wrap in PagedResponse and return with HTTP 200                         |
+      | 1    | Resolve the authenticated user's role and user ID                       |
+      | 2    | For CUSTOMER, require customerId to match the authenticated user ID      |
+      | 3    | For OPERATOR or ADMIN, allow customerId to be omitted to list all bookings |
+      | 4    | Call bookingService.getBookings(customerId, status, pageable)            |
+      | 5    | Map each booking entity to BookingResponse                              |
+      | 6    | Wrap in PagedResponse and return with HTTP 200                          |
 
   @api @endpoint @read
   Scenario: List bookings — query parameter validation
     Given the GET /api/v1/bookings endpoint
     Then the following query parameters must be supported:
       | parameter   | type          | required | default             | description                    |
-      | customerId  | Long          | yes      | —                   | Filter by customer             |
+      | customerId  | Long          | conditional | null (all customers for OPERATOR/ADMIN) | Filter by customer |
       | status      | BookingStatus | no       | null (all statuses) | Filter by booking status       |
       | page        | int           | no       | 0                   | Page number (zero-based)       |
       | size        | int           | no       | 20                  | Page size (max 100)            |
       | sort        | String        | no       | createdAt,desc      | Sort field and direction       |
-    And if customerId is missing the API must return HTTP 400 with a validation error
+    And if customerId is missing for a CUSTOMER request the API must return HTTP 400 with a validation error
+    And if customerId does not match the authenticated CUSTOMER user ID the API must return HTTP 403
 
   # ---------------------------------------------------------------------------
   # PATCH /api/v1/bookings/{id}/cancel
@@ -419,7 +423,7 @@ Feature: API Endpoints
       | POST endpoint must consume "application/json"                                 |
       | All Instant fields must be serialized as ISO-8601 strings in UTC              |
       | BigDecimal fields must be serialized as numbers, not strings                  |
-      | Null fields must be omitted from JSON responses (configure Jackson globally)  |
+      | Null fields must be omitted from JSON responses, including absent requestId values |
 
   @api @headers
   Scenario: Jackson global configuration

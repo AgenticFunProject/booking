@@ -164,6 +164,7 @@ Feature: Error Handling
         "error": "Bad Request",
         "message": "Validation failed with 2 error(s)",
         "path": "/api/v1/bookings",
+        "requestId": "req-123",
         "violations": [
           {
             "field": "cargo.weightKg",
@@ -339,9 +340,10 @@ Feature: Error Handling
     Given incoming requests may carry an "X-Request-ID" header
     Then the error response should include the request ID if present:
       | field      | source                                              |
-      | requestId  | Value from X-Request-ID header, or null if absent   |
+      | requestId  | Value from X-Request-ID header when present          |
     And the ErrorResponse record already includes an optional "requestId" field (nullable)
     And the GlobalExceptionHandler must extract this header from the HttpServletRequest
+    And requestId must be omitted from JSON responses when absent because null fields are globally omitted
 
   # ---------------------------------------------------------------------------
   # Spring Boot Error Properties
