@@ -217,7 +217,7 @@ Feature: Error Handling
       | annotation                                                          | status | error       |
       | @ExceptionHandler(MethodArgumentTypeMismatchException.class)        | 400    | Bad Request |
     And the message must indicate the parameter name and expected type
-    And example: "Parameter 'id' must be a valid numeric ID"
+    And example: "Parameter 'id' must be a valid numeric ID or booking reference"
     And the exception must be logged at WARN level
 
   # ---------------------------------------------------------------------------

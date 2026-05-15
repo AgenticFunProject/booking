@@ -174,12 +174,13 @@ Feature: Data Access Layer
   Scenario: BookingSpecification class for dynamic filtering
     Given a class "BookingSpecification" in package "com.cargo.booking.repository"
     Then it must provide static methods that return Specification<Booking>:
-      | method                                          | filters by          | description                                  |
-      | hasCustomerId(Long customerId)                  | customer_id         | Exact match on customer                      |
+      | method                                          | entity field        | description                                  |
+      | hasCustomerId(Long customerId)                  | customerId          | Exact match on customer                      |
       | hasStatus(BookingStatus status)                 | status              | Exact match on status                        |
-      | hasScheduleId(Long scheduleId)                  | schedule_id         | Exact match on schedule                      |
-      | createdAfter(Instant from)                      | created_at          | Bookings created on or after a timestamp     |
-      | createdBefore(Instant to)                       | created_at          | Bookings created on or before a timestamp    |
+      | hasScheduleId(Long scheduleId)                  | scheduleId          | Exact match on schedule                      |
+      | createdAfter(Instant from)                      | createdAt           | Bookings created on or after a timestamp     |
+      | createdBefore(Instant to)                       | createdAt           | Bookings created on or before a timestamp    |
+    And JPA Criteria paths must use entity field names, not database column names
     And each method must return null when the input parameter is null (to allow optional filtering)
     And these specifications must be composable using Specification.where().and()
 

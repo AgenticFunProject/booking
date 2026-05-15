@@ -52,7 +52,7 @@ Feature: Security
   Scenario: Security can be disabled for local or unsecured deployments
     Given app.security.enabled is false
     Then the SecurityFilterChain must permit all API requests
-    And JwtAuthenticationFilter must not require or validate tokens
+    And JwtAuthenticationFilter must either not be registered or must short-circuit without validating tokens
     And customerId must come from request data or query parameters
     And no ownership checks based on JWT subject must run
     And this mode is intended for local development, demos, or deployments where authentication is handled outside this service
@@ -200,6 +200,7 @@ Feature: Security
     Then it must be annotated with @Configuration and @EnableWebSecurity and @EnableMethodSecurity
     And it must depend on:
       | dependency                   | purpose                               |
+      | SecurityProperties           | Controls whether security is enabled  |
       | JwtAuthenticationFilter      | JWT validation filter                 |
       | JwtAuthenticationEntryPoint  | 401 error handling                    |
       | JwtAccessDeniedHandler       | 403 error handling                    |
@@ -210,6 +211,7 @@ Feature: Security
       | Register JwtAuthenticationEntryPoint as the exception handling entry point             |
       | Register JwtAccessDeniedHandler as the access denied handler                           |
       | Add JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter                |
+      | If securityProperties.enabled is false, configure permitAll and skip JWT validation     |
 
   @security @config
   Scenario: Endpoint-level access rules
