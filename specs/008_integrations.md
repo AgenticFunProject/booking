@@ -3,9 +3,9 @@
 # Produces: Integration configuration properties, RestClient infrastructure, Resilience4j setup,
 #           Kafka producer fine-tuning, dead letter topic, health indicators, logging interceptor
 # Context: Defines the integration PATTERNS and infrastructure for the Cargo Booking Service.
-#          The external services (Schedules, Equipment, Quotes) are owned by other teams and
-#          their API contracts are NOT yet known. This file sets up the plumbing so that real
-#          client implementations can be added later with minimal effort.
+#          Schedules and Equipment are owned by other teams and their API contracts are NOT yet
+#          known. Quotes now exposes a stable public lookup and bookability contract that Booking
+#          must use synchronously during booking creation.
 #          The AI agent must have processed 001–007 before this file.
 
 Feature: Integration Infrastructure and Kafka Configuration
@@ -18,8 +18,9 @@ Feature: Integration Infrastructure and Kafka Configuration
     And configuration classes reside in "com.cargo.booking.config"
     And client classes reside in "com.cargo.booking.client"
     And the client interfaces and stubs are defined in 004_business_rules.md
-    And the external services (Schedules, Equipment, Quotes) are owned by other teams
-    And their API contracts are NOT finalized — only interfaces and stubs exist today
+    And the external services are owned by other teams
+    And Schedules and Equipment API contracts are NOT finalized — only interfaces and stubs exist today
+    And Quotes exposes public GET /quotes/{id} and GET /quotes/{id}/bookability endpoints for Booking validation
 
   # ---------------------------------------------------------------------------
   # IMPORTANT: What this file does NOT do
@@ -27,17 +28,20 @@ Feature: Integration Infrastructure and Kafka Configuration
 
   @integration @scope
   Scenario: Scope clarification
-    Given the external services do not have finalized API contracts
+    Given Schedules and Equipment do not have finalized API contracts
+    And Quotes has a finalized public lookup and bookability contract
     Then this file must NOT:
       | restriction                                                                    |
-      | Define specific REST endpoint paths for external services                      |
-      | Define response DTOs for external APIs (we don't know what they return)        |
-      | Implement real client classes — only stubs exist until contracts are agreed     |
+      | Define specific REST endpoint paths for Schedules or Equipment                 |
+      | Define response DTOs for Schedules or Equipment APIs                           |
+      | Implement Schedules or Equipment real client classes until contracts are agreed |
       | Assume the external services are Spring Boot or expose /actuator/health        |
     And this file DOES define:
       | responsibility                                                                 |
       | Integration configuration property structure (base URLs, timeouts)              |
       | RestClient bean factory pattern (ready to configure when contracts are known)   |
+      | Concrete Quotes lookup and bookability paths and response fields                |
+      | Synchronous Quotes validation as the v1 booking creation path                   |
       | Resilience4j dependencies and default configuration                             |
       | Kafka producer reliability settings                                             |
       | Dead letter topic configuration                                                 |
@@ -88,7 +92,7 @@ Feature: Integration Infrastructure and Kafka Configuration
     And this structure is ready to be injected into real client implementations when they are built
 
   # ---------------------------------------------------------------------------
-  # RestClient Pattern (Template for Future Implementations)
+  # RestClient Pattern and Quotes Contract
   # ---------------------------------------------------------------------------
 
   @integration @pattern
@@ -109,6 +113,54 @@ Feature: Integration Infrastructure and Kafka Configuration
       | default header           | Accept: application/json                             |
     And the logging interceptor (defined below) must be registered on each bean
     And these beans exist so that real client implementations can inject them by qualifier
+
+  @integration @quotes
+  Scenario: QuoteClient synchronous validation contract
+    Given the QuoteClient interface from 004_business_rules.md
+    And a real implementation "QuoteClientRestClient" in package "com.cargo.booking.client"
+    Then booking creation must synchronously call Quotes before persisting the booking
+    And QuoteClientRestClient must use the quoteRestClient bean to call:
+      | request                     | purpose                                  |
+      | GET /quotes/{id}             | Fetch the stored quote record             |
+      | GET /quotes/{id}/bookability | Fetch Booking-oriented usability status   |
+    And GET /quotes/{id} must deserialize at minimum:
+      | field           | type                      | validation in Booking                         |
+      | id              | UUID                      | Must match the requested quoteId              |
+      | quoteReference  | String                    | Used only for diagnostics                     |
+      | scheduleId      | UUID                      | Must match the booking request scheduleId     |
+      | customerId      | UUID nullable             | If present, must match the authenticated customerId |
+      | cargoWeightKg   | BigDecimal                | Must match the booking request cargo weight   |
+      | equipment       | List<EquipmentLineDTO>    | Must match requested equipment type/quantity  |
+      | lifecycleState  | String                    | Logged for diagnostics, not sufficient alone  |
+      | validUntil      | Instant                   | Logged for diagnostics; bookability is authoritative |
+    And GET /quotes/{id}/bookability must deserialize at minimum:
+      | field      | type    | validation in Booking                         |
+      | quoteId    | String  | Must identify the requested quote             |
+      | bookable   | boolean | Must be true                                  |
+      | status     | String  | Must be ACTIVE                                |
+      | reason     | String  | Included in QuoteNotValidException messages   |
+      | expired    | boolean | Must be false                                 |
+      | validUntil | Instant | Included in diagnostics and error messages    |
+    And PENDING_APPROVAL, REJECTED, EXPIRED, bookable=false, 404, malformed payloads, timeouts, and 5xx responses must throw QuoteNotValidException
+    And QuoteClientRestClient must not save any cache entry or consume any Quotes outbox event in the v1 path
+
+  @integration @quotes
+  Scenario: Booking v1 integration path uses synchronous Quotes validation
+    Given a request to create a booking
+    When Booking validates the quote
+    Then the first implementation path must be synchronous QuoteClient validation during booking creation
+    And Booking must not persist the booking until both Quotes calls have succeeded and matched the booking context
+    And Booking must not publish "booking.created" when either Quotes call fails validation
+    And replaying Quotes outbox events or caching quote bookability is a later optimization only after the synchronous path has shipped
+
+  @integration @quotes @auth
+  Scenario: Quotes auth propagation boundary
+    Given Booking receives a create-booking request with an Authorization header containing the caller JWT
+    Then Booking must use that JWT only for Booking endpoint authentication and ownership checks
+    And QuoteClientRestClient must not forward that Authorization header to public GET /quotes/{id}
+    And QuoteClientRestClient must not forward that Authorization header to public GET /quotes/{id}/bookability
+    And future protected Quotes admin or outbox calls must use a platform service credential with the required `quotes:admin` scope
+    And future protected Quotes calls must never use a customer JWT as a service credential
 
   # ---------------------------------------------------------------------------
   # Resilience4j Default Configuration
@@ -140,11 +192,11 @@ Feature: Integration Infrastructure and Kafka Configuration
   # ---------------------------------------------------------------------------
 
   @integration @pattern
-  Scenario: How to implement a real client when an external API contract is available
-    Given a developer or agent is ready to implement a real client
+  Scenario: How to implement a real Schedule or Equipment client when an external API contract is available
+    Given a developer or agent is ready to implement a real Schedule or Equipment client
     Then the implementation pattern must follow these steps:
       | step | action                                                                              |
-      | 1    | Get the API contract (OpenAPI spec, documentation, or agreed endpoint list)          |
+      | 1    | Get the Schedule or Equipment API contract (OpenAPI spec, documentation, or agreed endpoint list) |
       | 2    | Create response DTOs in "com.cargo.booking.client.dto" as Java records               |
       | 3    | Use @JsonIgnoreProperties(ignoreUnknown = true) on all external DTOs                 |
       | 4    | Create the implementation class annotated with @Service and @Profile("!local")       |
@@ -154,6 +206,7 @@ Feature: Integration Infrastructure and Kafka Configuration
       | 8    | Add per-instance Resilience4j config in application.yml if SLAs differ from defaults |
       | 9    | Add WireMock tests matching the real API contract                                    |
     And this pattern must be documented as a comment in the RestClientConfig class
+    And QuoteClientRestClient must follow the concrete Quotes contract defined above instead of this deferred-contract template
 
   # ---------------------------------------------------------------------------
   # HTTP Client Logging Interceptor
@@ -236,10 +289,11 @@ Feature: Integration Infrastructure and Kafka Configuration
     Given this is the integrations file only
     Then the following are NOT defined here and will be addressed later:
       | topic                                              | deferred to                                  |
-      | Real client implementations                        | When external API contracts are available    |
-      | External API response DTOs                         | When external API contracts are available    |
-      | Custom health indicators for external services     | When external API contracts are available    |
-      | WireMock tests for real client implementations     | When external API contracts are available    |
+      | Real Schedule and Equipment client implementations | When those external API contracts are available |
+      | Schedule and Equipment API response DTOs           | When those external API contracts are available |
+      | Custom health indicators for external services     | When external API contracts are available       |
+      | WireMock tests for Schedule and Equipment clients  | When those external API contracts are available |
+      | Quotes outbox replay or bookability cache          | Later optimization after synchronous validation ships |
       | Kafka consumer implementation (if needed later)    | Out of scope for v1                          |
       | OAuth2/OIDC token exchange with identity provider   | Out of scope for v1                         |
       | Docker Compose for local external services         | 010_deployment.md                            |

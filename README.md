@@ -36,7 +36,7 @@ After processing all files, the result is a fully runnable Spring Boot microserv
 | `005_api_endpoints.md` | REST controllers, request/response DTOs, mappers, OpenAPI documentation |
 | `006_security.md` | JWT authentication, role-based authorization, ownership checks, CORS |
 | `007_error_handling.md` | Global exception handler, error response structure, validation errors |
-| `008_integrations.md` | External API clients (Schedule, Equipment, Quote), Resilience4j, Kafka producer config |
+| `008_integrations.md` | External API clients, concrete Quotes validation, Resilience4j, Kafka producer config |
 | `009_testing.md` | Unit tests, integration tests, E2E tests, WireMock, Testcontainers, test utilities |
 | `010_deployment.md` | Dockerfile, Docker Compose, Spring profiles, logging, CI pipeline, README |
 
@@ -103,11 +103,15 @@ CANCELLED    CANCELLED
 
 | Service | Purpose |
 |---------|---------|
-| Schedules API | Validate schedule availability |
-| Equipment API | Reserve/release containers |
-| Quotes API | Validate quote validity |
+| Schedules API | Validate schedule availability; contract may remain stubbed until the Schedules team finalizes it |
+| Equipment API | Reserve/release containers; contract may remain stubbed until the Equipment team finalizes it |
+| Quotes API | Validate quote context and bookability through `GET /quotes/{id}` and `GET /quotes/{id}/bookability` |
 
 Stub implementations are provided for local development (`@Profile("local")`).
+Booking v1 must validate Quotes synchronously during booking creation before
+persistence or event publication. Booking authorizes the inbound caller JWT for
+Booking ownership only; public Quotes lookup and bookability calls do not
+forward that customer JWT.
 
 ## Getting Started
 

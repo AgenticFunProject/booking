@@ -37,7 +37,7 @@ Feature: Business Rules and Service Layer
       | BookingEventPublisher         | Publish domain events to Kafka              |
       | ScheduleClient                | Validate schedule availability              |
       | EquipmentClient               | Reserve equipment on confirmation           |
-      | QuoteClient                   | Validate quote validity                     |
+      | QuoteClient                   | Validate quote ownership and bookability    |
 
   # ---------------------------------------------------------------------------
   # Create Booking
@@ -50,7 +50,7 @@ Feature: Business Rules and Service Layer
     Then the service must perform these steps in order:
       | step | action                                                                  |
       | 1    | Validate the schedule exists and is open by calling ScheduleClient      |
-      | 2    | Validate the quote is valid and matches the booking by calling QuoteClient |
+      | 2    | Synchronously validate the quote lookup and bookability by calling QuoteClient |
       | 3    | Generate a unique booking reference using BookingReferenceGenerator     |
       | 4    | Build a Booking entity with status PENDING                              |
       | 5    | Build BookingEquipmentLine entities from the equipment list             |
@@ -69,13 +69,34 @@ Feature: Business Rules and Service Layer
     And the booking must NOT be persisted
     And no event must be published
 
-  @business @create
-  Scenario: Create booking — quote invalid or expired
-    Given a booking request with an invalid or expired quoteId
+  @business @create @quote
+  Scenario: Create booking — ACTIVE and bookable quote permits pending booking
+    Given a booking request with a quoteId owned by the authenticated customer context
+    And QuoteClient confirms GET /quotes/{id} returns a quote for the same scheduleId, cargoWeightKg, and equipment
+    And QuoteClient confirms GET /quotes/{id}/bookability returns status "ACTIVE" and bookable=true
+    When the BookingService.createBooking() method is called
+    Then the service must create and persist the booking with status PENDING
+    And it must publish a "booking.created" event after the transaction commits
+
+  @business @create @quote
+  Scenario Outline: Create booking — non-bookable or unavailable quote prevents creation
+    Given a booking request with quoteId "<quoteId>"
+    And QuoteClient receives the quote validation outcome "<outcome>"
     When the BookingService.createBooking() method is called
     Then it must throw a QuoteNotValidException with a descriptive message
     And the booking must NOT be persisted
     And no event must be published
+
+    Examples:
+      | quoteId                              | outcome                                      |
+      | quote-pending-approval              | bookability status PENDING_APPROVAL          |
+      | quote-rejected                      | bookability status REJECTED                  |
+      | quote-expired                       | bookability status EXPIRED                   |
+      | quote-not-bookable                  | bookability bookable=false                   |
+      | quote-missing                       | GET /quotes/{id} returns 404                 |
+      | quote-malformed                     | lookup or bookability payload is malformed   |
+      | quote-timeout                       | lookup or bookability request times out      |
+      | quote-server-error                  | lookup or bookability returns 5xx            |
 
   @business @create
   Scenario: Create booking — empty equipment list
@@ -312,8 +333,14 @@ Feature: Business Rules and Service Layer
   Scenario: QuoteClient interface
     Given an interface "QuoteClient" in package "com.cargo.booking.client"
     Then it must define the following methods:
-      | method                                                        | returns  | description                                    |
-      | validateQuote(UUID quoteId, UUID scheduleId, BigDecimal weightKg) | boolean  | Returns true if quote is valid and matches booking |
+      | method                                                                                         | returns | description                                      |
+      | validateQuote(UUID quoteId, UUID customerId, UUID scheduleId, BigDecimal cargoWeightKg, List<EquipmentLineDTO> equipment) | boolean | Returns true only when the quote belongs to the requested booking context and is bookable |
+    And the real implementation must validate against the public Quotes contract:
+      | request                         | required validation                                                                 |
+      | GET /quotes/{id}                 | id matches quoteId; scheduleId, cargoWeightKg, equipment, and customerId when present match the booking request |
+      | GET /quotes/{id}/bookability     | status is ACTIVE, bookable is true, expired is false                                |
+    And PENDING_APPROVAL, REJECTED, EXPIRED, bookable=false, 404, malformed payloads, timeouts, and 5xx responses must be treated as QuoteNotValidException
+    And quote validation must run before generating the booking reference, saving the booking, or publishing any event
     And a stub implementation "QuoteClientStub" must be created
     And the stub must be annotated with @Service and @Profile("local")
     And the stub must always return true for local development
@@ -329,6 +356,8 @@ Feature: Business Rules and Service Layer
       | class             | fields                                                    | notes                     |
       | ScheduleDTO       | id (UUID), routeName (String), departureDate (Instant), status (String) | Returned by ScheduleClient |
       | EquipmentLineDTO  | type (String), quantity (int)                             | Used in EquipmentClient    |
+      | QuoteDTO          | id (UUID), quoteReference (String), scheduleId (UUID), customerId (UUID, nullable), cargoWeightKg (BigDecimal), equipment (List<EquipmentLineDTO>), lifecycleState (String), validUntil (Instant) | Returned by GET /quotes/{id} |
+      | QuoteBookabilityDTO | quoteId (String), bookable (boolean), status (String), reason (String), expired (boolean), validUntil (Instant) | Returned by GET /quotes/{id}/bookability |
     And these must be Java records (immutable)
 
   # ---------------------------------------------------------------------------
@@ -343,7 +372,7 @@ Feature: Business Rules and Service Layer
       | BookingNotFoundException          | RuntimeException         | Thrown when a booking ID or reference is not found|
       | IllegalStateTransitionException   | RuntimeException         | Thrown for invalid booking state transitions      |
       | ScheduleNotAvailableException     | RuntimeException         | Thrown when schedule validation fails             |
-      | QuoteNotValidException            | RuntimeException         | Thrown when quote validation fails                |
+      | QuoteNotValidException            | RuntimeException         | Thrown when quote lookup or bookability validation fails |
       | EquipmentReservationException     | RuntimeException         | Thrown when equipment reservation fails           |
       | BookingValidationException        | RuntimeException         | Thrown for general booking validation errors      |
     And each exception must have at least a constructor accepting a String message

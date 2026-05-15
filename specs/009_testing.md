@@ -161,16 +161,24 @@ Feature: Testing Strategy
       | BookingEventPublisher     | Verify event is published               |
       | ScheduleClient            | Control schedule validation result      |
       | EquipmentClient           | Not called during creation              |
-      | QuoteClient               | Control quote validation result         |
+      | QuoteClient               | Control quote lookup/bookability validation result |
       | BookingMapper             | Return predictable mapped entities      |
     And it must include the following test cases:
       | test method                                            | scenario                                         |
       | shouldCreateBookingSuccessfully()                     | Happy path — valid request, all validations pass  |
+      | shouldCreatePendingBookingWhenQuoteActiveAndBookable()| QuoteClient confirms ACTIVE and bookable=true     |
       | shouldSetStatusToPending()                            | New booking always starts as PENDING              |
       | shouldGenerateUniqueReference()                       | Reference comes from BookingReferenceGenerator    |
       | shouldPublishBookingCreatedEvent()                    | Verify event publisher is called after save       |
       | shouldThrowWhenScheduleNotAvailable()                 | ScheduleClient returns false                     |
-      | shouldThrowWhenQuoteNotValid()                        | QuoteClient returns false                        |
+      | shouldThrowWhenQuotePendingApproval()                  | QuoteClient rejects PENDING_APPROVAL             |
+      | shouldThrowWhenQuoteRejected()                         | QuoteClient rejects REJECTED                     |
+      | shouldThrowWhenQuoteExpired()                          | QuoteClient rejects EXPIRED                      |
+      | shouldThrowWhenQuoteNotBookable()                      | QuoteClient rejects bookable=false               |
+      | shouldThrowWhenQuoteLookupReturns404()                 | QuoteClient maps missing quote to QuoteNotValidException |
+      | shouldThrowWhenQuotePayloadMalformed()                 | QuoteClient maps malformed lookup/bookability payload to QuoteNotValidException |
+      | shouldThrowWhenQuoteLookupTimesOut()                   | QuoteClient maps timeout to QuoteNotValidException |
+      | shouldThrowWhenQuoteServiceReturns5xx()                | QuoteClient maps 5xx to QuoteNotValidException  |
       | shouldThrowWhenEquipmentListEmpty()                   | Request with empty equipment list                |
       | shouldNotPersistBookingWhenValidationFails()          | Verify repository.save() is never called on failure |
       | shouldNotPublishEventWhenValidationFails()            | Verify publisher is never called on failure       |
@@ -275,7 +283,15 @@ Feature: Testing Strategy
       | shouldReturn401WhenNoAuthToken()                    | 401    | Request without Authorization header             |
       | shouldReturn403WhenOperatorTriesToCreate()          | 403    | OPERATOR role cannot create bookings             |
       | shouldReturn422WhenScheduleNotAvailable()           | 422    | Service throws ScheduleNotAvailableException     |
-      | shouldReturn422WhenQuoteNotValid()                  | 422    | Service throws QuoteNotValidException            |
+      | shouldReturn201WhenQuoteActiveAndBookable()         | 201    | ACTIVE/bookable quote permits PENDING booking creation |
+      | shouldReturn422WhenQuotePendingApproval()           | 422    | QuoteNotValidException for PENDING_APPROVAL      |
+      | shouldReturn422WhenQuoteRejected()                  | 422    | QuoteNotValidException for REJECTED              |
+      | shouldReturn422WhenQuoteExpired()                   | 422    | QuoteNotValidException for EXPIRED               |
+      | shouldReturn422WhenQuoteNotBookable()               | 422    | QuoteNotValidException for bookable=false        |
+      | shouldReturn422WhenQuoteMissing()                   | 422    | QuoteNotValidException for Quotes 404            |
+      | shouldReturn422WhenQuotePayloadMalformed()          | 422    | QuoteNotValidException for malformed Quotes payload |
+      | shouldReturn422WhenQuoteTimeouts()                  | 422    | QuoteNotValidException for Quotes timeout        |
+      | shouldReturn422WhenQuoteServiceFails()              | 422    | QuoteNotValidException for Quotes 5xx            |
 
   @testing @integration @controller
   Scenario: GET /api/v1/bookings/{id} controller tests
@@ -371,21 +387,40 @@ Feature: Testing Strategy
     And each test must consume from the topic using a test KafkaConsumer to verify the message
 
   # ---------------------------------------------------------------------------
-  # Integration Tests — External Service Clients (Deferred)
+  # Integration Tests — External Service Clients
   # ---------------------------------------------------------------------------
 
   @testing @integration @wiremock
-  Scenario: WireMock tests for external service clients
-    Given the external services (Schedules, Equipment, Quotes) do not have finalized API contracts
-    Then WireMock-based integration tests for real client implementations are DEFERRED
-    And they must be written when the external API contracts are available
+  Scenario: WireMock tests for QuoteClientRestClient
+    Given a test class "QuoteClientRestClientTest" in package "com.cargo.booking.client"
+    Then it must use WireMock and the real RestClient-backed QuoteClient implementation
+    And it must verify the required Quotes requests:
+      | test method                                      | expectation                                      |
+      | shouldCallQuoteLookupAndBookabilityEndpoints()   | Calls GET /quotes/{id} and GET /quotes/{id}/bookability |
+      | shouldReturnTrueWhenQuoteActiveAndBookable()     | ACTIVE, bookable=true, expired=false returns true |
+      | shouldRejectPendingApprovalQuote()               | PENDING_APPROVAL prevents booking validation     |
+      | shouldRejectRejectedQuote()                      | REJECTED prevents booking validation             |
+      | shouldRejectExpiredQuote()                       | EXPIRED or expired=true prevents booking validation |
+      | shouldRejectWhenBookableFalse()                  | bookable=false prevents booking validation       |
+      | shouldRejectWhenQuoteNotFound()                  | 404 maps to QuoteNotValidException               |
+      | shouldRejectMalformedQuotePayload()              | malformed lookup or bookability JSON maps to QuoteNotValidException |
+      | shouldRejectQuoteTimeout()                       | WireMock delayed response past timeout maps to QuoteNotValidException |
+      | shouldRejectQuoteServerError()                   | 5xx maps to QuoteNotValidException               |
+      | shouldRejectQuoteWithMismatchedBookingContext()  | scheduleId, customerId when present, cargoWeightKg, or equipment mismatch returns false/throws |
+      | shouldNotForwardCallerAuthorizationHeader()      | Outbound public Quotes lookup/bookability requests omit Authorization |
+
+  @testing @integration @wiremock
+  Scenario: WireMock tests for Schedule and Equipment clients
+    Given the Schedules and Equipment services do not have finalized API contracts
+    Then WireMock-based integration tests for those real client implementations are DEFERRED
+    And they must be written when those external API contracts are available
     And the test infrastructure must be prepared now:
       | preparation                                                                    |
       | WireMock dependency is included in pom.xml (test scope)                        |
       | A base class "BaseWireMockTest" must be created in "com.cargo.booking.client"  |
       | It must configure WireMock servers on dynamic ports for each external service   |
       | Test application properties must override base URLs to point to WireMock       |
-    And when contracts are known, tests should cover at minimum:
+    And when Schedule and Equipment contracts are known, tests should cover at minimum:
       | scenario type                                         |
       | Happy path — external service returns success         |
       | Not found — external service returns 404              |
