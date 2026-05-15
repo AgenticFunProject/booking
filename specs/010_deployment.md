@@ -137,8 +137,8 @@ Feature: Deployment and Infrastructure
     Then the following Spring profiles must be supported:
       | profile     | purpose                                           | configuration                                |
       | local       | Local development with stubs                      | Stub clients, local DB, security disabled, console logging |
-      | dev         | Development/staging environment                   | Real clients, dev DB, JSON logging            |
-      | prod        | Production environment                            | Real clients, prod DB, JSON logging, strict   |
+      | dev         | Development/staging environment                   | Real clients when contracts exist; dev DB, JSON logging |
+      | prod        | Production environment                            | Real clients when contracts exist; prod DB, JSON logging, strict |
       | test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
 
   @deployment @profiles
@@ -147,8 +147,8 @@ Feature: Deployment and Infrastructure
       | file                                   | key overrides                                          |
       | application.yml                        | Base config (defaults to local-friendly values)        |
       | application-local.yml                  | Explicit local settings, security disabled, verbose logging |
-      | application-dev.yml                    | Dev environment URLs, JSON logging                     |
-      | application-prod.yml                   | Prod URLs, JSON logging, stricter security             |
+      | application-dev.yml                    | Dev environment URLs for future real clients, JSON logging |
+      | application-prod.yml                   | Prod URLs for future real clients, JSON logging, stricter security |
       | application-test.yml                   | Embedded PostgreSQL, test JWT secret                   |
 
   @deployment @profiles

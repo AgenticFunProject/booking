@@ -206,7 +206,8 @@ Feature: Error Handling
     Then it must handle MissingServletRequestParameterException with:
       | annotation                                                            | status | error       |
       | @ExceptionHandler(MissingServletRequestParameterException.class)      | 400    | Bad Request |
-    And the message must indicate which parameter is missing (e.g. "Required parameter 'customerId' is missing")
+    And the message must indicate which parameter is missing
+    And conditional parameters such as customerId on GET /api/v1/bookings must be validated by controller/security logic, not by Spring's required-parameter mechanism
     And the exception must be logged at WARN level
 
   @error @handler @validation

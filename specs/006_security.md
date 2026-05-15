@@ -235,6 +235,7 @@ Feature: Security
     And when the user calls POST /api/v1/bookings, request.customerId must match the customerId claim from the JWT
     And if it does not match, the service must return HTTP 403 Forbidden
     And the Booking entity must store customerId from the request after this authorization check passes
+    And if the user calls GET /api/v1/bookings without customerId, the service must return HTTP 400 Bad Request
 
   @security @ownership
   Scenario: Customer role without a customer identity claim
@@ -261,6 +262,7 @@ Feature: Security
     When the user accesses a booking endpoint allowed by the endpoint-level access rules
     Then no customer ownership check is required
     And they may act on behalf of the customer identified by request.customerId or query parameter customerId
+    And for GET /api/v1/bookings they may omit customerId to list all bookings
 
   @security @ownership
   Scenario: SecurityContextHelper utility

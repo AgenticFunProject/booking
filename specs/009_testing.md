@@ -427,7 +427,7 @@ Feature: Testing Strategy
       | Repository     | 80%+     | Custom queries and specifications              |
       | Mapper         | 90%+     | All mapping paths including edge cases         |
       | Security       | 85%+     | Auth, roles, and ownership checks              |
-      | Integration    | 75%+     | Client implementations with WireMock           |
+      | Integration    | 75%+     | Repository, controller, and security integration tests now; client WireMock tests when real clients exist |
     And these are targets, not hard gates — the AI should aim for them but not generate filler tests
 
   # ---------------------------------------------------------------------------

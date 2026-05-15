@@ -193,12 +193,10 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                       |
-      | 1    | If security is enabled and requester has CUSTOMER role, verify request.customerId matches the optional customerId/customer_id JWT claim |
-      | 2    | If security is enabled and requester has SERVICE or ADMIN role, allow any valid request.customerId |
-      | 3    | If security is disabled, accept request.customerId as the booking owner |
-      | 4    | Call bookingService.createBooking() with the request         |
-      | 5    | Map the result to BookingCreatedResponse using the mapper    |
-      | 6    | Return the response with HTTP 201 Created                    |
+      | 1    | Apply endpoint authentication and authorization rules defined in 006_security.md |
+      | 2    | Call bookingService.createBooking() with the request         |
+      | 3    | Map the result to BookingCreatedResponse using the mapper    |
+      | 4    | Return the response with HTTP 201 Created                    |
 
   @api @endpoint @create
   Scenario: Create booking — request body example
@@ -310,13 +308,10 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                                |
-      | 1    | If security is enabled, resolve the authenticated requester's roles and optional customerId/customer_id JWT claim |
-      | 2    | If security is enabled and role is CUSTOMER, require customerId to match the JWT customerId/customer_id claim |
-      | 3    | If security is enabled and role is SERVICE, OPERATOR, or ADMIN, allow customerId to be omitted to list all bookings |
-      | 4    | If security is disabled, allow customerId to be provided as a filter or omitted to list all bookings |
-      | 5    | Call bookingService.getBookings(customerId, status, pageable)            |
-      | 6    | Map each booking entity to BookingResponse                              |
-      | 7    | Wrap in PagedResponse and return with HTTP 200                          |
+      | 1    | Apply endpoint authentication and authorization rules defined in 006_security.md |
+      | 2    | Call bookingService.getBookings(customerId, status, pageable)            |
+      | 3    | Map each booking entity to BookingResponse                              |
+      | 4    | Wrap in PagedResponse and return with HTTP 200                          |
 
   @api @endpoint @read
   Scenario: List bookings — query parameter validation
@@ -328,9 +323,7 @@ Feature: API Endpoints
       | page        | int           | no       | 0                   | Page number (zero-based)       |
       | size        | int           | no       | 20                  | Page size (max 100)            |
       | sort        | String        | no       | createdAt,desc      | Sort field and direction       |
-    And if security is enabled and customerId is missing for a CUSTOMER request the API must return HTTP 400 with a validation error
-    And if security is enabled and customerId does not match the authenticated CUSTOMER token's customerId/customer_id claim the API must return HTTP 403
-    And if security is enabled, role is CUSTOMER, and the token has no customerId/customer_id claim the API must return HTTP 403
+    And conditional customerId requirements for secured callers are defined in 006_security.md
 
   # ---------------------------------------------------------------------------
   # PATCH /api/v1/bookings/{id}/cancel
