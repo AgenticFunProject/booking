@@ -274,6 +274,7 @@ Feature: Testing Strategy
       | shouldReturn400WhenCustomerIdMissingFromCreateRequest() | 400 | Missing customerId in request body                |
       | shouldReturn400WhenEmailInvalid()                   | 400    | Malformed email in customer request              |
       | shouldReturn400WhenEquipmentListEmpty()             | 400    | Empty equipment array                            |
+      | shouldReturn400WhenEquipmentTypeUnsupported()       | 400    | Service throws BookingValidationException for unsupported equipment type |
       | shouldReturn401WhenNoAuthToken()                    | 401    | Request without Authorization header             |
       | shouldReturn403WhenOperatorTriesToCreate()          | 403    | OPERATOR role cannot create bookings             |
       | shouldReturn403WhenCustomerCreatesForAnotherCustomer() | 403 | request.customerId does not match JWT customerId claim |
@@ -288,6 +289,7 @@ Feature: Testing Strategy
       | test method                                          | status | description                                    |
       | shouldGetBookingByIdAndReturn200()                  | 200    | Valid numeric ID, booking found                  |
       | shouldGetBookingByReferenceAndReturn200()           | 200    | Valid BKG reference, booking found               |
+      | shouldReturn400WhenBookingIdentifierFormatInvalid() | 400    | Invalid ID/reference format throws BookingValidationException |
       | shouldReturn404WhenBookingNotFound()                | 404    | Unknown ID returns 404                           |
       | shouldReturn401WhenNotAuthenticated()               | 401    | No token                                         |
 
@@ -346,6 +348,7 @@ Feature: Testing Strategy
       | test method                                        | description                                          |
       | shouldReturnStructuredErrorFor404()               | Error body matches ErrorResponse format               |
       | shouldReturnValidationErrorsWithFieldDetails()    | 400 response includes violations list                 |
+      | shouldReturnStructuredErrorForBookingValidationException() | BookingValidationException maps to standard 400 ErrorResponse |
       | shouldReturnSortedFieldViolations()               | Violations are alphabetically ordered                 |
       | shouldNotExposeInternalDetailsIn500()              | Generic message for unexpected exceptions             |
       | shouldIncludeRequestPathInError()                 | Path field matches the request URI                    |
