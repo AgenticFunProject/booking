@@ -117,7 +117,8 @@ Feature: Business Rules and Service Layer
     And if customerId and status are provided it must filter by both
     And if only customerId is provided it must filter by customer
     And if only status is provided it must filter by status
-    And if neither filter is provided it must return all bookings visible to the caller
+    And if neither filter is provided it must return all bookings matching no additional filters
+    And caller visibility must be enforced by the API/security layer before calling the service
     And the method must be annotated with @Transactional(readOnly = true)
 
   # ---------------------------------------------------------------------------
