@@ -166,6 +166,7 @@ Feature: API Endpoints
       | dependency        | purpose                            |
       | BookingService    | Business logic orchestration       |
       | BookingMapper     | Entity-to-DTO conversion           |
+    And every endpoint must be subject to the authentication and authorization rules defined in 006_security.md when security is enabled
 
   # ---------------------------------------------------------------------------
   # POST /api/v1/bookings
@@ -186,10 +187,9 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                       |
-      | 1    | Apply endpoint authentication and authorization rules defined in 006_security.md |
-      | 2    | Call bookingService.createBooking() with the request         |
-      | 3    | Map the result to BookingCreatedResponse using the mapper    |
-      | 4    | Return the response with HTTP 201 Created                    |
+      | 1    | Call bookingService.createBooking() with the request         |
+      | 2    | Map the result to BookingCreatedResponse using the mapper    |
+      | 3    | Return the response with HTTP 201 Created                    |
 
   @api @endpoint @create
   Scenario: Create booking — request body example
@@ -302,10 +302,9 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                                |
-      | 1    | Apply endpoint authentication and authorization rules defined in 006_security.md |
-      | 2    | Call bookingService.getBookings(customerId, status, pageable)            |
-      | 3    | Map each booking entity to BookingResponse                              |
-      | 4    | Wrap in PagedResponse and return with HTTP 200                          |
+      | 1    | Call bookingService.getBookings(customerId, status, pageable)            |
+      | 2    | Map each booking entity to BookingResponse                              |
+      | 3    | Wrap in PagedResponse and return with HTTP 200                          |
 
   @api @endpoint @read
   Scenario: List bookings — query parameter validation
