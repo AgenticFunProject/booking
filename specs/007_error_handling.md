@@ -245,8 +245,8 @@ Feature: Error Handling
     And the following property must be set in application.yml:
       | property                                            | value |
       | spring.mvc.throw-exception-if-no-handler-found      | true  |
-      | spring.web.resources.add-mappings                   | false |
-    And disabling resource mappings ensures unknown API paths consistently reach NoHandlerFoundException instead of static resource handling
+    And the implementation must preserve SpringDoc / Swagger UI static resource mappings
+    And unknown "/api/**" paths must still return the standard JSON ErrorResponse format
 
   # ---------------------------------------------------------------------------
   # Security Exceptions (fallback — primary handled in 006)
