@@ -32,12 +32,14 @@ Feature: Error Handling
       | error      | String        | HTTP reason phrase (e.g. "Not Found")          |
       | message    | String        | Human-readable error description               |
       | path       | String        | The request URI that caused the error          |
+      | requestId  | String        | Optional X-Request-ID correlation value        |
     And it must match the error structure convention from 001_project_setup.md
 
   @error @dto
   Scenario: ValidationErrorResponse DTO
     Given a record "ValidationErrorResponse" in package "com.cargo.booking.exception"
-    Then it must extend or include all fields from ErrorResponse
+    Then it must include all fields from ErrorResponse
+    And it must not attempt to extend ErrorResponse because Java records cannot extend another record
     And it must add an additional field:
       | field       | type                    | description                                    |
       | violations  | List<FieldViolation>    | List of individual field validation errors      |
@@ -288,6 +290,7 @@ Feature: Error Handling
       | Set status from the HttpStatus code                           |
       | Set error from the HttpStatus reason phrase                   |
       | Set path from request.getRequestURI()                         |
+      | Set requestId from the X-Request-ID header when present        |
 
   # ---------------------------------------------------------------------------
   # Exception Hierarchy Summary
@@ -337,7 +340,7 @@ Feature: Error Handling
     Then the error response should include the request ID if present:
       | field      | source                                              |
       | requestId  | Value from X-Request-ID header, or null if absent   |
-    And the ErrorResponse record must include an optional "requestId" field (nullable)
+    And the ErrorResponse record already includes an optional "requestId" field (nullable)
     And the GlobalExceptionHandler must extract this header from the HttpServletRequest
 
   # ---------------------------------------------------------------------------

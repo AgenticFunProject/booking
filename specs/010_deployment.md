@@ -119,9 +119,12 @@ Feature: Deployment and Infrastructure
       | depends_on    | zookeeper                            |
       | environment   | KAFKA_BROKER_ID=1                    |
       | environment   | KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 |
-      | environment   | KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 |
+      | environment   | KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092 |
+      | environment   | KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092 |
+      | environment   | KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT |
+      | environment   | KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT |
       | environment   | KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 |
-      | healthcheck   | kafka-topics --bootstrap-server localhost:9092 --list |
+      | healthcheck   | kafka-topics --bootstrap-server kafka:29092 --list |
       | restart       | unless-stopped                       |
 
   @deployment @compose
@@ -134,7 +137,7 @@ Feature: Deployment and Infrastructure
       | ports         | 8080:8080                            |
       | depends_on    | kafka                                |
       | environment   | KAFKA_CLUSTERS_0_NAME=local          |
-      | environment   | KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 |
+      | environment   | KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092 |
       | restart       | unless-stopped                       |
 
   @deployment @compose
@@ -150,7 +153,7 @@ Feature: Deployment and Infrastructure
       | environment   | DB_USERNAME=booking_user             |
       | environment   | DB_PASSWORD=booking_pass             |
       | environment   | SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db |
-      | environment   | KAFKA_BOOTSTRAP_SERVERS=kafka:9092   |
+      | environment   | KAFKA_BOOTSTRAP_SERVERS=kafka:29092  |
       | environment   | JWT_SECRET=${JWT_SECRET:-dev-secret-key-that-is-at-least-256-bits-long-for-hs256} |
       | restart       | unless-stopped                       |
     And it must use the "local" profile so stub clients are activated

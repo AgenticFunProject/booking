@@ -101,15 +101,18 @@ Feature: Data Access Layer
     And this method must be annotated with @Modifying and @Transactional
 
   # ---------------------------------------------------------------------------
-  # Booking Reference Sequence
+  # Booking Reference Counter
   # ---------------------------------------------------------------------------
 
   @data-access @sequence
-  Scenario: Fetch next booking reference sequence value
+  Scenario: Fetch next booking reference sequence value for year
     Given the BookingRepository interface
-    Then it must define a native query to fetch the next sequence value:
-      | method                  | annotation                                                         | returns | description                          |
-      | getNextReferenceSeq()   | @Query(value = "SELECT nextval('booking_reference_seq')", nativeQuery = true) | Long    | Next value from PostgreSQL sequence  |
+    Then it must define a native query to atomically fetch and increment the next yearly counter value:
+      | method                         | returns | description                                  |
+      | getNextReferenceSeqForYear(int year) | Long    | Next value for the given UTC calendar year   |
+    And the native query must insert a row for a new year with next_value = 2 and return 1
+    And for an existing year it must increment next_value by 1 and return the previous value
+    And it must rely on PostgreSQL INSERT ... ON CONFLICT ... DO UPDATE semantics for concurrency safety
 
   # ---------------------------------------------------------------------------
   # Pagination and Sorting Defaults

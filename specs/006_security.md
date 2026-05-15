@@ -137,7 +137,8 @@ Feature: Security
         "status": 401,
         "error": "Unauthorized",
         "message": "Authentication is required to access this resource",
-        "path": "/api/v1/bookings"
+        "path": "/api/v1/bookings",
+        "requestId": null
       }
       """
 
@@ -161,7 +162,8 @@ Feature: Security
         "status": 403,
         "error": "Forbidden",
         "message": "You do not have permission to perform this action",
-        "path": "/api/v1/bookings/123/confirm"
+        "path": "/api/v1/bookings/123/confirm",
+        "requestId": null
       }
       """
 
@@ -215,6 +217,7 @@ Feature: Security
     When the user calls GET /api/v1/bookings
     Then the customerId query parameter must match the authenticated user's ID from the JWT
     And if it does not match, the service must return HTTP 403 Forbidden
+    And customer-created bookings must store customerId from the JWT subject, never from request body input
 
   @security @ownership
   Scenario: Customers can only view and cancel their own bookings

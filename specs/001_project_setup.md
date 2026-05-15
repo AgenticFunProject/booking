@@ -167,7 +167,8 @@ Feature: Project Setup and Configuration
         "status": "HTTP status code (int)",
         "error": "HTTP reason phrase",
         "message": "Human-readable description",
-        "path": "Request URI"
+        "path": "Request URI",
+        "requestId": "Optional X-Request-ID correlation value, or null"
       }
       """
 

@@ -201,15 +201,16 @@ Feature: Integration Infrastructure and Kafka Configuration
   @integration @kafka
   Scenario: Dead letter topic for failed events
     Given the Kafka producer may fail to deliver events
-    Then a dead letter topic "booking.events.dlq" must be configured
-    And when a message fails after all retries it must be sent to the DLQ
-    And the DLQ message must include:
+    Then a dead letter topic "booking.events.dlq" must be declared as infrastructure
+    And direct Kafka producer callbacks must log failures without throwing
+    And if guaranteed event delivery is required, a future transactional outbox must persist failed events for retry and DLQ routing
+    And DLQ routing must not be implemented with Spring Kafka DefaultErrorHandler, because that is consumer-side infrastructure
+    And any future DLQ message must include:
       | field            | description                                |
       | original topic   | The topic the message was intended for     |
       | error reason     | Why delivery failed                        |
       | original payload | The full event payload                     |
       | timestamp        | When the failure occurred                  |
-    And a KafkaProducerConfig class must configure the DefaultErrorHandler or custom logic
 
   # ---------------------------------------------------------------------------
   # Actuator Health Configuration

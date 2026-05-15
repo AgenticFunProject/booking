@@ -46,25 +46,27 @@ Feature: Business Rules and Service Layer
   @business @create
   Scenario: Create a new booking — happy path
     Given a valid booking request with scheduleId, quoteId, customer details, cargo, and equipment
-    When the BookingService.createBooking() method is called
+    And an authenticated customerId extracted from the JWT subject
+    When the BookingService.createBooking() method is called with the request and authenticated customerId
     Then the service must perform these steps in order:
       | step | action                                                                  |
       | 1    | Validate the schedule exists and is open by calling ScheduleClient      |
       | 2    | Validate the quote is valid and matches the booking by calling QuoteClient |
       | 3    | Generate a unique booking reference using BookingReferenceGenerator     |
-      | 4    | Build a Booking entity with status PENDING                              |
+      | 4    | Build a Booking entity with status PENDING and customerId from the JWT  |
       | 5    | Build BookingEquipmentLine entities from the equipment list             |
       | 6    | Associate equipment lines with the booking                              |
       | 7    | Save the booking (cascade saves equipment lines)                        |
-      | 8    | Publish a "booking.created" event via BookingEventPublisher             |
+      | 8    | Register a "booking.created" domain event for after-commit publication  |
       | 9    | Return the saved booking                                                |
     And the entire operation must be wrapped in @Transactional
-    And the event must be published after the transaction commits (use @TransactionalEventListener with AFTER_COMMIT phase)
+    And the event must be published to Kafka only after the transaction commits
+    And all booking lifecycle events must use the same after-commit publication pattern
 
   @business @create
   Scenario: Create booking — schedule not found or closed
     Given a booking request with an invalid or closed scheduleId
-    When the BookingService.createBooking() method is called
+    When the BookingService.createBooking() method is called with the request and authenticated customerId
     Then it must throw a ScheduleNotAvailableException with a descriptive message
     And the booking must NOT be persisted
     And no event must be published
@@ -72,7 +74,7 @@ Feature: Business Rules and Service Layer
   @business @create
   Scenario: Create booking — quote invalid or expired
     Given a booking request with an invalid or expired quoteId
-    When the BookingService.createBooking() method is called
+    When the BookingService.createBooking() method is called with the request and authenticated customerId
     Then it must throw a QuoteNotValidException with a descriptive message
     And the booking must NOT be persisted
     And no event must be published
@@ -80,7 +82,7 @@ Feature: Business Rules and Service Layer
   @business @create
   Scenario: Create booking — empty equipment list
     Given a booking request with an empty equipment list
-    When the BookingService.createBooking() method is called
+    When the BookingService.createBooking() method is called with the request and authenticated customerId
     Then it must throw a BookingValidationException with message "At least one equipment line is required"
     And the booking must NOT be persisted
 
@@ -129,7 +131,7 @@ Feature: Business Rules and Service Layer
       | 4    | Update the booking status to CONFIRMED                                     |
       | 5    | Update the updatedAt timestamp                                             |
       | 6    | Save the booking                                                           |
-      | 7    | Publish a "booking.confirmed" event                                        |
+      | 7    | Register a "booking.confirmed" domain event for after-commit publication   |
     And the entire operation must be wrapped in @Transactional
     And if equipment reservation fails it must throw an EquipmentReservationException and NOT change the status
 
@@ -143,7 +145,7 @@ Feature: Business Rules and Service Layer
       | 2    | Validate the current status is CONFIRMED                                   |
       | 3    | Update the booking status to IN_PROGRESS                                   |
       | 4    | Save the booking                                                           |
-      | 5    | Publish a "booking.in_progress" event                                      |
+      | 5    | Register a "booking.in_progress" domain event for after-commit publication |
 
   @business @lifecycle
   Scenario: Complete a booking
@@ -155,7 +157,7 @@ Feature: Business Rules and Service Layer
       | 2    | Validate the current status is IN_PROGRESS                                 |
       | 3    | Update the booking status to COMPLETED                                     |
       | 4    | Save the booking                                                           |
-      | 5    | Publish a "booking.completed" event                                        |
+      | 5    | Register a "booking.completed" domain event for after-commit publication   |
 
   @business @lifecycle
   Scenario: Cancel a booking
@@ -168,7 +170,7 @@ Feature: Business Rules and Service Layer
       | 3    | If status was CONFIRMED, call EquipmentClient to release the reserved equipment |
       | 4    | Update the booking status to CANCELLED                                     |
       | 5    | Save the booking                                                           |
-      | 6    | Publish a "booking.cancelled" event                                        |
+      | 6    | Register a "booking.cancelled" domain event for after-commit publication   |
     And if equipment release fails the cancellation must still proceed (log a warning, do not throw)
 
   @business @lifecycle
@@ -202,17 +204,17 @@ Feature: Business Rules and Service Layer
   Scenario: BookingReferenceGenerator service
     Given a service class "BookingReferenceGenerator" in package "com.cargo.booking.service"
     Then it must be annotated with @Service
-    And it must depend on BookingRepository (to access the native sequence query)
+    And it must depend on BookingRepository (to access the native yearly counter query)
     And it must have a public method:
       | method signature              | returns | description                            |
       | generateReference()           | String  | Returns a unique booking reference      |
     And the method must:
       | step | action                                                                    |
-      | 1    | Fetch the next value from booking_reference_seq via the repository        |
-      | 2    | Get the current year in UTC                                               |
+      | 1    | Get the current year in UTC                                               |
+      | 2    | Fetch the next counter value for that year via the repository             |
       | 3    | Format the reference as "BKG-{YEAR}-{SEQ}" where SEQ is zero-padded to 5 digits |
       | 4    | Return the formatted reference                                           |
-    And the method must be safe for concurrent calls (the database sequence handles this)
+    And the method must be safe for concurrent calls (the database counter upsert handles this)
 
   # ---------------------------------------------------------------------------
   # Domain Events
@@ -264,6 +266,14 @@ Feature: Business Rules and Service Layer
     And the Kafka message key must be the bookingReference
     And each publish method must log the event at INFO level before sending
     And failures to publish must be logged at ERROR level but must NOT roll back the transaction
+
+  @business @events
+  Scenario: After-commit event publication
+    Given booking service methods run inside database transactions
+    Then service methods must publish internal Spring application events or collect domain events before returning
+    And a dedicated listener must consume those internal events with @TransactionalEventListener(phase = AFTER_COMMIT)
+    And the listener must delegate to BookingEventPublisher only after the database commit succeeds
+    And rolled-back transactions must not emit Kafka events
 
   # ---------------------------------------------------------------------------
   # Kafka Configuration

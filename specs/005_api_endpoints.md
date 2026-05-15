@@ -84,6 +84,7 @@ Feature: API Endpoints
     Given a record "BookingCreatedResponse" in package "com.cargo.booking.dto.response"
     Then it must be a Java record with the following fields:
       | field             | type    | description                           |
+      | id                | Long    | Internal booking ID                   |
       | bookingReference  | String  | Human-readable reference              |
       | status            | String  | Always "PENDING" for a new booking    |
       | createdAt         | Instant | When the booking was created (UTC)    |
@@ -149,7 +150,7 @@ Feature: API Endpoints
       | Map cargo fields from the nested CargoRequest                           |
       | Convert each EquipmentRequest to a BookingEquipmentLine and associate   |
       | Set the bookingReference from the provided reference parameter          |
-      | Generate a customerId (Long) or accept it as a parameter                |
+      | Set customerId only from the provided authenticated user ID parameter    |
     And the mapper must NOT use any reflection-based mapping libraries (keep it explicit)
 
   # ---------------------------------------------------------------------------
@@ -189,9 +190,10 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                       |
-      | 1    | Call bookingService.createBooking() with the request         |
-      | 2    | Map the result to BookingCreatedResponse using the mapper    |
-      | 3    | Return the response with HTTP 201 Created                    |
+      | 1    | Resolve the authenticated user ID from the security context  |
+      | 2    | Call bookingService.createBooking() with the request and authenticated user ID |
+      | 3    | Map the result to BookingCreatedResponse using the mapper    |
+      | 4    | Return the response with HTTP 201 Created                    |
 
   @api @endpoint @create
   Scenario: Create booking — request body example
@@ -219,6 +221,7 @@ Feature: API Endpoints
     And a valid response (HTTP 201) looks like:
       """json
       {
+        "id": 42,
         "bookingReference": "BKG-2026-00042",
         "status": "PENDING",
         "createdAt": "2026-03-31T10:00:00Z"

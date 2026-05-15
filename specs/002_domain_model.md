@@ -131,12 +131,17 @@ Feature: Domain Model
     And it must be safe for concurrent usage (no duplicate references under load)
 
   @domain @logic
-  Scenario: Booking reference database sequence
-    Given the booking reference requires a sequential number
-    Then a PostgreSQL sequence named "booking_reference_seq" must be created
-    And it must start at 1 and increment by 1
-    And it must be reset or partitioned per year via application logic
-    And the Flyway migration must create this sequence alongside the tables
+  Scenario: Booking reference yearly counter
+    Given the booking reference requires a per-year sequential number
+    Then a PostgreSQL table named "booking_reference_counters" must be created
+    And it must have the following columns:
+      | column     | postgresType              | nullable | notes                         |
+      | year       | INTEGER                   | false    | Primary key, e.g. 2026        |
+      | next_value | BIGINT                    | false    | Next sequence value to assign |
+      | updated_at | TIMESTAMP WITH TIME ZONE  | false    | Last counter update           |
+    And the counter update must be atomic under concurrent requests
+    And the first reference generated for a new year must end in "00001"
+    And examples across years must reset as shown in the reference format scenario
 
   # ---------------------------------------------------------------------------
   # Entity Validation Rules
@@ -221,7 +226,7 @@ Feature: Domain Model
     Then a migration file "V1__create_booking_tables.sql" must be created
     And it must create the "bookings" table with all columns matching the Booking entity
     And it must create the "booking_equipment_lines" table with a foreign key to "bookings"
-    And it must create the "booking_reference_seq" sequence
+    And it must create the "booking_reference_counters" table
     And it must create all indexes defined in the indexing scenario
     And all column types must match PostgreSQL equivalents:
       | javaType      | postgresType              |

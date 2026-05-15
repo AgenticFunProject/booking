@@ -69,6 +69,7 @@ Feature: Testing Strategy
       | KafkaContainer              | confluentinc/cp-kafka    | Default settings                    |
     And it must use @DynamicPropertySource to inject embedded PostgreSQL and Kafka connection details into Spring context
     And the embedded database and containers must be static (shared across all test classes extending this base)
+    And tests that need local stub clients must activate both "test" and "local" profiles with @ActiveProfiles({"test", "local"})
 
   # ---------------------------------------------------------------------------
   # Test Utilities
@@ -162,7 +163,6 @@ Feature: Testing Strategy
       | ScheduleClient            | Control schedule validation result      |
       | EquipmentClient           | Not called during creation              |
       | QuoteClient               | Control quote validation result         |
-      | BookingMapper             | Return predictable mapped entities      |
     And it must include the following test cases:
       | test method                                            | scenario                                         |
       | shouldCreateBookingSuccessfully()                     | Happy path — valid request, all validations pass  |
@@ -401,7 +401,7 @@ Feature: Testing Strategy
   Scenario: Full booking lifecycle end-to-end test
     Given a test class "BookingLifecycleE2ETest" in package "com.cargo.booking"
     Then it must extend BaseIntegrationTest (embedded PostgreSQL and KafkaContainer)
-    And it must use the "local" profile so that stub clients are active (no real external services)
+    And it must use both the "test" and "local" profiles so that test infrastructure and stub clients are active
     And it must use TestRestTemplate or WebTestClient with a real JWT token
     And it must verify the complete happy path:
       | step | action                                                     | expected                           |
@@ -412,7 +412,7 @@ Feature: Testing Strategy
       | 5    | PATCH /api/v1/bookings/{id}/start as OPERATOR              | 200, status=IN_PROGRESS            |
       | 6    | PATCH /api/v1/bookings/{id}/complete as OPERATOR           | 200, status=COMPLETED              |
       | 7    | Verify "booking.completed" event on Kafka topic            | Event payload matches booking      |
-      | 8    | GET /api/v1/bookings?customerId={id} as CUSTOMER           | 200, list includes this booking    |
+      | 8    | GET /api/v1/bookings?customerId={jwtUserId} as CUSTOMER    | 200, list includes this booking    |
 
   @testing @e2e
   Scenario: Cancellation flow end-to-end test
