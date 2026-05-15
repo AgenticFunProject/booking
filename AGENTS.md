@@ -163,11 +163,12 @@ JWT-based stateless auth can be enabled for protected deployments. Local/unsecur
 
 | Role          | Can do                                                      |
 |---------------|-------------------------------------------------------------|
-| CUSTOMER      | Create bookings, view/cancel own bookings only              |
+| CUSTOMER      | Direct customer token; create/view/cancel only when token has matching customerId claim |
+| SERVICE       | Trusted service token; create/read/cancel on behalf of request customerId |
 | OPERATOR      | View all bookings, confirm/start/complete                   |
 | ADMIN         | Everything                                                  |
 
-Customers have ownership checks when security is enabled — they can only see and cancel their own bookings. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
+JWT subject identifies the requester, which may be a service, not the booking customer. Customers have ownership checks when security is enabled only via an explicit `customerId` / `customer_id` token claim. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
 
 ## Error Response Format
 

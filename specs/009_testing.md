@@ -97,11 +97,12 @@ Feature: Testing Strategy
     Given a class "JwtTestHelper" in package "com.cargo.booking.testutil"
     Then it must provide methods to generate valid JWT tokens for testing:
       | method                                                                 | returns | description                       |
-      | generateToken(Long userId, String username, List<String> roles)       | String  | Valid JWT token for test user      |
-      | generateCustomerToken(Long userId)                                    | String  | Token with ROLE_CUSTOMER           |
-      | generateOperatorToken(Long userId)                                    | String  | Token with ROLE_OPERATOR           |
-      | generateAdminToken(Long userId)                                       | String  | Token with ROLE_ADMIN              |
-      | generateExpiredToken(Long userId)                                     | String  | Expired JWT for negative tests     |
+      | generateToken(String subject, String username, List<String> roles)    | String  | Valid JWT token for requester      |
+      | generateCustomerToken(Long customerId)                               | String  | Token with ROLE_CUSTOMER and customerId claim |
+      | generateServiceToken(String serviceName)                             | String  | Token with ROLE_SERVICE and no customerId claim |
+      | generateOperatorToken(String subject)                                | String  | Token with ROLE_OPERATOR           |
+      | generateAdminToken(String subject)                                   | String  | Token with ROLE_ADMIN              |
+      | generateExpiredToken(String subject)                                 | String  | Expired JWT for negative tests     |
     And it must use the test JWT secret from application-test.yml
     And it must set the issuer to "test-issuer"
 
@@ -253,8 +254,9 @@ Feature: Testing Strategy
     Given the BookingControllerTest class
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
-      | shouldCreateBookingAndReturn201()                   | 201    | Valid request, authenticated as CUSTOMER         |
+      | shouldCreateBookingAndReturn201()                   | 201    | Valid request.customerId matching CUSTOMER token customerId claim |
       | shouldCreateBookingAsAdminForAnyCustomer()          | 201    | ADMIN can create with any valid request.customerId |
+      | shouldCreateBookingAsServiceForAnyCustomer()        | 201    | SERVICE token can create on behalf of request.customerId |
       | shouldCreateBookingWhenSecurityDisabled()            | 201    | Valid request without JWT when app.security.enabled=false |
       | shouldReturn400WhenRequestBodyInvalid()             | 400    | Missing required fields                          |
       | shouldReturn400WhenCustomerIdMissingFromCreateRequest() | 400 | Missing customerId in request body                |
@@ -262,7 +264,8 @@ Feature: Testing Strategy
       | shouldReturn400WhenEquipmentListEmpty()             | 400    | Empty equipment array                            |
       | shouldReturn401WhenNoAuthToken()                    | 401    | Request without Authorization header             |
       | shouldReturn403WhenOperatorTriesToCreate()          | 403    | OPERATOR role cannot create bookings             |
-      | shouldReturn403WhenCustomerCreatesForAnotherCustomer() | 403 | request.customerId does not match JWT subject     |
+      | shouldReturn403WhenCustomerCreatesForAnotherCustomer() | 403 | request.customerId does not match JWT customerId claim |
+      | shouldReturn403WhenCustomerTokenHasNoCustomerIdClaim() | 403 | CUSTOMER token cannot infer customerId from subject |
       | shouldReturn422WhenScheduleNotAvailable()           | 422    | Service throws ScheduleNotAvailableException     |
       | shouldReturn422WhenQuoteNotValid()                  | 422    | Service throws QuoteNotValidException            |
 
@@ -282,6 +285,7 @@ Feature: Testing Strategy
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
       | shouldListBookingsByCustomerAndReturn200()          | 200    | Valid customerId, paginated results              |
+      | shouldListAllBookingsForServiceWhenCustomerIdMissing() | 200 | SERVICE may omit customerId                       |
       | shouldListAllBookingsForOperatorWhenCustomerIdMissing() | 200 | OPERATOR may omit customerId                     |
       | shouldReturn400WhenCustomerIdMissingForCustomer()   | 400    | CUSTOMER must provide customerId query parameter when security is enabled |
       | shouldReturn403WhenCustomerIdDoesNotMatchCustomer() | 403    | CUSTOMER cannot list another customer's bookings  |
@@ -293,6 +297,7 @@ Feature: Testing Strategy
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
       | shouldCancelBookingAndReturn200()                   | 200    | Valid cancel request by CUSTOMER                 |
+      | shouldCancelBookingAsService()                      | 200    | SERVICE can cancel on behalf of request customer |
       | shouldReturn409WhenInvalidStateTransition()         | 409    | Service throws IllegalStateTransitionException   |
       | shouldReturn403WhenOperatorTriesToCancel()          | 403    | OPERATOR cannot cancel                           |
 
@@ -340,6 +345,8 @@ Feature: Testing Strategy
       | shouldRejectRequestWithWrongIssuer()                    | 401 for wrong issuer claim                        |
       | shouldEnforceCustomerOwnershipOnGetBooking()            | CUSTOMER can only see own bookings                |
       | shouldEnforceCustomerOwnershipOnCancel()                | CUSTOMER can only cancel own bookings             |
+      | shouldRejectCustomerOwnershipCheckWithoutCustomerIdClaim() | CUSTOMER token without customerId claim gets 403 |
+      | shouldAllowServiceTokenToActForRequestedCustomer()       | SERVICE token can use request/query customerId    |
       | shouldAllowOperatorToAccessAnyBooking()                 | OPERATOR can view any booking                     |
       | shouldAllowAdminFullAccess()                            | ADMIN can access all endpoints                    |
 

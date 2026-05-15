@@ -77,11 +77,14 @@ Feature: Security
     Given the Booking Service authorization model
     Then the following roles must be recognized:
       | role          | description                                                        |
-      | ROLE_CUSTOMER | Can create bookings, view own bookings, cancel own bookings         |
+      | ROLE_CUSTOMER | Direct customer caller; can create, view, and cancel own bookings when token contains a customerId claim |
+      | ROLE_SERVICE  | Trusted service-to-service caller; can create, read, and cancel bookings on behalf of customers |
       | ROLE_OPERATOR | Can view all bookings, confirm, start, and complete bookings        |
       | ROLE_ADMIN    | Full access to all operations including all operator permissions    |
     And roles are extracted from the JWT claims (field: "roles" — an array of strings)
     And the role prefix "ROLE_" must be prepended if not already present in the token
+    And the JWT subject identifies the authenticated requester (user or service), not necessarily the booking customer
+    And the optional JWT customerId claim may be named "customerId" or "customer_id" when the token represents a direct customer
 
   # ---------------------------------------------------------------------------
   # JWT Token Service
@@ -95,7 +98,8 @@ Feature: Security
     And it must provide the following methods:
       | method                                          | returns                  | description                                      |
       | validateToken(String token)                     | boolean                  | Validates signature, expiration, and issuer       |
-      | getUserIdFromToken(String token)                | Long                     | Extracts the subject claim as a Long              |
+      | getSubjectFromToken(String token)               | String                   | Extracts the subject claim for the authenticated requester |
+      | getCustomerIdFromToken(String token)            | Optional<Long>           | Extracts optional customerId/customer_id claim when present |
       | getUsernameFromToken(String token)              | String                   | Extracts the "username" or "name" claim           |
       | getRolesFromToken(String token)                 | List<String>             | Extracts the "roles" claim as a list of strings   |
       | getAuthentication(String token)                 | Authentication           | Builds a UsernamePasswordAuthenticationToken      |
@@ -202,10 +206,10 @@ Feature: Security
     Given the SecurityFilterChain bean
     Then the following endpoint access rules must be configured:
       | pattern                              | method | access                                    |
-      | /api/v1/bookings                     | POST   | hasAnyRole('CUSTOMER', 'ADMIN')            |
-      | /api/v1/bookings                     | GET    | hasAnyRole('CUSTOMER', 'OPERATOR', 'ADMIN')|
-      | /api/v1/bookings/{id}                | GET    | hasAnyRole('CUSTOMER', 'OPERATOR', 'ADMIN')|
-      | /api/v1/bookings/{id}/cancel         | PATCH  | hasAnyRole('CUSTOMER', 'ADMIN')            |
+      | /api/v1/bookings                     | POST   | hasAnyRole('CUSTOMER', 'SERVICE', 'ADMIN') |
+      | /api/v1/bookings                     | GET    | hasAnyRole('CUSTOMER', 'SERVICE', 'OPERATOR', 'ADMIN') |
+      | /api/v1/bookings/{id}                | GET    | hasAnyRole('CUSTOMER', 'SERVICE', 'OPERATOR', 'ADMIN') |
+      | /api/v1/bookings/{id}/cancel         | PATCH  | hasAnyRole('CUSTOMER', 'SERVICE', 'ADMIN') |
       | /api/v1/bookings/{id}/confirm        | PATCH  | hasAnyRole('OPERATOR', 'ADMIN')            |
       | /api/v1/bookings/{id}/start          | PATCH  | hasAnyRole('OPERATOR', 'ADMIN')            |
       | /api/v1/bookings/{id}/complete       | PATCH  | hasAnyRole('OPERATOR', 'ADMIN')            |
@@ -224,25 +228,36 @@ Feature: Security
   Scenario: Customers can only access their own bookings
     Given security is enabled
     And a request from a user with role ROLE_CUSTOMER
+    And the JWT contains a customerId or customer_id claim
     When the user calls GET /api/v1/bookings
-    Then the customerId query parameter must match the authenticated user's ID from the JWT
+    Then the customerId query parameter must match the customerId claim from the JWT
     And if it does not match, the service must return HTTP 403 Forbidden
-    And when the user calls POST /api/v1/bookings, request.customerId must match the authenticated user's ID from the JWT
+    And when the user calls POST /api/v1/bookings, request.customerId must match the customerId claim from the JWT
     And if it does not match, the service must return HTTP 403 Forbidden
     And the Booking entity must store customerId from the request after this authorization check passes
+
+  @security @ownership
+  Scenario: Customer role without a customer identity claim
+    Given security is enabled
+    And a request from a user with role ROLE_CUSTOMER
+    And the JWT does not contain a customerId or customer_id claim
+    When the endpoint requires customer ownership validation
+    Then the service must return HTTP 403 Forbidden
+    And it must not infer customerId from the JWT subject
 
   @security @ownership
   Scenario: Customers can only view and cancel their own bookings
     Given security is enabled
     And a request from a user with role ROLE_CUSTOMER
+    And the JWT contains a customerId or customer_id claim
     When the user calls GET /api/v1/bookings/{id} or PATCH /api/v1/bookings/{id}/cancel
-    Then the service must verify that the booking's customerId matches the authenticated user's ID
+    Then the service must verify that the booking's customerId matches the customerId claim from the JWT
     And if it does not match, the service must return HTTP 403 Forbidden
 
   @security @ownership
-  Scenario: Operators and admins can access all bookings
+  Scenario: Service callers, operators, and admins can act for requested customers
     Given security is enabled
-    And a request from a user with role ROLE_OPERATOR or ROLE_ADMIN
+    And a request from a caller with role ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN
     When the user accesses a booking endpoint allowed by the endpoint-level access rules
     Then no customer ownership check is required
     And they may act on behalf of the customer identified by request.customerId or query parameter customerId
@@ -252,11 +267,12 @@ Feature: Security
     Given a utility class "SecurityContextHelper" in package "com.cargo.booking.security"
     Then it must provide the following static methods:
       | method                          | returns      | description                                     |
-      | getCurrentUserId()              | Long         | Extracts the user ID from SecurityContext        |
+      | getCurrentSubject()             | String       | Extracts the requester subject from SecurityContext |
+      | getCurrentCustomerId()          | Optional<Long> | Extracts optional customerId/customer_id claim |
       | getCurrentUsername()            | String       | Extracts the username from SecurityContext       |
       | getCurrentRoles()              | List<String> | Extracts the roles from SecurityContext          |
       | hasRole(String role)           | boolean      | Checks if the current user has a specific role   |
-      | isOwnerOrPrivileged(Long ownerId) | boolean   | Returns true if user is the owner or has OPERATOR/ADMIN role |
+      | isOwnerOrPrivileged(Long ownerId) | boolean   | Returns true if token customerId matches ownerId or caller has SERVICE/OPERATOR/ADMIN role |
 
   # ---------------------------------------------------------------------------
   # CORS Configuration
@@ -285,10 +301,11 @@ Feature: Security
     Then a test configuration class "TestSecurityConfig" must exist in the test source set
     And it must provide an option to disable JWT validation for integration tests
     And it must provide a utility method or builder to create mock Authentication objects with:
-      | field    | description                                |
-      | userId   | The Long to use as the authenticated user  |
-      | username | The username claim                         |
-      | roles    | List of roles to assign                    |
+      | field      | description                                      |
+      | subject    | The authenticated requester subject              |
+      | customerId | Optional customer ID claim for direct customer tokens |
+      | username   | The username/name claim                          |
+      | roles      | List of roles to assign                         |
     And tests must be able to use @WithMockUser or a custom annotation @WithMockJwt for convenience
 
   # ---------------------------------------------------------------------------

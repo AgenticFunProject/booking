@@ -201,7 +201,8 @@ Feature: Deployment and Infrastructure
     Then a filter or interceptor must add the following to the MDC:
       | mdc key        | source                                           |
       | requestId      | X-Request-ID header when present; generated correlation ID for logs if absent |
-      | userId         | Extracted from JWT (authenticated requests only) |
+      | principal      | JWT subject / authenticated requester when present |
+      | customerId     | JWT customerId/customer_id claim when present     |
       | bookingRef     | Set by the service layer when available           |
     And the MDC must be cleared after each request
     And the filter must be registered with the highest priority (runs first)
