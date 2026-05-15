@@ -241,10 +241,13 @@ Feature: Testing Strategy
       | @ActiveProfiles("test")                                                 |
       | @Import(SecurityConfig.class)                                           |
     And it must use @MockBean for:
-      | dependency        | purpose                                   |
-      | BookingService    | Mock business logic                       |
-      | BookingMapper     | Mock entity-DTO conversion                |
-      | JwtTokenProvider  | Mock JWT validation for security context  |
+      | dependency                   | purpose                                  |
+      | BookingService               | Mock business logic                      |
+      | BookingMapper                | Mock entity-DTO conversion               |
+      | JwtTokenProvider             | Mock JWT validation for security context |
+      | JwtAuthenticationFilter      | Satisfy SecurityConfig dependency        |
+      | JwtAuthenticationEntryPoint  | Satisfy SecurityConfig dependency        |
+      | JwtAccessDeniedHandler       | Satisfy SecurityConfig dependency        |
     And it must use JwtTestHelper to generate tokens for authenticated requests
 
   @testing @integration @controller

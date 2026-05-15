@@ -90,7 +90,7 @@ Feature: Project Setup and Configuration
   # ---------------------------------------------------------------------------
 
   @setup @config
-  Scenario: Application properties for local development
+  Scenario: Base application properties
     Given the file "src/main/resources/application.yml"
     Then it must contain the following configuration:
       | property                                    | value                                      |

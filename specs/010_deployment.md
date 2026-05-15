@@ -221,7 +221,7 @@ Feature: Deployment and Infrastructure
       | DB_PASSWORD               | yes      | booking_pass                     | Database password              |
       | SPRING_DATASOURCE_URL     | yes      | jdbc:postgresql://localhost:5432/booking_db | JDBC URL          |
       | SECURITY_ENABLED          | no       | true                              | Enable JWT authentication and authorization |
-      | JWT_SECRET                | yes      | (dev default in yml)             | JWT signing key (min 256 bits) |
+      | JWT_SECRET                | conditional: yes when SECURITY_ENABLED=true | (dev default in yml) | JWT signing key (min 256 bits) |
       | JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
       | SCHEDULE_API_URL          | no       | http://localhost:8082            | Schedules API base URL         |
       | EQUIPMENT_API_URL         | no       | http://localhost:8083            | Equipment API base URL         |
