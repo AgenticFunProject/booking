@@ -140,6 +140,7 @@ Feature: Deployment and Infrastructure
       | dev         | Development/staging environment                   | Real clients when contracts exist; dev DB, JSON logging |
       | prod        | Production environment                            | Real clients when contracts exist; prod DB, JSON logging, strict |
       | test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
+    And dev and prod profiles are configuration placeholders until real client implementations are added from finalized external API contracts
 
   @deployment @profiles
   Scenario: Profile-specific application properties
