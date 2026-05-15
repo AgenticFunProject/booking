@@ -146,7 +146,7 @@ Feature: Deployment and Infrastructure
   Scenario: Profile-specific application properties
     Given the following profile-specific config files must exist:
       | file                                   | key overrides                                          |
-      | application.yml                        | Base config (defaults to local-friendly values)        |
+      | application.yml                        | Base config shared across profiles; does not activate client beans by itself |
       | application-local.yml                  | Explicit local settings, security disabled, verbose logging |
       | application-dev.yml                    | Dev environment URLs for future real clients, JSON logging |
       | application-prod.yml                   | Prod URLs for future real clients, JSON logging, stricter security |
@@ -228,7 +228,7 @@ Feature: Deployment and Infrastructure
       | EQUIPMENT_API_URL         | no       | http://localhost:8083            | Equipment API base URL         |
       | QUOTE_API_URL             | no       | http://localhost:8084            | Quotes API base URL            |
       | CORS_ALLOWED_ORIGINS      | no       | http://localhost:3000            | CORS allowed origins           |
-      | SPRING_PROFILES_ACTIVE    | no       | (none, defaults apply)           | Active Spring profile          |
+      | SPRING_PROFILES_ACTIVE    | yes      | local for local/docker usage     | Active Spring profile; required so either stub or real client beans are available |
 
   @deployment @env
   Scenario: .env.example file
