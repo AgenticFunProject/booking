@@ -279,7 +279,7 @@ Feature: Security
     And when security is disabled it must allow access without ownership checks
     And when the caller has ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN it must allow access without customer ownership checks
     And when the caller has ROLE_CUSTOMER it must load the booking owner and compare it with the JWT customerId/customer_id claim
-    And if the booking does not exist it must let the normal BookingService not-found path decide the final 404 response
+    And if the repository lookup returns empty it must return without throwing so the subsequent BookingService call owns the BookingNotFoundException and final 404 response
     And if the customer identity claim is missing or does not match it must throw AccessDeniedException before BookingService is called
 
   @security @ownership
