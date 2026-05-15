@@ -268,6 +268,21 @@ Feature: Security
     And if it does not match, the API/security layer must return HTTP 403 Forbidden
 
   @security @ownership
+  Scenario: BookingAccessAuthorizer component
+    Given a component "BookingAccessAuthorizer" in package "com.cargo.booking.security"
+    Then it must be annotated with @Component
+    And it must depend on BookingRepository and use SecurityContextHelper
+    And it must provide methods for controller ownership checks:
+      | method                                           | purpose                                      |
+      | void authorizeBookingAccess(Long bookingId)      | Verify access to a booking identified by ID  |
+      | void authorizeBookingAccess(String reference)    | Verify access to a booking identified by reference |
+    And when security is disabled it must allow access without ownership checks
+    And when the caller has ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN it must allow access without customer ownership checks
+    And when the caller has ROLE_CUSTOMER it must load the booking owner and compare it with the JWT customerId/customer_id claim
+    And if the booking does not exist it must let the normal BookingService not-found path decide the final 404 response
+    And if the customer identity claim is missing or does not match it must throw AccessDeniedException before BookingService is called
+
+  @security @ownership
   Scenario: Service callers, operators, and admins can act for requested customers
     Given security is enabled
     And a request from a caller with role ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN

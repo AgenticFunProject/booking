@@ -163,9 +163,10 @@ Feature: API Endpoints
       | @Tag(name = "Bookings")             | OpenAPI grouping                          |
       | @RequiredArgsConstructor            | Lombok constructor injection              |
     And its dependencies must include:
-      | dependency        | purpose                            |
-      | BookingService    | Business logic orchestration       |
-      | BookingMapper     | Entity-to-DTO conversion           |
+      | dependency              | purpose                                      |
+      | BookingService          | Business logic orchestration                 |
+      | BookingMapper           | Entity-to-DTO conversion                     |
+      | BookingAccessAuthorizer | API/security ownership checks before service calls |
     And every endpoint must be subject to the authentication and authorization rules defined in 006_security.md when security is enabled
 
   # ---------------------------------------------------------------------------
@@ -244,10 +245,10 @@ Feature: API Endpoints
       """
     And the "id" parameter must accept both a numeric Long value and a booking reference (BKG-YYYY-NNNNN)
     And the controller must detect the format:
-      | input format    | action                                  |
-      | Numeric format  | Call bookingService.getBookingById()     |
-      | BKG-YYYY-NNNNN | Call bookingService.getBookingByReference() |
-      | Any other format | Throw BookingValidationException with a clear invalid identifier message |
+      | input format    | action                                                                    |
+      | Numeric format  | Authorize with BookingAccessAuthorizer, then call bookingService.getBookingById() |
+      | BKG-YYYY-NNNNN | Authorize with BookingAccessAuthorizer, then call bookingService.getBookingByReference() |
+      | Any other format | Throw BookingValidationException with a clear invalid identifier message   |
     And the result must be mapped to BookingResponse and returned with HTTP 200
 
   @api @endpoint @read
@@ -336,9 +337,10 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                  |
-      | 1    | Call bookingService.cancelBooking(id)                   |
-      | 2    | Map the result to BookingResponse using the mapper      |
-      | 3    | Return the response with HTTP 200                        |
+      | 1    | Authorize access with BookingAccessAuthorizer           |
+      | 2    | Call bookingService.cancelBooking(id)                   |
+      | 3    | Map the result to BookingResponse using the mapper      |
+      | 4    | Return the response with HTTP 200                        |
 
   # ---------------------------------------------------------------------------
   # Additional Lifecycle Endpoints (not in original spec but needed for completeness)

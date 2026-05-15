@@ -104,6 +104,20 @@ Feature: Testing Strategy
     And it must use the test JWT secret from application-test.yml
     And it must set the issuer to "test-issuer"
 
+  @testing @unit @security
+  Scenario: BookingAccessAuthorizer tests
+    Given a test class "BookingAccessAuthorizerTest" in package "com.cargo.booking.security"
+    Then it must use @ExtendWith(MockitoExtension.class)
+    And it must mock BookingRepository
+    And it must include the following test cases:
+      | test method                                      | scenario                                      |
+      | shouldAllowPrivilegedCallerWithoutOwnerCheck()   | SERVICE, OPERATOR, or ADMIN can access        |
+      | shouldAllowCustomerWhenOwnerMatches()            | CUSTOMER token customerId matches booking owner |
+      | shouldRejectCustomerWhenOwnerDiffers()           | CUSTOMER token customerId does not match      |
+      | shouldRejectCustomerWithoutCustomerIdClaim()     | CUSTOMER token has no customerId/customer_id claim |
+      | shouldDeferNotFoundToBookingService()            | Missing booking does not produce 403          |
+      | shouldAllowAccessWhenSecurityDisabled()          | Disabled security skips ownership checks      |
+
   # ---------------------------------------------------------------------------
   # Unit Tests — Domain Model
   # ---------------------------------------------------------------------------
@@ -260,6 +274,7 @@ Feature: Testing Strategy
       | BookingService   | Mock business logic                      |
       | BookingMapper    | Mock entity-DTO conversion               |
       | JwtTokenProvider | Mock JWT validation for security context |
+      | BookingAccessAuthorizer | Mock ownership checks before service calls |
     And it must import or component-scan the real JwtAuthenticationFilter, JwtAuthenticationEntryPoint, and JwtAccessDeniedHandler
     And JwtAuthenticationFilter must not be mocked because mocked servlet filters may not call FilterChain.doFilter()
     And it must use JwtTestHelper to generate tokens for authenticated requests
@@ -294,6 +309,7 @@ Feature: Testing Strategy
       | shouldReturn400WhenBookingIdentifierFormatInvalid() | 400    | Invalid ID/reference format throws BookingValidationException |
       | shouldReturn404WhenBookingNotFound()                | 404    | Unknown ID returns 404                           |
       | shouldReturn401WhenNotAuthenticated()               | 401    | No token                                         |
+      | shouldReturn403WhenCustomerAccessesOtherCustomerBooking() | 403 | BookingAccessAuthorizer rejects ownership mismatch |
 
   @testing @integration @controller
   Scenario: GET /api/v1/bookings controller tests
@@ -316,6 +332,7 @@ Feature: Testing Strategy
       | shouldCancelBookingAsService()                      | 200    | SERVICE can cancel on behalf of request customer |
       | shouldReturn409WhenInvalidStateTransition()         | 409    | Service throws IllegalStateTransitionException   |
       | shouldReturn403WhenOperatorTriesToCancel()          | 403    | OPERATOR cannot cancel                           |
+      | shouldReturn403WhenCustomerCancelsOtherCustomerBooking() | 403 | BookingAccessAuthorizer rejects ownership mismatch |
 
   @testing @integration @controller
   Scenario: PATCH lifecycle endpoint controller tests
