@@ -130,12 +130,12 @@ Feature: Testing Strategy
   @testing @unit @domain
   Scenario: BookingReferenceGenerator tests
     Given a test class "BookingReferenceGeneratorTest" in package "com.cargo.booking.service"
-    Then it must use Mockito to mock the BookingRepository
+    Then it must use Mockito to mock the BookingReferenceCounterRepository
     And it must verify:
       | test method                               | description                                        |
       | shouldGenerateReferenceWithCurrentYear()  | Reference starts with "BKG-{currentYear}-"          |
       | shouldPadSequenceTo5Digits()              | Sequence 1 becomes "00001", 42 becomes "00042"      |
-      | shouldUseSequenceFromRepository()         | The sequence value comes from the mocked repository |
+      | shouldUseSequenceFromCounterRepository()  | The sequence value comes from the mocked counter repository |
 
   # ---------------------------------------------------------------------------
   # Unit Tests — Service Layer
@@ -200,8 +200,6 @@ Feature: Testing Strategy
     Given a test class "BookingMapperTest" in package "com.cargo.booking.mapper"
     Then it must verify:
       | test method                                        | description                                     |
-      | shouldMapRequestToEntity()                        | All fields correctly mapped from DTO to entity    |
-      | shouldSetStatusToPendingOnMapping()               | Status is always PENDING in mapped entity         |
       | shouldMapEntityToResponse()                       | All fields correctly mapped from entity to DTO    |
       | shouldMapEntityToCreatedResponse()                | Slim response has reference, status, createdAt    |
       | shouldMapEquipmentLinesToResponse()               | Equipment lines mapped correctly                  |
@@ -215,6 +213,7 @@ Feature: Testing Strategy
   Scenario: BookingRepository integration tests
     Given a test class "BookingRepositoryTest" in package "com.cargo.booking.repository"
     Then it must be annotated with @DataJpaTest and @ActiveProfiles("test")
+    And it must use Zonky @AutoConfigureEmbeddedDatabase or an imported shared test database configuration so the slice test runs against embedded PostgreSQL
     And it must include the following test cases:
       | test method                                          | description                                        |
       | shouldSaveAndFindBookingById()                      | Save a booking, retrieve by ID, verify fields       |

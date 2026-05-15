@@ -202,7 +202,7 @@ Feature: Business Rules and Service Layer
   Scenario: BookingReferenceGenerator service
     Given a service class "BookingReferenceGenerator" in package "com.cargo.booking.service"
     Then it must be annotated with @Service
-    And it must depend on BookingRepository (to access the native yearly counter query)
+    And it must depend on BookingReferenceCounterRepository (to access the custom yearly counter query)
     And it must have a public method:
       | method signature    | returns | description                       |
       | generateReference() | String  | Returns a unique booking reference|

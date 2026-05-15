@@ -143,19 +143,10 @@ Feature: API Endpoints
     Then it must be annotated with @Component
     And it must provide the following mapping methods:
       | method                                                       | from                    | to                      |
-      | toEntity(CreateBookingRequest request, String reference)      | CreateBookingRequest   | Booking                 |
       | toResponse(Booking entity)                                   | Booking                 | BookingResponse         |
       | toCreatedResponse(Booking entity)                            | Booking                 | BookingCreatedResponse  |
-      | toEquipmentLineEntity(EquipmentRequest request)              | EquipmentRequest        | BookingEquipmentLine    |
       | toEquipmentResponse(BookingEquipmentLine entity)             | BookingEquipmentLine    | EquipmentResponse       |
-    And the toEntity method must:
-      | rule                                                                    |
-      | Set status to PENDING                                                   |
-      | Map customer fields from the nested CustomerRequest                     |
-      | Map cargo fields from the nested CargoRequest                           |
-      | Convert each EquipmentRequest to a BookingEquipmentLine and associate   |
-      | Set the bookingReference from the provided reference parameter          |
-      | Set customerId from request.customerId                                  |
+    And request-to-entity construction must stay in BookingService as defined in 004_business_rules.md
     And the mapper must NOT use any reflection-based mapping libraries (keep it explicit)
 
   # ---------------------------------------------------------------------------

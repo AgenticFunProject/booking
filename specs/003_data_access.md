@@ -106,13 +106,15 @@ Feature: Data Access Layer
 
   @data-access @sequence
   Scenario: Fetch next booking reference sequence value for year
-    Given the BookingRepository interface
-    Then it must define a native query to atomically fetch and increment the next yearly counter value:
+    Given a custom repository component "BookingReferenceCounterRepository" in package "com.cargo.booking.repository"
+    Then it must define a method to atomically fetch and increment the next yearly counter value:
       | method                         | returns | description                                  |
       | getNextReferenceSeqForYear(int year) | Long    | Next value for the given UTC calendar year   |
-    And the native query must insert a row for a new year with next_value = 2 and return 1
+    And the method must be implemented with EntityManager or JdbcClient using native PostgreSQL SQL
+    And the native SQL must insert a row for a new year with next_value = 2 and return 1
     And for an existing year it must increment next_value by 1 and return the previous value
     And it must rely on PostgreSQL INSERT ... ON CONFLICT ... DO UPDATE semantics for concurrency safety
+    And the method must be annotated or executed within @Transactional
 
   # ---------------------------------------------------------------------------
   # Pagination and Sorting Defaults
@@ -164,7 +166,7 @@ Feature: Data Access Layer
       | All write operations should use @Transactional at the service layer                               |
       | Repository interfaces themselves must NOT declare @Transactional unless the method performs a custom modifying query |
       | deleteByBookingId needs @Modifying and @Transactional                                            |
-      | getNextReferenceSeqForYear needs @Modifying and @Transactional because it atomically updates the yearly counter |
+      | getNextReferenceSeqForYear must be implemented as a custom repository method returning Long, not as a Spring Data @Modifying query |
 
   # ---------------------------------------------------------------------------
   # Specifications for Dynamic Filtering (Optional Advanced Queries)
