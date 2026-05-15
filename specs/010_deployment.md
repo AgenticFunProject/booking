@@ -160,7 +160,7 @@ Feature: Deployment and Infrastructure
       | spring.jpa.show-sql                           | false                  | No SQL logging in prod               |
       | spring.jpa.open-in-view                       | false                  | Already set in base, reinforced here |
       | management.endpoints.web.exposure.include      | health,info            | Minimize exposed actuator endpoints  |
-      | management.endpoint.health.show-details        | never                  | Hide health details from external    |
+      | management.endpoint.health.show-details        | never                  | Hide health details from all prod callers, including ADMIN |
       | server.error.include-message                   | never                  | Never leak error details             |
       | server.error.include-stacktrace                | never                  | Never leak stack traces              |
       | logging.level.root                             | WARN                   | Less verbose in production           |

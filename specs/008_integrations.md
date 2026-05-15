@@ -186,7 +186,8 @@ Feature: Integration Infrastructure
       | management.endpoint.health.show-components | when_authorized |
       | management.endpoint.health.roles        | ADMIN           |
     And unauthenticated users see only UP/DOWN status
-    And ADMIN users see the full health breakdown
+    And ADMIN users see the full health breakdown in profiles that do not override this setting
+    And production may override health detail visibility as defined in 010_deployment.md
     And custom health indicators for external services should be added when real clients are implemented
 
   # ---------------------------------------------------------------------------
