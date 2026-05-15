@@ -167,6 +167,8 @@ Feature: Testing Strategy
   Scenario: BookingService state transition tests
     Given a test class "BookingServiceLifecycleTest" in package "com.cargo.booking.service"
     Then it must use @ExtendWith(MockitoExtension.class)
+    And it must mock BookingStateMachine because BookingStateMachineTest owns transition-rule coverage
+    And it must verify BookingService calls BookingStateMachine before every lifecycle status change
     And it must include the following test cases:
       | test method                                            | scenario                                         |
       | shouldConfirmPendingBooking()                         | PENDING → CONFIRMED happy path                    |

@@ -36,6 +36,7 @@ Feature: Business Rules and Service Layer
       | ScheduleClient            | Validate schedule availability   |
       | EquipmentClient           | Reserve equipment on confirmation|
       | QuoteClient               | Validate quote validity          |
+      | BookingStateMachine       | Validate lifecycle transitions   |
 
   # ---------------------------------------------------------------------------
   # Create Booking
@@ -132,7 +133,7 @@ Feature: Business Rules and Service Layer
     Then the service must perform these steps in order:
       | step | action                                                                     |
       | 1    | Load the booking with equipment lines                                      |
-      | 2    | Validate the current status is PENDING (throw IllegalStateTransitionException otherwise) |
+      | 2    | Validate PENDING → CONFIRMED with BookingStateMachine                   |
       | 3    | Call EquipmentClient to reserve the equipment listed in the booking        |
       | 4    | Update the booking status to CONFIRMED                                     |
       | 5    | Save the booking                                                           |
@@ -147,7 +148,7 @@ Feature: Business Rules and Service Layer
     Then the service must:
       | step | action                                   |
       | 1    | Load the booking                         |
-      | 2    | Validate the current status is CONFIRMED |
+      | 2    | Validate CONFIRMED → IN_PROGRESS with BookingStateMachine |
       | 3    | Update the booking status to IN_PROGRESS |
       | 4    | Save the booking                         |
       | 5    | Return the saved booking                 |
@@ -160,7 +161,7 @@ Feature: Business Rules and Service Layer
     Then the service must:
       | step | action                                      |
       | 1    | Load the booking                            |
-      | 2    | Validate the current status is IN_PROGRESS  |
+      | 2    | Validate IN_PROGRESS → COMPLETED with BookingStateMachine |
       | 3    | Update the booking status to COMPLETED      |
       | 4    | Save the booking                            |
       | 5    | Return the saved booking                    |
@@ -173,7 +174,7 @@ Feature: Business Rules and Service Layer
     Then the service must:
       | step | action                                                                     |
       | 1    | Load the booking with equipment lines                                      |
-      | 2    | Validate the current status is PENDING or CONFIRMED                        |
+      | 2    | Validate current status → CANCELLED with BookingStateMachine               |
       | 3    | If status was CONFIRMED, call EquipmentClient to release the reserved equipment |
       | 4    | Update the booking status to CANCELLED                                     |
       | 5    | Save the booking                                                           |
