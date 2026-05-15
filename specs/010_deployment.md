@@ -218,9 +218,9 @@ Feature: Deployment and Infrastructure
     Given the Booking Service deployment
     Then the following environment variables must be documented:
       | variable                  | required | default                          | description                    |
-      | DB_USERNAME               | yes      | booking_user                     | Database username              |
-      | DB_PASSWORD               | yes      | booking_pass                     | Database password              |
-      | SPRING_DATASOURCE_URL     | yes      | jdbc:postgresql://localhost:5432/booking_db | JDBC URL          |
+      | DB_USERNAME               | conditional: yes outside local/dev defaults | booking_user | Database username |
+      | DB_PASSWORD               | conditional: yes outside local/dev defaults | booking_pass | Database password |
+      | SPRING_DATASOURCE_URL     | conditional: yes outside local/dev defaults | jdbc:postgresql://localhost:5432/booking_db | JDBC URL |
       | SECURITY_ENABLED          | no       | true                              | Enable JWT authentication and authorization |
       | JWT_SECRET                | conditional: yes when SECURITY_ENABLED=true | (dev default in yml) | JWT signing key (min 256 bits) |
       | JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
