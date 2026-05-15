@@ -15,7 +15,7 @@ Feature: Testing Strategy
   Background:
     Given the base test package is "com.cargo.booking"
     And all test classes reside under "src/test/java/com/cargo/booking"
-    And the test profile "test" is activated via application-test.yml (defined in 001)
+    And the test profile "test" is activated via application-test.yml (defined in 010_deployment.md)
     And the test dependencies from 001 include spring-boot-starter-test and embedded PostgreSQL
 
   # ---------------------------------------------------------------------------
@@ -240,7 +240,7 @@ Feature: Testing Strategy
       | @WebMvcTest(BookingController.class)                                    |
       | @ActiveProfiles("test")                                                 |
       | @Import(SecurityConfig.class)                                           |
-    And it must use @MockBean for:
+    And it must use @MockitoBean for:
       | dependency       | purpose                                  |
       | BookingService   | Mock business logic                      |
       | BookingMapper    | Mock entity-DTO conversion               |

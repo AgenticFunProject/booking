@@ -66,7 +66,7 @@ Feature: Security
       | secret       | String | The HMAC signing key          |
       | issuer       | String | Expected issuer claim         |
       | expirationMs | long   | Token expiration in milliseconds |
-    And @EnableConfigurationProperties(JwtProperties.class) must be added to the security config or main app class
+    And SecurityConfig must enable JwtProperties with @EnableConfigurationProperties so MVC slice tests importing SecurityConfig also receive this bean
 
   @security @config
   Scenario: SecurityProperties configuration class
@@ -76,7 +76,7 @@ Feature: Security
       | field   | type    | description                              |
       | enabled | boolean | Enables JWT authentication/authorization |
     And SecurityConfig must depend on SecurityProperties to decide whether to permit all API requests
-    And @EnableConfigurationProperties(SecurityProperties.class) must be added to the security config or main app class
+    And SecurityConfig must enable SecurityProperties with @EnableConfigurationProperties so MVC slice tests importing SecurityConfig also receive this bean
 
   # ---------------------------------------------------------------------------
   # Roles
