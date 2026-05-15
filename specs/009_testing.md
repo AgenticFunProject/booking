@@ -241,13 +241,12 @@ Feature: Testing Strategy
       | @ActiveProfiles("test")                                                 |
       | @Import(SecurityConfig.class)                                           |
     And it must use @MockBean for:
-      | dependency                   | purpose                                  |
-      | BookingService               | Mock business logic                      |
-      | BookingMapper                | Mock entity-DTO conversion               |
-      | JwtTokenProvider             | Mock JWT validation for security context |
-      | JwtAuthenticationFilter      | Satisfy SecurityConfig dependency        |
-      | JwtAuthenticationEntryPoint  | Satisfy SecurityConfig dependency        |
-      | JwtAccessDeniedHandler       | Satisfy SecurityConfig dependency        |
+      | dependency       | purpose                                  |
+      | BookingService   | Mock business logic                      |
+      | BookingMapper    | Mock entity-DTO conversion               |
+      | JwtTokenProvider | Mock JWT validation for security context |
+    And it must import or component-scan the real JwtAuthenticationFilter, JwtAuthenticationEntryPoint, and JwtAccessDeniedHandler
+    And JwtAuthenticationFilter must not be mocked because mocked servlet filters may not call FilterChain.doFilter()
     And it must use JwtTestHelper to generate tokens for authenticated requests
 
   @testing @integration @controller
@@ -328,7 +327,8 @@ Feature: Testing Strategy
   @testing @integration @error
   Scenario: GlobalExceptionHandler integration tests
     Given a test class "ErrorHandlingTest" in package "com.cargo.booking.exception"
-    Then it must be annotated with @WebMvcTest and test the error response format
+    Then it must be annotated with @WebMvcTest and @AutoConfigureMockMvc(addFilters = false)
+    And it must test the error response format without security filters intercepting requests
     And it must verify:
       | test method                                        | description                                          |
       | shouldReturnStructuredErrorFor404()               | Error body matches ErrorResponse format               |

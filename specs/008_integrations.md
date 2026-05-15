@@ -85,6 +85,7 @@ Feature: Integration Infrastructure
       | EquipmentApi | baseUrl (String), timeoutMs (int) |
       | QuoteApi     | baseUrl (String), timeoutMs (int) |
     And this structure is ready to be injected into real client implementations when they are built
+    And @EnableConfigurationProperties(IntegrationProperties.class) must be added to RestClientConfig or the main app class
 
   # ---------------------------------------------------------------------------
   # RestClient Pattern (Template for Future Implementations)

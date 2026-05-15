@@ -68,6 +68,16 @@ Feature: Security
       | expirationMs | long   | Token expiration in milliseconds |
     And @EnableConfigurationProperties(JwtProperties.class) must be added to the security config or main app class
 
+  @security @config
+  Scenario: SecurityProperties configuration class
+    Given a class "SecurityProperties" in package "com.cargo.booking.security"
+    Then it must be annotated with @ConfigurationProperties(prefix = "app.security")
+    And it must expose:
+      | field   | type    | description                              |
+      | enabled | boolean | Enables JWT authentication/authorization |
+    And SecurityConfig must depend on SecurityProperties to decide whether to permit all API requests
+    And @EnableConfigurationProperties(SecurityProperties.class) must be added to the security config or main app class
+
   # ---------------------------------------------------------------------------
   # Roles
   # ---------------------------------------------------------------------------
