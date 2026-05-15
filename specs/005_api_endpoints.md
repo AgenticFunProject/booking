@@ -71,6 +71,7 @@ Feature: API Endpoints
       | field             | type                       | description                           |
       | id                | Long                       | Internal booking ID                   |
       | bookingReference  | String                     | Human-readable reference              |
+      | customerId        | Long                       | Customer/account that owns the booking |
       | status            | String                     | Current booking status                |
       | scheduleId        | Long                       | The linked schedule                   |
       | quoteId           | Long                       | The linked quote                      |
@@ -265,6 +266,7 @@ Feature: API Endpoints
       {
         "id": 42,
         "bookingReference": "BKG-2026-00042",
+        "customerId": 3001,
         "status": "CONFIRMED",
         "scheduleId": 1001,
         "quoteId": 2001,

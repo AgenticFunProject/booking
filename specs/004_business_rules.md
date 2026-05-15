@@ -142,6 +142,7 @@ Feature: Business Rules and Service Layer
       | 3    | Update the booking status to IN_PROGRESS |
       | 4    | Save the booking                         |
       | 5    | Return the saved booking                 |
+    And the entire operation must be wrapped in @Transactional
 
   @business @lifecycle
   Scenario: Complete a booking
@@ -154,6 +155,7 @@ Feature: Business Rules and Service Layer
       | 3    | Update the booking status to COMPLETED      |
       | 4    | Save the booking                            |
       | 5    | Return the saved booking                    |
+    And the entire operation must be wrapped in @Transactional
 
   @business @lifecycle
   Scenario: Cancel a booking
@@ -167,6 +169,7 @@ Feature: Business Rules and Service Layer
       | 4    | Update the booking status to CANCELLED                                     |
       | 5    | Save the booking                                                           |
       | 6    | Return the saved booking                                                   |
+    And the entire operation must be wrapped in @Transactional
     And if equipment release fails the cancellation must still proceed (log a warning, do not throw)
 
   @business @lifecycle

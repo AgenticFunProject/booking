@@ -274,10 +274,8 @@ Feature: Deployment and Infrastructure
   @deployment @ci
   Scenario: CI pipeline services
     Given the CI "build-and-test" job
-    Then it must define the following services for integration tests:
-      | service     | image                        | ports     | env                              |
-      | postgres    | postgres:16-alpine           | 5432:5432 | POSTGRES_DB=booking_test_db      |
-    And test environment variables must point to the CI PostgreSQL service
+    Then it must not define a PostgreSQL service for tests
+    And integration tests must use the embedded PostgreSQL setup from 009_testing.md
 
   # ---------------------------------------------------------------------------
   # JVM Tuning
@@ -409,7 +407,7 @@ Feature: Deployment and Infrastructure
       | 005_api_endpoints.md      | Controllers, DTOs, mappers, OpenAPI                   |
       | 006_security.md           | JWT auth, roles, ownership, CORS                      |
       | 007_error_handling.md     | Global exception handler, error responses             |
-      | 008_integrations.md       | Real clients, resilience, health                      |
+      | 008_integrations.md       | Integration properties, RestClient pattern, resilience, health |
       | 009_testing.md            | Unit, integration, E2E tests, test utilities          |
       | 010_deployment.md         | Docker, Compose, CI, profiles, logging, README        |
     And the application should be fully runnable with "docker-compose up -d"

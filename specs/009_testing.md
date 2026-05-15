@@ -25,12 +25,10 @@ Feature: Testing Strategy
   @testing @setup
   Scenario: Test dependencies in pom.xml
     Given the pom.xml dependency section
-    Then it must include the following test-scoped dependencies:
+    Then it must include the following additional test-scoped dependencies not already listed in 001_project_setup.md:
       | groupId                          | artifactId                           | scope | purpose                                |
-      | org.springframework.boot         | spring-boot-starter-test             | test  | Core test support (JUnit 5, Mockito, AssertJ) |
       | org.springframework.security     | spring-security-test                 | test  | MockMvc security testing               |
       | org.wiremock                     | wiremock-standalone                   | test  | WireMock for external API mocking      |
-      | io.zonky.test                    | embedded-database-spring-test         | test  | Spring test integration for embedded PostgreSQL |
 
   # ---------------------------------------------------------------------------
   # Test Configuration
