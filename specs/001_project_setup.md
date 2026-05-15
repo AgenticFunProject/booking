@@ -37,7 +37,7 @@ Feature: Project Setup and Configuration
     Given the pom.xml dependency section
     Then it must include the following starters:
       | groupId                        | artifactId                         | purpose                            |
-      | org.springframework.boot       | spring-boot-starter-web            | REST API support                   |
+      | org.springframework.boot       | spring-boot-starter-webmvc         | Spring MVC REST API support        |
       | org.springframework.boot       | spring-boot-starter-data-jpa       | JPA / Hibernate persistence        |
       | org.springframework.boot       | spring-boot-starter-validation     | Bean validation (Jakarta)          |
       | org.springframework.boot       | spring-boot-starter-actuator       | Health checks and metrics          |

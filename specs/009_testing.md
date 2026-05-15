@@ -15,7 +15,7 @@ Feature: Testing Strategy
   Background:
     Given the base test package is "com.cargo.booking"
     And all test classes reside under "src/test/java/com/cargo/booking"
-    And the test profile "test" is activated via application-test.yml (defined in 010_deployment.md)
+    And the test profile "test" is activated via application-test.yml (defined in 001_project_setup.md and listed in 010_deployment.md)
     And the test dependencies from 001 include spring-boot-starter-test and embedded PostgreSQL
 
   # ---------------------------------------------------------------------------
