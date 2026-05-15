@@ -159,7 +159,7 @@ Each client is defined as a **Java interface** with a **stub implementation** (`
 
 ## Security
 
-JWT-based stateless auth can be enabled for protected deployments. Local/unsecured mode can disable security and rely on request data such as `customerId`. Three roles apply when security is enabled:
+JWT-based stateless auth can be enabled for protected deployments. Local/unsecured mode can disable security and rely on request data such as `customerId`. Four roles apply when security is enabled:
 
 | Role          | Can do                                                      |
 |---------------|-------------------------------------------------------------|

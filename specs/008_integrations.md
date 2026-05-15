@@ -148,7 +148,7 @@ Feature: Integration Infrastructure
       | 1    | Get the API contract (OpenAPI spec, documentation, or agreed endpoint list)          |
       | 2    | Create response DTOs in "com.cargo.booking.client.dto" as Java records              |
       | 3    | Use @JsonIgnoreProperties(ignoreUnknown = true) on all external DTOs                |
-      | 4    | Create the implementation class annotated with @Service and a profile expression that excludes local and test, e.g. @Profile("!local & !test") |
+      | 4    | Create the implementation class annotated with @Service and an explicit deployed-environment profile expression, e.g. @Profile("dev | prod") |
       | 5    | Inject the corresponding RestClient bean by @Qualifier                              |
       | 6    | Annotate methods with @CircuitBreaker and @Retry using a named instance             |
       | 7    | Implement fallback methods that throw the appropriate custom exception              |
