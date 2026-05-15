@@ -160,6 +160,7 @@ Feature: Testing Strategy
       | shouldThrowWhenScheduleNotAvailable()                 | ScheduleClient returns false                     |
       | shouldThrowWhenQuoteNotValid()                        | QuoteClient returns false                        |
       | shouldThrowWhenEquipmentListEmpty()                   | Request with empty equipment list                |
+      | shouldThrowWhenEquipmentTypeUnsupported()             | Equipment type is not recognized by EquipmentType.fromCode |
       | shouldNotPersistBookingWhenValidationFails()          | Verify repository.save() is never called on failure |
 
   @testing @unit @service
@@ -226,6 +227,19 @@ Feature: Testing Strategy
       | shouldFetchBookingWithEquipmentLines()              | JOIN FETCH loads equipment eagerly                  |
       | shouldCascadeSaveEquipmentLines()                   | Saving booking cascades to equipment lines          |
       | shouldCascadeDeleteEquipmentLines()                 | Orphan removal works when lines are cleared         |
+
+  @testing @integration @repository
+  Scenario: BookingReferenceCounterRepository integration tests
+    Given a test class "BookingReferenceCounterRepositoryTest" in package "com.cargo.booking.repository"
+    Then it must be annotated with @DataJpaTest and @ActiveProfiles("test")
+    And it must use Zonky @AutoConfigureEmbeddedDatabase or an imported shared test database configuration so the slice test runs against embedded PostgreSQL
+    And it must import or instantiate the custom BookingReferenceCounterRepository implementation
+    And it must include the following test cases:
+      | test method                                          | description                                        |
+      | shouldReturnOneForNewYear()                         | First call for a year returns sequence 1           |
+      | shouldIncrementExistingYearCounter()                 | Subsequent calls for same year return 2, 3, ...    |
+      | shouldKeepCountersIndependentAcrossYears()           | Different years have independent sequences         |
+      | shouldPersistCounterRowsWithNextValue()              | Counter table stores the next value after calls    |
 
   # ---------------------------------------------------------------------------
   # Integration Tests — Controller Layer (MockMvc)

@@ -138,6 +138,7 @@ Feature: Error Handling
       | annotation                                            | status | error       |
       | @ExceptionHandler(BookingValidationException.class)   | 400    | Bad Request |
     And the message must describe the validation failure
+    And invalid booking identifiers for GET /api/v1/bookings/{id} must be handled here because the controller receives the path variable as String
     And the exception must be logged at WARN level
 
   # ---------------------------------------------------------------------------
@@ -217,7 +218,7 @@ Feature: Error Handling
       | annotation                                                          | status | error       |
       | @ExceptionHandler(MethodArgumentTypeMismatchException.class)        | 400    | Bad Request |
     And the message must indicate the parameter name and expected type
-    And example: "Parameter 'id' must be a valid numeric ID or booking reference"
+    And example: "Parameter 'status' must be a valid BookingStatus"
     And the exception must be logged at WARN level
 
   # ---------------------------------------------------------------------------

@@ -247,6 +247,7 @@ Feature: API Endpoints
       | input format    | action                                  |
       | Numeric format  | Call bookingService.getBookingById()     |
       | BKG-YYYY-NNNNN | Call bookingService.getBookingByReference() |
+      | Any other format | Throw BookingValidationException with a clear invalid identifier message |
     And the result must be mapped to BookingResponse and returned with HTTP 200
 
   @api @endpoint @read
