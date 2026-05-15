@@ -298,7 +298,7 @@ Feature: Security
     Then it must define a CorsConfigurationSource bean with the following settings:
       | setting          | value                                                  |
       | allowed origins  | ${CORS_ALLOWED_ORIGINS:http://localhost:3000}           |
-      | allowed methods  | GET, POST, PATCH, DELETE, OPTIONS                      |
+      | allowed methods  | GET, POST, PATCH, OPTIONS                              |
       | allowed headers  | Authorization, Content-Type, Accept                    |
       | exposed headers  | Authorization                                          |
       | allow credentials| true                                                   |
