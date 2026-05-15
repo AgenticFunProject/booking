@@ -243,11 +243,11 @@ Feature: Security
     And the JWT contains a customerId or customer_id claim
     When the user calls GET /api/v1/bookings
     Then the customerId query parameter must match the customerId claim from the JWT
-    And if it does not match, the service must return HTTP 403 Forbidden
+    And if it does not match, the API/security layer must return HTTP 403 Forbidden before calling BookingService
     And when the user calls POST /api/v1/bookings, request.customerId must match the customerId claim from the JWT
-    And if it does not match, the service must return HTTP 403 Forbidden
+    And if it does not match, the API/security layer must return HTTP 403 Forbidden before calling BookingService
     And the Booking entity must store customerId from the request after this authorization check passes
-    And if the user calls GET /api/v1/bookings without customerId, the service must return HTTP 400 Bad Request
+    And if the user calls GET /api/v1/bookings without customerId, the API/security layer must return HTTP 400 Bad Request before calling BookingService
 
   @security @ownership
   Scenario: Customer role without a customer identity claim
@@ -255,7 +255,7 @@ Feature: Security
     And a request from a user with role ROLE_CUSTOMER
     And the JWT does not contain a customerId or customer_id claim
     When the endpoint requires customer ownership validation
-    Then the service must return HTTP 403 Forbidden
+    Then the API/security layer must return HTTP 403 Forbidden before calling BookingService
     And it must not infer customerId from the JWT subject
 
   @security @ownership
@@ -264,8 +264,8 @@ Feature: Security
     And a request from a user with role ROLE_CUSTOMER
     And the JWT contains a customerId or customer_id claim
     When the user calls GET /api/v1/bookings/{id} or PATCH /api/v1/bookings/{id}/cancel
-    Then the service must verify that the booking's customerId matches the customerId claim from the JWT
-    And if it does not match, the service must return HTTP 403 Forbidden
+    Then the API/security layer must verify that the booking's customerId matches the customerId claim from the JWT
+    And if it does not match, the API/security layer must return HTTP 403 Forbidden
 
   @security @ownership
   Scenario: Service callers, operators, and admins can act for requested customers
