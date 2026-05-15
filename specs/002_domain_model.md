@@ -35,12 +35,14 @@ Feature: Domain Model
   @domain @enum
   Scenario: EquipmentType enum
     Given the enum "EquipmentType" in package "com.cargo.booking.model.enums"
-    Then it must define the following values:
-      | value  | description              |
-      | 20FT   | 20-foot container        |
-      | 40FT   | 40-foot container        |
-      | 40HC   | 40-foot high cube        |
-      | REEFER | Refrigerated container   |
+    Then it must define Java-safe enum constants with external API codes:
+      | value     | code   | description              |
+      | TWENTY_FT | 20FT   | 20-foot container        |
+      | FORTY_FT  | 40FT   | 40-foot container        |
+      | FORTY_HC  | 40HC   | 40-foot high cube        |
+      | REEFER    | REEFER | Refrigerated container   |
+    And the enum must expose the code via @JsonValue so API JSON uses values such as "20FT" and "40HC"
+    And it must provide a fromCode(String code) factory for request parsing and validation
 
   # ---------------------------------------------------------------------------
   # Booking Entity (Aggregate Root)

@@ -258,7 +258,6 @@ Feature: Testing Strategy
       | shouldCreateBookingAndReturn201()                   | 201    | Valid request.customerId matching CUSTOMER token customerId claim |
       | shouldCreateBookingAsAdminForAnyCustomer()          | 201    | ADMIN can create with any valid request.customerId |
       | shouldCreateBookingAsServiceForAnyCustomer()        | 201    | SERVICE token can create on behalf of request.customerId |
-      | shouldCreateBookingWhenSecurityDisabled()            | 201    | Valid request without JWT when app.security.enabled=false |
       | shouldReturn400WhenRequestBodyInvalid()             | 400    | Missing required fields                          |
       | shouldReturn400WhenCustomerIdMissingFromCreateRequest() | 400 | Missing customerId in request body                |
       | shouldReturn400WhenEmailInvalid()                   | 400    | Malformed email in customer request              |
@@ -311,6 +310,16 @@ Feature: Testing Strategy
       | shouldStartBookingAsOperator()                      | 200    | OPERATOR starts CONFIRMED booking                |
       | shouldCompleteBookingAsOperator()                   | 200    | OPERATOR completes IN_PROGRESS booking           |
       | shouldReturn403WhenCustomerTriesToConfirm()         | 403    | CUSTOMER cannot confirm                          |
+
+  @testing @integration @controller
+  Scenario: BookingController tests with security disabled
+    Given a separate test class "BookingControllerSecurityDisabledTest" in package "com.cargo.booking.controller"
+    Then it must use the same controller slice setup as BookingControllerTest
+    And it must override app.security.enabled=false for the test context
+    And it must include the following MockMvc test cases:
+      | test method                                | status | description                                    |
+      | shouldCreateBookingWithoutJwtWhenSecurityDisabled() | 201 | Valid request.customerId without Authorization header |
+      | shouldListBookingsWithCustomerIdWhenSecurityDisabled() | 200 | customerId query parameter comes from request data |
 
   # ---------------------------------------------------------------------------
   # Integration Tests — Error Handling

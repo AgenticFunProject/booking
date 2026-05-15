@@ -58,7 +58,8 @@ Feature: API Endpoints
       | field    | type   | validation          | description              |
       | type     | String | @NotBlank           | Equipment type (e.g. "20FT", "40FT") |
       | quantity | int    | @Min(1)             | Number of containers     |
-    And the "type" field must be validated against the EquipmentType enum values at the service layer
+    And the "type" field must be validated against EquipmentType.fromCode(type) at the service layer
+    And the API must use equipment codes such as "20FT" and "40HC", not the Java enum constant names
 
   # ---------------------------------------------------------------------------
   # Response DTOs
@@ -117,6 +118,7 @@ Feature: API Endpoints
       | field    | type   | description              |
       | type     | String | Equipment type           |
       | quantity | int    | Number of containers     |
+    And the "type" field must return the EquipmentType external code, such as "20FT" or "REEFER"
 
   @api @dto @response
   Scenario: PagedResponse wrapper
@@ -409,8 +411,12 @@ Feature: API Endpoints
       | 200         | Successful retrieval or update                 |
       | 201         | Successful creation (POST only)                |
       | 400         | Validation error — invalid request body or params |
+      | 401         | Authentication required when security is enabled |
+      | 403         | Authenticated caller lacks permission or ownership |
       | 404         | Booking not found                              |
       | 409         | Invalid state transition                       |
+      | 422         | Schedule or quote validation failed            |
+      | 503         | External equipment reservation unavailable     |
       | 500         | Internal server error                          |
 
   # ---------------------------------------------------------------------------
