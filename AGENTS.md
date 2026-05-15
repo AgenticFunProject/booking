@@ -141,7 +141,7 @@ CONFIRMED   → IN_PROGRESS, CANCELLED
 IN_PROGRESS → COMPLETED
 ```
 
-All other transitions must throw `IllegalStateTransitionException`. Validate transitions before changing status.
+All other transitions are rejected by `BookingStateMachine`, which throws `IllegalStateTransitionException` before any status change.
 
 Equipment release failures during cancellation must NOT block the cancel — log a warning and proceed.
 
