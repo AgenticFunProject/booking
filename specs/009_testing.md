@@ -347,6 +347,7 @@ Feature: Testing Strategy
     Given a test class "SecurityIntegrationTest" in package "com.cargo.booking.security"
     Then it must extend BaseIntegrationTest
     And it must activate both the "test" and "local" profiles so BookingService can use local stub clients
+    And it must explicitly override app.security.enabled=true because the local profile disables security by default
     And it must verify:
       | test method                                              | description                                      |
       | shouldAllowAccessToSwaggerWithoutAuth()                 | /swagger-ui/** is public                          |
