@@ -195,13 +195,14 @@ Feature: Business Rules and Service Layer
 
   @business @lifecycle
   Scenario: State transition validation method
-    Given the BookingService or a dedicated BookingStateMachine class
-    Then a method must exist that validates whether a transition is allowed:
+    Given a dedicated class "BookingStateMachine" in package "com.cargo.booking.service"
+    Then it must be annotated with @Component
+    And it must define a method that validates whether a transition is allowed:
       | method signature                                                    |
       | void validateTransition(BookingStatus current, BookingStatus target) |
     And it must use the transition rules defined in 002_domain_model.md
     And it must throw IllegalStateTransitionException for any disallowed transition
-    And this method must be called before any status change in all lifecycle methods
+    And BookingService must depend on BookingStateMachine and call it before any status change in all lifecycle methods
 
   # ---------------------------------------------------------------------------
   # Booking Reference Generator

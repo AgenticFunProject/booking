@@ -109,8 +109,8 @@ Feature: Testing Strategy
   # ---------------------------------------------------------------------------
 
   @testing @unit @domain
-  Scenario: BookingStatus state transition tests
-    Given a test class "BookingStatusTest" in package "com.cargo.booking.model.enums"
+  Scenario: BookingStateMachine state transition tests
+    Given a test class "BookingStateMachineTest" in package "com.cargo.booking.service"
     Then it must verify all valid transitions from 002_domain_model.md:
       | test method                             | from        | to          | expected |
       | shouldAllowPendingToConfirmed()         | PENDING     | CONFIRMED   | allowed  |

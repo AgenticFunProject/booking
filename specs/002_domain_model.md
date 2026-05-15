@@ -193,8 +193,8 @@ Feature: Domain Model
       | CONFIRMED   | IN_PROGRESS |
       | CONFIRMED   | CANCELLED   |
       | IN_PROGRESS | COMPLETED   |
-    And any transition not in this list must throw an IllegalStateTransitionException
-    And the transition validation logic must reside in the Booking entity or a dedicated domain service
+    And any transition not in this list is invalid
+    And transition validation and exception behavior are defined in 004_business_rules.md
 
   @domain @lifecycle
   Scenario Outline: State transition examples
