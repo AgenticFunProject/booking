@@ -47,7 +47,7 @@ Feature: Deployment and Infrastructure
       | 5    | USER appuser                                                         |
       | 6    | EXPOSE 8081                                                          |
       | 7    | HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://localhost:8081/actuator/health \|\| exit 1 |
-      | 8    | ENTRYPOINT ["java", "-jar", "app.jar"]                               |
+      | 8    | ENTRYPOINT uses the container-aware JVM settings defined in the JVM configuration scenario |
 
   @deployment @docker
   Scenario: Dockerfile best practices
@@ -199,14 +199,15 @@ Feature: Deployment and Infrastructure
   @deployment @logging
   Scenario: MDC context for request tracing
     Given the Booking Service request handling
-    Then a filter or interceptor must add the following to the MDC:
+    Then request tracing must be split by when data is available:
       | mdc key        | source                                           |
-      | requestId      | X-Request-ID header when present; generated correlation ID for logs if absent |
-      | principal      | JWT subject / authenticated requester when present |
-      | customerId     | JWT customerId/customer_id claim when present     |
-      | bookingRef     | Set by the service layer when available           |
+      | requestId      | Early request filter: X-Request-ID header when present; generated correlation ID for logs if absent |
+      | principal      | Post-auth filter/interceptor: JWT subject / authenticated requester when present |
+      | customerId     | Post-auth filter/interceptor: JWT customerId/customer_id claim when present |
+      | bookingRef     | Service layer when available                      |
     And the MDC must be cleared after each request
-    And the filter must be registered with the highest priority (runs first)
+    And the requestId filter must be registered with highest priority so all logs can include a correlation ID
+    And principal and customerId must be populated only after Spring Security has built the Authentication
 
   # ---------------------------------------------------------------------------
   # Environment Variables Reference

@@ -107,6 +107,7 @@ Feature: Integration Infrastructure
       | readTimeout    | From the corresponding timeoutMs property |
       | default header | Content-Type: application/json            |
       | default header | Accept: application/json                  |
+    And timeout settings must be applied through a ClientHttpRequestFactory such as JdkClientHttpRequestFactory or HttpComponentsClientHttpRequestFactory
     And the logging interceptor (defined below) must be registered on each bean
     And these beans exist so that real client implementations can inject them by qualifier
 
