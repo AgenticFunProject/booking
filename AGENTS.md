@@ -4,7 +4,7 @@ Cargo booking microservice built with Spring Boot 4.0.6 and Java 21. Accepts boo
 
 ## Specifications
 
-This project is built from sequential specification files. **Read them in order before writing any code.** Each file depends on all previous files.
+This project is built from sequential specification files. Before writing code, read this file, then the target spec and every file listed in that spec's `# Depends on:` header.
 
 ```
 specs/001_project_setup.md      → Maven project, dependencies, packages, conventions
@@ -19,7 +19,7 @@ specs/009_testing.md            → Unit, integration, E2E tests, WireMock, embe
 specs/010_deployment.md         → Dockerfile, Docker Compose, profiles, CI, logging
 ```
 
-When working on a specific layer, re-read that file and all files it depends on. The `# Depends on:` header in each file lists its dependencies explicitly.
+When working across multiple layers, read the affected specs in order so dependency assumptions stay aligned.
 
 ## Build & Test
 
@@ -48,6 +48,8 @@ When working on a specific layer, re-read that file and all files it depends on.
 # Run locally with stub clients
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
+
+Maven Surefire must be configured so `-Dgroups` selects JUnit 5 `@Tag` values (`integration`, `e2e`).
 
 Always run `./mvnw compile` after editing Java files to catch errors early. Run the relevant test class after any change, not the full suite.
 
@@ -96,7 +98,7 @@ src/main/java/com/cargo/booking/
 ├── client/                              # External service clients (Schedule, Equipment, Quote)
 │   └── dto/                             # DTOs for external API responses
 ├── mapper/                              # Entity ↔ DTO mapping
-└── security/                            # JWT filter, token provider, helpers
+└── security/                            # JWT filter, token provider, ownership authorization helpers
 
 src/main/resources/
 ├── application.yml                      # Base config
@@ -170,6 +172,10 @@ JWT-based stateless auth can be enabled for protected deployments. Local/unsecur
 
 JWT subject identifies the requester, which may be a service, not the booking customer. Customers have ownership checks when security is enabled only via an explicit `customerId` / `customer_id` token claim. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
 
+`BookingAccessAuthorizer` owns customer authorization checks before `BookingService` calls. It validates create/list request customer IDs and existing booking ownership for get/cancel operations. The current specs use explicit controller calls to this authorizer; do not replace them with `@PreAuthorize` unless the specs are changed consistently.
+
+When security is disabled, JWT validation and ownership checks are skipped. The service still uses `customerId` from request bodies or query parameters.
+
 ## Error Response Format
 
 All errors follow this structure:
@@ -180,11 +186,12 @@ All errors follow this structure:
   "status": 404,
   "error": "Not Found",
   "message": "Booking not found with reference BKG-2026-00042",
-  "path": "/api/v1/bookings/BKG-2026-00042"
+  "path": "/api/v1/bookings/BKG-2026-00042",
+  "requestId": "req-123"
 }
 ```
 
-Validation errors (400) add a `violations` array with field-level details.
+`requestId` is optional and omitted when absent. Validation errors (400) add a `violations` array with field-level details.
 
 ## Infrastructure
 
