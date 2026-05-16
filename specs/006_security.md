@@ -282,9 +282,10 @@ Feature: Security
     And when the caller has ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN it must allow access without customer ownership checks
     And when the caller has ROLE_CUSTOMER and the checked customerId comes from a request body or query parameter it must compare that customerId with the JWT customerId/customer_id claim
     And when the caller has ROLE_CUSTOMER and the checked customerId comes from an existing booking it must load the booking owner and compare it with the JWT customerId/customer_id claim
-    And authorizeListCustomer must throw BookingValidationException when ROLE_CUSTOMER omits customerId while security is enabled
+    And if the customer identity claim is missing it must throw AccessDeniedException before checking request/query customerId values
+    And authorizeListCustomer must throw BookingValidationException when ROLE_CUSTOMER has a customer identity claim but omits the customerId query parameter while security is enabled
     And if the repository lookup returns empty it must return without throwing so the subsequent BookingService call owns the BookingNotFoundException and final 404 response
-    And if the customer identity claim is missing or does not match it must throw AccessDeniedException before BookingService is called
+    And if the customer identity claim does not match the checked customerId it must throw AccessDeniedException before BookingService is called
 
   @security @ownership
   Scenario: Service callers, operators, and admins can act for requested customers

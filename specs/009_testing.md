@@ -118,7 +118,8 @@ Feature: Testing Strategy
       | shouldAllowCustomerCreateWhenRequestCustomerMatches() | request.customerId matches CUSTOMER token claim |
       | shouldRejectCustomerCreateWhenRequestCustomerDiffers() | request.customerId does not match CUSTOMER token claim |
       | shouldAllowCustomerListWhenQueryCustomerMatches() | query customerId matches CUSTOMER token claim |
-      | shouldRejectCustomerListWhenQueryCustomerMissing() | CUSTOMER omits customerId for list request |
+      | shouldRejectCustomerListWhenQueryCustomerMissing() | CUSTOMER has token customerId but omits customerId query parameter |
+      | shouldRejectCustomerListWhenTokenCustomerIdMissing() | CUSTOMER token has no customerId/customer_id claim |
       | shouldRejectCustomerListWhenQueryCustomerDiffers() | query customerId does not match CUSTOMER token claim |
       | shouldDeferNotFoundToBookingService()            | Repository empty returns without throwing so BookingService owns the 404 |
       | shouldAllowAccessWhenSecurityDisabled()          | Disabled security skips ownership checks      |
