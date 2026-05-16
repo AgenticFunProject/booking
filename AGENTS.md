@@ -85,7 +85,7 @@ When starting work, run `bd prime` first to understand current state. Always `bd
 src/main/java/com/cargo/booking/
 ├── BookingServiceApplication.java       # Entry point
 ├── controller/                          # REST controllers
-├── service/                             # Business logic
+├── service/                             # Business logic (BookingService, BookingStateMachine, BookingReferenceGenerator)
 ├── repository/                          # Spring Data JPA repositories
 ├── model/
 │   ├── entity/                          # JPA entities (Booking, BookingEquipmentLine)
@@ -99,6 +99,7 @@ src/main/java/com/cargo/booking/
 │   └── dto/                             # DTOs for external API responses
 ├── mapper/                              # Entity ↔ DTO mapping
 └── security/                            # JWT filter, token provider, ownership authorization helpers
+    └── BookingAccessAuthorizer.java     # Customer ownership checks before service calls
 
 src/main/resources/
 ├── application.yml                      # Base config
@@ -122,7 +123,7 @@ src/test/java/com/cargo/booking/
 ## Conventions & Patterns
 
 - **Java 21 LTS**, Spring Boot 4.0.6, Maven
-- **Layered architecture**: Controller → Service → Repository. No skipping layers.
+- **Layered architecture**: Controller → Service → Repository. No skipping layers, except security authorizers may query repositories for ownership checks only.
 - **DTOs are Java records** (immutable). Never expose JPA entities in API responses.
 - **Constructor injection** only. No `@Autowired` on fields.
 - **Lombok**: `@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor` on entities. `@RequiredArgsConstructor` on services/controllers.
@@ -158,6 +159,8 @@ Three external APIs will be called synchronously. **Only interfaces and local st
 | QuoteClient     | Validate quote matches booking       | Throw `QuoteNotValidException`           |
 
 Each client is defined as a **Java interface** with a **stub implementation** (`@Profile("local")`) that returns dummy data. Real implementations will be added later when the external services are available. See `specs/004_business_rules.md` for the interface contracts and `specs/008_integrations.md` for the planned real implementation design.
+
+Do not implement real external client behavior until the external API contracts are available.
 
 ## Security
 
@@ -228,4 +231,4 @@ docker-compose logs -f booking-service
 - Do not hardcode configuration values — use application.yml with environment variable fallbacks
 - Do not log sensitive customer data (email, phone, JWT tokens)
 - Do not skip writing tests — every service method and controller endpoint needs test coverage
-- Do not modify the Flyway migration files once they've been applied — create new migration files instead
+- Do not modify Flyway migration files once they have been applied, shared, or merged — create new migration files instead
