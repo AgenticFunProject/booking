@@ -51,7 +51,7 @@ When working across multiple layers, read the affected specs in order so depende
 
 Maven Surefire must be configured so `-Dgroups` selects JUnit 5 `@Tag` values (`integration`, `e2e`).
 
-Always run `./mvnw compile` after editing Java files to catch errors early. Run the relevant test class after any change, not the full suite.
+Always run `./mvnw compile` after editing Java files to catch errors early. Run the relevant test class after any code change, not the full suite. For documentation/spec-only changes, run `git diff --check`.
 
 ## Issue Tracking (Beads)
 
@@ -133,6 +133,7 @@ src/test/java/com/cargo/booking/
 - **API prefix**: `/api/v1`
 - **Logging**: SLF4J. INFO for business actions, WARN for client errors, ERROR for system failures. Never log sensitive data (email, phone, tokens).
 - **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure. Integration tests use embedded PostgreSQL.
+- **Spring Boot 4 tests**: Use `@MockitoBean` for MVC slice mocks, not the older `@MockBean`.
 
 ## Key Domain Rules
 
@@ -175,7 +176,9 @@ JWT-based stateless auth can be enabled for protected deployments. Local/unsecur
 
 JWT subject identifies the requester, which may be a service, not the booking customer. Customers have ownership checks when security is enabled only via an explicit `customerId` / `customer_id` token claim. Swagger UI, API docs, `/actuator/health`, and `/actuator/info` are public; `/actuator/metrics` requires ADMIN.
 
-`BookingAccessAuthorizer` owns customer authorization checks before `BookingService` calls. It validates create/list request customer IDs and existing booking ownership for get/cancel operations. The current specs use explicit controller calls to this authorizer; do not replace them with `@PreAuthorize` unless the specs are changed consistently.
+`BookingAccessAuthorizer` owns customer authorization checks before `BookingService` calls. It validates create/list request customer IDs with `authorizeCreateCustomer(Long)` and `authorizeListCustomer(Long)`, and validates existing booking ownership for get/cancel operations with `authorizeBookingAccess(Long)` and `authorizeBookingAccess(String)`. The current specs use explicit controller calls to this authorizer; do not replace them with `@PreAuthorize` unless the specs are changed consistently.
+
+For `ROLE_CUSTOMER`, a missing JWT `customerId` / `customer_id` claim must return HTTP 403 before comparing request body or query parameter customer IDs. For list requests, a missing `customerId` query parameter is HTTP 400 only when the CUSTOMER token contains a customer identity claim.
 
 When security is disabled, JWT validation and ownership checks are skipped. The service still uses `customerId` from request bodies or query parameters.
 
@@ -232,3 +235,4 @@ docker-compose logs -f booking-service
 - Do not log sensitive customer data (email, phone, JWT tokens)
 - Do not skip writing tests — every service method and controller endpoint needs test coverage
 - Do not modify Flyway migration files once they have been applied, shared, or merged — create new migration files instead
+- Do not add Kafka, asynchronous messaging, or event streaming in v1
