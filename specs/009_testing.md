@@ -115,6 +115,11 @@ Feature: Testing Strategy
       | shouldAllowCustomerWhenOwnerMatches()            | CUSTOMER token customerId matches booking owner |
       | shouldRejectCustomerWhenOwnerDiffers()           | CUSTOMER token customerId does not match      |
       | shouldRejectCustomerWithoutCustomerIdClaim()     | CUSTOMER token has no customerId/customer_id claim |
+      | shouldAllowCustomerCreateWhenRequestCustomerMatches() | request.customerId matches CUSTOMER token claim |
+      | shouldRejectCustomerCreateWhenRequestCustomerDiffers() | request.customerId does not match CUSTOMER token claim |
+      | shouldAllowCustomerListWhenQueryCustomerMatches() | query customerId matches CUSTOMER token claim |
+      | shouldRejectCustomerListWhenQueryCustomerMissing() | CUSTOMER omits customerId for list request |
+      | shouldRejectCustomerListWhenQueryCustomerDiffers() | query customerId does not match CUSTOMER token claim |
       | shouldDeferNotFoundToBookingService()            | Repository empty returns without throwing so BookingService owns the 404 |
       | shouldAllowAccessWhenSecurityDisabled()          | Disabled security skips ownership checks      |
 

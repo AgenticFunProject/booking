@@ -188,9 +188,10 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                       |
-      | 1    | Call bookingService.createBooking() with the request         |
-      | 2    | Map the result to BookingCreatedResponse using the mapper    |
-      | 3    | Return the response with HTTP 201 Created                    |
+      | 1    | Authorize request.customerId with BookingAccessAuthorizer    |
+      | 2    | Call bookingService.createBooking() with the request         |
+      | 3    | Map the result to BookingCreatedResponse using the mapper    |
+      | 4    | Return the response with HTTP 201 Created                    |
 
   @api @endpoint @create
   Scenario: Create booking — request body example
@@ -303,9 +304,10 @@ Feature: API Endpoints
       """
     And it must:
       | step | action                                                                |
-      | 1    | Call bookingService.getBookings(customerId, status, pageable)            |
-      | 2    | Map each booking entity to BookingResponse                              |
-      | 3    | Wrap in PagedResponse and return with HTTP 200                          |
+      | 1    | Authorize the customerId query parameter with BookingAccessAuthorizer    |
+      | 2    | Call bookingService.getBookings(customerId, status, pageable)            |
+      | 3    | Map each booking entity to BookingResponse                              |
+      | 4    | Wrap in PagedResponse and return with HTTP 200                          |
 
   @api @endpoint @read
   Scenario: List bookings — query parameter validation
