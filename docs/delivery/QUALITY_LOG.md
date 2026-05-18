@@ -30,8 +30,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-u2r.3` | https://github.com/AgenticFunProject/booking/pull/13 | `mvn compile` | Spring Boot application entry point compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 | 2026-05-18 | `bo-u2r.4` | https://github.com/AgenticFunProject/booking/pull/14 | `git diff --check` | Base application configuration | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-u2r.4` | https://github.com/AgenticFunProject/booking/pull/14 | `mvn compile` | Base application configuration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
-| 2026-05-18 | `bo-u2r.5` | Pending PR | `git diff --check` | Test profile configuration | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-u2r.5` | Pending PR | `mvn compile` | Test profile configuration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-u2r.5` | https://github.com/AgenticFunProject/booking/pull/15 | `git diff --check` | Test profile configuration | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-u2r.5` | https://github.com/AgenticFunProject/booking/pull/15 | `mvn compile` | Test profile configuration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 

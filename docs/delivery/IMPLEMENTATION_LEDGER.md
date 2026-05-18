@@ -174,7 +174,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-u2r-5-test-profile-config` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/15 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:02:47Z |
 | Completed UTC | 2026-05-18T10:03:05Z |
