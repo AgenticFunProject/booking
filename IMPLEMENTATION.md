@@ -134,19 +134,28 @@ If a gate cannot run because the project is not far enough along, note the reaso
 ## Delivery Evidence
 
 Every implementation bead should leave enough evidence for a coworker-facing
-delivery report.
+delivery report. Coworkers may read only GitHub, so do not rely on local Beads
+or local machine state for report data.
 
-When finishing a bead, record the important details in the bead notes or in the
-delivery evidence files once they exist:
+When finishing a bead, record the important details in the bead notes and in the
+delivery evidence files:
 
 - bead ID and title
 - branch name
 - PR URL
 - merge commit
+- started UTC timestamp
+- completed UTC timestamp
+- elapsed wall time
+- timing source, such as copied bead fields, an agent timer, or CI timestamps
 - verification commands and results
 - notable files changed
 - blockers, skipped checks, or follow-up beads
 - demo notes or API examples, when relevant
+
+Copy timing into `docs/delivery/IMPLEMENTATION_LEDGER.md` before closing the
+bead or merging the PR. Do not write instructions that require readers to infer
+timing from local bead databases.
 
 The reporting epic is `bo-8z3`. It owns the implementation ledger, quality log,
 spec coverage matrix, demo runbook, and final delivery report.

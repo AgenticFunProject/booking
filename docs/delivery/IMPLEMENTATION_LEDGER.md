@@ -10,6 +10,7 @@ This ledger records delivery evidence for completed implementation beads.
 | PRs merged | 1 |
 | Merge commits recorded | 1 |
 | Verification blockers recorded | 1 |
+| Entries with elapsed time | 1 |
 
 ## Entries
 
@@ -22,9 +23,10 @@ This ledger records delivery evidence for completed implementation beads.
 | Branch | `work/bo-u2r-1-scaffold-maven` |
 | PR | https://github.com/AgenticFunProject/booking/pull/6 |
 | Merge commit | `b23c9df` |
-| Started | 2026-05-18 |
-| Completed | 2026-05-18 |
-| Elapsed | Not precisely tracked; infer from bead timestamps if needed |
+| Started UTC | 2026-05-18T08:41:50Z |
+| Completed UTC | 2026-05-18T09:02:47Z |
+| Elapsed wall time | 20m 57s |
+| Timing source | Copied from bead `started_at` and `closed_at` fields for GitHub-readable reporting |
 | Files changed | `pom.xml`, `MAVEN.md` |
 | Spec | `specs/001_project_setup.md` |
 
@@ -57,9 +59,10 @@ Notes:
 | Branch | `<branch>` |
 | PR | <url> |
 | Merge commit | `<sha>` |
-| Started | <date/time if known> |
-| Completed | <date/time if known> |
-| Elapsed | <duration or "Not precisely tracked"> |
+| Started UTC | <ISO-8601 UTC timestamp copied into this file> |
+| Completed UTC | <ISO-8601 UTC timestamp copied into this file> |
+| Elapsed wall time | <duration copied into this file, for example "20m 57s"> |
+| Timing source | <bead fields, agent timer, CI timestamps, or other source> |
 | Files changed | `<file>`, `<file>` |
 | Spec | `<spec path>` |
 
