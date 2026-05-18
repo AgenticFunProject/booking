@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 5 |
-| PRs merged | 4 |
-| Merge commits recorded | 4 |
-| Verification blockers recorded | 4 |
-| Entries with elapsed time | 5 |
+| Beads recorded | 6 |
+| PRs merged | 5 |
+| Merge commits recorded | 5 |
+| Verification blockers recorded | 5 |
+| Entries with elapsed time | 6 |
 
 ## Entries
 
@@ -141,11 +141,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-u2r-4-base-application-config` |
 | PR | https://github.com/AgenticFunProject/booking/pull/14 |
-| Merge commit | Pending |
+| Merge commit | `cb898b5` |
 | Started UTC | 2026-05-18T10:00:33Z |
 | Completed UTC | 2026-05-18T10:00:52Z |
 | Elapsed wall time | 19s |
@@ -166,6 +166,36 @@ Verification:
 Notes:
 
 - Profile-specific overrides remain in later foundation/deployment tasks.
+
+### bo-u2r.5 - Add test profile configuration
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-u2r-5-test-profile-config` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:02:47Z |
+| Completed UTC | 2026-05-18T10:03:05Z |
+| Elapsed wall time | 18s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added test profile configuration for PostgreSQL-oriented tests.
+- Configured PostgreSQL driver expectations, JPA validation, Flyway validation, and test JWT/security defaults for later specs.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Embedded PostgreSQL test bootstrap code is planned in later test/integration beads; this profile provides the expected configuration surface.
 
 ## Entry Template
 
