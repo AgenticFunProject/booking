@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 7 |
-| PRs merged | 6 |
-| Merge commits recorded | 6 |
-| Verification blockers recorded | 6 |
-| Entries with elapsed time | 7 |
+| Beads recorded | 8 |
+| PRs merged | 7 |
+| Merge commits recorded | 7 |
+| Verification blockers recorded | 7 |
+| Entries with elapsed time | 8 |
 
 ## Entries
 
@@ -201,11 +201,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-7or-1-booking-status` |
 | PR | https://github.com/AgenticFunProject/booking/pull/16 |
-| Merge commit | Pending |
+| Merge commit | `1881bd8` |
 | Started UTC | 2026-05-18T10:09:09Z |
 | Completed UTC | 2026-05-18T10:09:26Z |
 | Elapsed wall time | 17s |
@@ -226,6 +226,36 @@ Verification:
 Notes:
 
 - Transition validation remains in the later service-layer state machine task.
+
+### bo-7or.2 - Add EquipmentType enum with API codes
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-7or-2-equipment-type` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:11:23Z |
+| Completed UTC | 2026-05-18T10:11:48Z |
+| Elapsed wall time | 25s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/model/enums/EquipmentType.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Added Java-safe `EquipmentType` constants for `20FT`, `40FT`, `40HC`, and `REEFER`.
+- Added `@JsonValue` code output and `fromCode(String)` parsing for request input.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Invalid or blank codes currently throw `IllegalArgumentException`; API-level error mapping is handled in later error/API tasks.
 
 ## Entry Template
 
