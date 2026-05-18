@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 58 |
-| Passed | 41 |
+| Checks recorded | 60 |
+| Passed | 43 |
 | Failed | 0 |
 | Blocked/skipped | 17 |
 
@@ -73,6 +73,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.5` | https://github.com/AgenticFunProject/booking/pull/36 | `git diff --check` | BookingReferenceGenerator | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-0wh.5` | https://github.com/AgenticFunProject/booking/pull/36 | `mvn compile` | BookingReferenceGenerator compile | Passed | Compile completed successfully. |
 | 2026-05-18 | `bo-0wh.5` | https://github.com/AgenticFunProject/booking/pull/36 | `mvn test -Dtest=BookingReferenceGeneratorTest` | BookingReferenceGenerator unit test | Passed | 1 test, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.2` | https://github.com/AgenticFunProject/booking/pull/37 | `git diff --check` | External client interfaces and DTOs | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.2` | https://github.com/AgenticFunProject/booking/pull/37 | `mvn compile` | External client interfaces and DTOs compile | Passed | Compile completed successfully. |
 
 ## Entry Template
 

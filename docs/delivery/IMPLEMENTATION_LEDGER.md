@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 24 |
-| PRs merged | 22 |
-| Merge commits recorded | 24 |
+| Beads recorded | 25 |
+| PRs merged | 23 |
+| Merge commits recorded | 25 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 24 |
+| Entries with elapsed time | 25 |
 
 ## Entries
 
@@ -725,11 +725,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-0wh-5-reference-generator` |
 | PR | https://github.com/AgenticFunProject/booking/pull/36 |
-| Merge commit | Pending |
+| Merge commit | `b946bb0` |
 | Started UTC | 2026-05-18T12:42:00Z |
 | Completed UTC | 2026-05-18T12:44:37Z |
 | Elapsed wall time | 2m 37s |
@@ -752,6 +752,36 @@ Verification:
 Notes:
 
 - The database counter repository remains responsible for concurrent sequence allocation.
+
+### bo-0wh.2 - Add external client interfaces and DTOs
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-0wh-2-client-contracts` |
+| PR | https://github.com/AgenticFunProject/booking/pull/37 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T12:47:00Z |
+| Completed UTC | 2026-05-18T12:48:00Z |
+| Elapsed wall time | 1m |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/client/*.java`, `src/main/java/com/cargo/booking/client/dto/*.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `ScheduleClient`, `EquipmentClient`, and `QuoteClient` interfaces.
+- Added immutable `ScheduleDTO` and `EquipmentLineDTO` records for external client contracts.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+
+Notes:
+
+- Real external integrations remain deferred to `specs/008_integrations.md`.
 
 ## Entry Template
 
