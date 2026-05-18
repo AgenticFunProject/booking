@@ -383,7 +383,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-43o-phase-1-2-audit` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/21 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:30:42Z |
 | Completed UTC | 2026-05-18T10:31:03Z |
