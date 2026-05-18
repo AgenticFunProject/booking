@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 4 |
-| PRs merged | 3 |
-| Merge commits recorded | 3 |
-| Verification blockers recorded | 3 |
-| Entries with elapsed time | 4 |
+| Beads recorded | 5 |
+| PRs merged | 4 |
+| Merge commits recorded | 4 |
+| Verification blockers recorded | 4 |
+| Entries with elapsed time | 5 |
 
 ## Entries
 
@@ -111,11 +111,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-u2r-3-application-entrypoint` |
 | PR | https://github.com/AgenticFunProject/booking/pull/13 |
-| Merge commit | Pending |
+| Merge commit | `05d4331` |
 | Started UTC | 2026-05-18T09:58:14Z |
 | Completed UTC | 2026-05-18T09:58:34Z |
 | Elapsed wall time | 20s |
@@ -136,6 +136,36 @@ Verification:
 Notes:
 
 - Compile verification remains environment-blocked until Java 21 is available in this workspace.
+
+### bo-u2r.4 - Add base application configuration
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-u2r-4-base-application-config` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:00:33Z |
+| Completed UTC | 2026-05-18T10:00:52Z |
+| Elapsed wall time | 19s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added base Spring application configuration for port, app name, datasource defaults, JPA, Flyway, OpenAPI, actuator exposure, pagination, and API base path.
+- Kept messaging/event streaming configuration out of scope.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Profile-specific overrides remain in later foundation/deployment tasks.
 
 ## Entry Template
 
