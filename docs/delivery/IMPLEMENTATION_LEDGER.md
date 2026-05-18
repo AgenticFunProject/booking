@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 21 |
-| PRs merged | 19 |
-| Merge commits recorded | 21 |
+| Beads recorded | 22 |
+| PRs merged | 20 |
+| Merge commits recorded | 22 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 21 |
+| Entries with elapsed time | 22 |
 
 ## Entries
 
@@ -660,6 +660,36 @@ Verification:
 Notes:
 
 - Existing historical ledger entries still record their original Java-environment blockers; current verification now passes after the WSL Java/Maven setup was fixed.
+
+### bo-jyh - Prepare Phase 4 service execution plan
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-jyh-phase-4-plan` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T12:02:32Z |
+| Completed UTC | 2026-05-18T12:03:12Z |
+| Elapsed wall time | 40s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `IMPLEMENTATION.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added the Phase 4 service-layer execution waves to `IMPLEMENTATION.md`.
+- Documented controlled parallelism guidance for service work and the hot-file risk around `BookingService`.
+- Fixed local bead dependency metadata so `bo-0wh.7` read/list service work depends on `bo-0wh.1` exception classes before it starts.
+
+Verification:
+
+- `git diff --check` passed.
+
+Notes:
+
+- Bead dependency metadata is local Gas Town state; the GitHub-readable execution order is recorded in `IMPLEMENTATION.md`.
 
 ## Entry Template
 

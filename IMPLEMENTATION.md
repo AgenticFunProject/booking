@@ -174,6 +174,26 @@ Completion signal: the service layer owns business rules, keeps authorization at
 the API/security boundary, and tests or verification notes cover lifecycle
 success and failure paths.
 
+Execution order:
+
+1. Add service exception classes and the booking reference generator. These can
+   run in parallel because they touch separate files.
+2. Add client interfaces/DTOs, the booking state machine, and read/list service
+   flows after exceptions exist. Read/list flows depend on
+   `BookingNotFoundException`.
+3. Add local stub clients and the create-booking flow after the client
+   interfaces, state machine, and reference generator are merged.
+4. Add lifecycle flows. Confirm, start/complete, and cancel can be split by
+   method ownership, but they all touch `BookingService`, so agents must rebase
+   after each merge and avoid overlapping method edits.
+5. Add focused service tests after the service API stabilizes.
+6. Run the cumulative phase completion audit for Phases 1-4 and record the
+   result in delivery evidence.
+
+Parallelism: use controlled waves. Start with at most two independent service
+foundation beads, then increase only when write sets are clearly separate. Avoid
+parallel changes to the same `BookingService` methods.
+
 ### Phase 5: API And Error Handling
 
 Goal: expose the service through REST endpoints with structured API errors.
