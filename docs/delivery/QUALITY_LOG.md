@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 89 |
-| Passed | 66 |
+| Checks recorded | 94 |
+| Passed | 70 |
 | Failed | 1 |
-| Blocked/skipped | 22 |
+| Blocked/skipped | 23 |
 
 ## Checks
 
@@ -99,6 +99,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingServiceLifecycleTest` | Start and complete booking service flow unit tests | Passed | 6 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after start/complete lifecycle flows | Passed | 48 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `git diff --check` | Start and complete booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `./mvnw compile` | Cancel booking service flow compile | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `mvn compile` | Cancel booking service flow compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingServiceCancelTest` | Cancel booking service flow unit tests | Passed | 5 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after cancel lifecycle flow | Passed | 53 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `git diff --check` | Cancel booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 

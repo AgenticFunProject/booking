@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 31 |
+| Beads recorded | 32 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 21 |
-| Entries with elapsed time | 31 |
+| Verification blockers recorded | 22 |
+| Entries with elapsed time | 32 |
 
 ## Entries
 
@@ -985,6 +985,42 @@ Verification:
 Notes:
 
 - Confirm and cancel flows were intentionally not changed; those remain separate lifecycle beads.
+
+### bo-0wh.10 - Implement cancel booking flow
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.10@mpbcw7x9` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:26:13Z |
+| Completed UTC | 2026-05-18T15:31:10Z |
+| Elapsed wall time | 4m 57s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceCancelTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added transactional `BookingService.cancelBooking(Long)`.
+- Loaded bookings with equipment lines, validated transitions to `CANCELLED` through `BookingStateMachine`, released equipment only for `CONFIRMED` bookings, and saved the cancelled booking.
+- Made equipment release failures warning-only by catching the external client contract exception while still persisting cancellation.
+- Added focused cancel-flow unit tests for pending cancellation, confirmed cancellation with release, warning-only release failure, missing booking, and invalid transition rejection.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingServiceCancelTest` passed with 5 tests, 0 failures, 0 errors.
+- After `git fetch origin master && git rebase origin/master`, `mvn test` passed with 53 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Authorization and ownership checks remain outside the service method for later API/security beads.
+- Release failure handling catches `EquipmentReservationException` only; generic service exceptions still bubble to the global handler.
 
 ## Entry Template
 
