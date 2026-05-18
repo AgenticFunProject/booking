@@ -54,7 +54,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-u2r-2-package-structure` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/11 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T09:46:28Z |
 | Completed UTC | 2026-05-18T09:46:54Z |
