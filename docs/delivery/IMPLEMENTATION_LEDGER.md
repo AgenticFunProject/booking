@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 32 |
+| Beads recorded | 33 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 22 |
-| Entries with elapsed time | 32 |
+| Verification blockers recorded | 23 |
+| Entries with elapsed time | 33 |
 
 ## Entries
 
@@ -1021,6 +1021,41 @@ Notes:
 
 - Authorization and ownership checks remain outside the service method for later API/security beads.
 - Release failure handling catches `EquipmentReservationException` only; generic service exceptions still bubble to the global handler.
+
+### bo-0wh.11 - Add service unit tests
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.11@mpbd8oxb` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:35:57Z |
+| Completed UTC | 2026-05-18T15:40:31Z |
+| Elapsed wall time | 4m 34s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `src/test/java/com/cargo/booking/service/BookingStateMachineTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Expanded create-flow unit coverage for validation-before-client behavior, null requests, null equipment lines, invalid equipment quantities, and no reference generation after schedule or quote rejection.
+- Added read-flow coverage for missing booking references.
+- Expanded state-machine coverage to reject every transition not allowed by the lifecycle rules.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="BookingServiceCreateTest,BookingServiceReadTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest,BookingReferenceGeneratorTest,BookingStateMachineTest"` passed with 37 tests, 0 failures, 0 errors.
+- `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- After `git fetch origin master && git rebase origin/master`, `mvn compile` and `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- The main service implementation was already present on `origin/master`; this bead adds focused edge-case tests without changing production service behavior.
 
 ## Entry Template
 

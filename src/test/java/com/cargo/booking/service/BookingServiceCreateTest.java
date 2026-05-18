@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.when;
 
 import com.cargo.booking.client.EquipmentClient;
@@ -19,10 +20,12 @@ import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.model.enums.EquipmentType;
 import com.cargo.booking.repository.BookingRepository;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -72,6 +75,24 @@ class BookingServiceCreateTest {
                 .containsExactly(EquipmentType.TWENTY_FT, EquipmentType.REEFER);
         assertThat(savedBooking.getEquipmentLines())
                 .allSatisfy(line -> assertThat(line.getBooking()).isSameAs(savedBooking));
+
+        InOrder createOrder = inOrder(scheduleClient, quoteClient, bookingReferenceGenerator, bookingRepository);
+        createOrder.verify(scheduleClient).validateSchedule(10L);
+        createOrder.verify(quoteClient).validateQuote(20L, 10L, new BigDecimal("1200.50"));
+        createOrder.verify(bookingReferenceGenerator).generateReference();
+        createOrder.verify(bookingRepository).save(any(Booking.class));
+    }
+
+    @Test
+    void shouldThrowWhenRequestIsMissing() {
+        BookingService bookingService = bookingService();
+
+        assertThatThrownBy(() -> bookingService.createBooking(null))
+                .isInstanceOf(BookingValidationException.class)
+                .hasMessage("Booking request is required");
+
+        verify(scheduleClient, never()).validateSchedule(any());
+        verify(bookingRepository, never()).save(any());
     }
 
     @Test
@@ -142,6 +163,52 @@ class BookingServiceCreateTest {
     }
 
     @Test
+    void shouldThrowWhenEquipmentLineIsMissing() {
+        BookingService bookingService = bookingService();
+        CreateBookingRequest request = new CreateBookingRequest(
+                7L,
+                10L,
+                20L,
+                "Acme Logistics",
+                "ops@example.com",
+                "555-0100",
+                "Machine parts",
+                new BigDecimal("1200.50"),
+                Collections.singletonList(null)
+        );
+
+        assertThatThrownBy(() -> bookingService.createBooking(request))
+                .isInstanceOf(BookingValidationException.class)
+                .hasMessage("Equipment line must not be null");
+
+        verify(scheduleClient, never()).validateSchedule(any());
+        verify(bookingRepository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenEquipmentQuantityIsInvalid() {
+        BookingService bookingService = bookingService();
+        CreateBookingRequest request = new CreateBookingRequest(
+                7L,
+                10L,
+                20L,
+                "Acme Logistics",
+                "ops@example.com",
+                "555-0100",
+                "Machine parts",
+                new BigDecimal("1200.50"),
+                List.of(new CreateBookingRequest.EquipmentLineRequest("20FT", 0))
+        );
+
+        assertThatThrownBy(() -> bookingService.createBooking(request))
+                .isInstanceOf(BookingValidationException.class)
+                .hasMessage("Equipment quantity must be greater than zero");
+
+        verify(scheduleClient, never()).validateSchedule(any());
+        verify(bookingRepository, never()).save(any());
+    }
+
+    @Test
     void shouldThrowWhenScheduleIsUnavailable() {
         BookingService bookingService = bookingService();
 
@@ -152,6 +219,7 @@ class BookingServiceCreateTest {
                 .hasMessageContaining("10");
 
         verify(quoteClient, never()).validateQuote(any(), any(), any());
+        verify(bookingReferenceGenerator, never()).generateReference();
         verify(bookingRepository, never()).save(any());
     }
 
@@ -168,6 +236,7 @@ class BookingServiceCreateTest {
                 .hasMessageContaining("10");
 
         verify(bookingRepository, never()).save(any());
+        verify(bookingReferenceGenerator, never()).generateReference();
     }
 
     private BookingService bookingService() {

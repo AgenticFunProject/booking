@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 94 |
-| Passed | 70 |
+| Checks recorded | 101 |
+| Passed | 76 |
 | Failed | 1 |
-| Blocked/skipped | 23 |
+| Blocked/skipped | 24 |
 
 ## Checks
 
@@ -104,6 +104,13 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingServiceCancelTest` | Cancel booking service flow unit tests | Passed | 5 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after cancel lifecycle flow | Passed | 53 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.10` | Pending merge queue submission via `gt done` | `git diff --check` | Cancel booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done` | `./mvnw compile` | Service unit test compile | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done` | `mvn compile` | Service unit test compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingServiceCreateTest,BookingServiceReadTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest,BookingReferenceGeneratorTest,BookingStateMachineTest"` | Focused service unit test suite | Passed | 37 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after service unit test expansion | Passed | 58 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done` | `git diff --check` | Service unit tests and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase compile gate | Passed | Compile completed successfully after `git fetch origin master && git rebase origin/master`. |
+| 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 58 tests, 0 failures, 0 errors after `git fetch origin master && git rebase origin/master`. |
 
 ## Entry Template
 

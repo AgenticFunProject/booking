@@ -77,6 +77,18 @@ class BookingServiceReadTest {
     }
 
     @Test
+    void shouldThrowWhenBookingReferenceIsMissing() {
+        BookingService bookingService = bookingService();
+
+        when(bookingRepository.findWithEquipmentLinesByBookingReference("BKG-2026-40404"))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> bookingService.getBookingByReference("BKG-2026-40404"))
+                .isInstanceOf(BookingNotFoundException.class)
+                .hasMessageContaining("BKG-2026-40404");
+    }
+
+    @Test
     void shouldListBookingsByCustomerAndStatus() {
         Pageable pageable = PageRequest.of(0, 20);
         Page<Booking> bookings = new PageImpl<>(List.of(Booking.builder().id(1L).build()));
