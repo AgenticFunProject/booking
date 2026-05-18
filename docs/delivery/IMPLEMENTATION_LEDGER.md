@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 28 |
+| Beads recorded | 29 |
 | PRs merged | 26 |
 | Merge commits recorded | 28 |
-| Verification blockers recorded | 18 |
-| Entries with elapsed time | 28 |
+| Verification blockers recorded | 19 |
+| Entries with elapsed time | 29 |
 
 ## Entries
 
@@ -879,6 +879,42 @@ Verification:
 Notes:
 
 - No `BookingService` or service-flow files were changed; this bead stayed within the assigned parallel write set.
+
+### bo-0wh.6 - Implement create booking service flow
+
+| Field | Value |
+| --- | --- |
+| Status | Ready for merge queue |
+| Agent | polecat/quartz |
+| Branch | `polecat/quartz/bo-0wh.6@mpbbr762` |
+| PR | Pending merge queue submission |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T14:54:20Z |
+| Completed UTC | 2026-05-18T14:59:39Z |
+| Elapsed wall time | 5m 19s |
+| Timing source | Started time copied from hook attachment; completed time captured by agent after focused verification passed |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/main/java/com/cargo/booking/service/CreateBookingRequest.java`, `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added a service-layer `CreateBookingRequest` command record for create orchestration.
+- Implemented transactional `BookingService.createBooking` validation, schedule validation, quote validation, reference generation, pending booking assembly, equipment-line association, and cascade persistence.
+- Added focused create-flow unit tests for the happy path, validation failures, unavailable schedules, and invalid quotes.
+- Updated existing read-service tests for the expanded constructor dependencies required by the service contract.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingServiceCreateTest` passed with 6 tests, 0 failures, 0 errors.
+- `mvn test -Dtest=BookingServiceReadTest` passed with 7 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Authorization remains outside the service method for later API/security beads.
+- Local stub client files were not edited.
 
 ## Entry Template
 
