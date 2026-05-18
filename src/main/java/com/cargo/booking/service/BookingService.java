@@ -1,6 +1,7 @@
 package com.cargo.booking.service;
 
 import com.cargo.booking.client.EquipmentClient;
+import com.cargo.booking.client.dto.EquipmentLineDTO;
 import com.cargo.booking.client.QuoteClient;
 import com.cargo.booking.client.ScheduleClient;
 import com.cargo.booking.exception.BookingNotFoundException;
@@ -133,6 +134,26 @@ public class BookingService {
         return bookingRepository.findAll(pageable);
     }
 
+    @Transactional
+    public Booking confirmBooking(Long id) {
+        Booking booking = bookingRepository.findWithEquipmentLinesById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
+        BookingStatus currentStatus = booking.getStatus();
+
+        bookingStateMachine.validateTransition(currentStatus, BookingStatus.CONFIRMED);
+        equipmentClient.reserveEquipment(booking.getId(), toEquipmentLineDtos(booking.getEquipmentLines()));
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+        Booking savedBooking = bookingRepository.save(booking);
+        log.info("Booking {} transitioned from {} to {}",
+                savedBooking.getBookingReference(),
+                currentStatus,
+                BookingStatus.CONFIRMED
+        );
+
+        return savedBooking;
+    }
+
     private void validateCreateRequest(CreateBookingRequest request) {
         if (request == null) {
             throw new BookingValidationException("Booking request is required");
@@ -170,6 +191,12 @@ public class BookingService {
         }
 
         return lines;
+    }
+
+    private List<EquipmentLineDTO> toEquipmentLineDtos(List<BookingEquipmentLine> equipmentLines) {
+        return equipmentLines.stream()
+                .map(line -> new EquipmentLineDTO(line.getType().getCode(), line.getQuantity()))
+                .toList();
     }
 
     private EquipmentType parseEquipmentType(String type) {

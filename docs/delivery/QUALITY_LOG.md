@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 74 |
-| Passed | 55 |
-| Failed | 0 |
-| Blocked/skipped | 19 |
+| Checks recorded | 79 |
+| Passed | 58 |
+| Failed | 1 |
+| Blocked/skipped | 20 |
 
 ## Checks
 
@@ -89,6 +89,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `mvn test -Dtest=BookingServiceCreateTest` | Create booking service flow unit tests | Passed | 6 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `mvn test -Dtest=BookingServiceReadTest` | Existing read service regression tests | Passed | 7 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `git diff --check` | Create booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.8` | Pending merge queue submission | `./mvnw compile` | Confirm booking service flow compile | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-18 | `bo-0wh.8` | Pending merge queue submission | `mvn compile` | Confirm booking service flow compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.8` | Pending merge queue submission | `mvn test -Dtest="BookingServiceConfirmTest"` | Confirm booking service flow unit tests | Failed | Initial new test verification mixed raw values and Mockito matchers; test was corrected before rerun. |
+| 2026-05-18 | `bo-0wh.8` | Pending merge queue submission | `mvn test -Dtest="BookingServiceConfirmTest"` | Confirm booking service flow unit tests | Passed | 4 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.8` | Pending merge queue submission | `git diff --check` | Confirm booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 
