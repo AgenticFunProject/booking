@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 1 |
+| Beads recorded | 2 |
 | PRs merged | 1 |
 | Merge commits recorded | 1 |
-| Verification blockers recorded | 1 |
-| Entries with elapsed time | 1 |
+| Verification blockers recorded | 2 |
+| Entries with elapsed time | 2 |
 
 ## Entries
 
@@ -46,6 +46,36 @@ Verification:
 Notes:
 
 - Maven wrapper was not generated in this environment. `MAVEN.md` documents `mvn -N wrapper:wrapper` for a Java 21/Maven machine.
+
+### bo-u2r.2 - Create base package structure
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-u2r-2-package-structure` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T09:46:28Z |
+| Completed UTC | 2026-05-18T09:46:54Z |
+| Elapsed wall time | 26s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/**/package-info.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added the base `com.cargo.booking` package tree.
+- Added Java package markers for controller, service, repository, model/entity, model/enums, DTO request/response, config, exception, client, client DTO, mapper, and security packages.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Empty packages are represented with `package-info.java` files so the package structure is tracked by Git.
 
 ## Entry Template
 
