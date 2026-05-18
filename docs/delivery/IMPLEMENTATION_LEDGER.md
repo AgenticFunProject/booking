@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 15 |
-| PRs merged | 12 |
-| Merge commits recorded | 14 |
-| Verification blockers recorded | 13 |
-| Entries with elapsed time | 15 |
+| Beads recorded | 16 |
+| PRs merged | 13 |
+| Merge commits recorded | 15 |
+| Verification blockers recorded | 14 |
+| Entries with elapsed time | 16 |
 
 ## Entries
 
@@ -443,11 +443,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-eyx-2-equipment-line-repository` |
 | PR | https://github.com/AgenticFunProject/booking/pull/23 |
-| Merge commit | Pending |
+| Merge commit | `c94a53e` |
 | Started UTC | 2026-05-18T10:43:21Z |
 | Completed UTC | 2026-05-18T10:43:36Z |
 | Elapsed wall time | 15s |
@@ -470,6 +470,38 @@ Verification:
 Notes:
 
 - The delete transaction is scoped to the modifying repository method, matching the explicit exception in `specs/003_data_access.md`.
+
+### bo-eyx.5 - Add BookingReferenceCounterRepository
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-eyx-5-reference-counter-repository` |
+| PR | https://github.com/AgenticFunProject/booking/pull/24 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:45:03Z |
+| Completed UTC | 2026-05-18T10:45:20Z |
+| Elapsed wall time | 17s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingReferenceCounterRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `BookingReferenceCounterRepository` as a custom repository component.
+- Implemented `getNextReferenceSeqForYear(int year)` with a native PostgreSQL upsert.
+- Used `INSERT ... ON CONFLICT ... DO UPDATE ... RETURNING` so a new year stores `next_value = 2` and returns `1`, while existing years increment and return the previous value.
+- Wrapped the counter method in `@Transactional`.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Runtime validation of the upsert behavior is deferred to the data-access slice test bead.
 
 ## Entry Template
 
