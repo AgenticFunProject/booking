@@ -71,6 +71,17 @@ Record evidence in the same PR as the implementation whenever practical. If a
 bead is documentation-only, still record verification in the PR body or
 `QUALITY_LOG.md` when it affects the delivery workflow.
 
+## Phase Completion Audit
+
+After a phase is completed, an agent must perform a cumulative audit before the
+phase is treated as accepted. The audit must review Phase 1 through the phase
+that just completed, compare the implementation against the relevant specs, fix
+or file any concrete gaps, and record the audit result in
+`docs/delivery/QUALITY_LOG.md` and `docs/delivery/IMPLEMENTATION_LEDGER.md`.
+
+Example: after Phase 4 completes, audit Phases 1, 2, 3, and 4 together. This
+protects earlier behavior from drift introduced by later work.
+
 ## Issue Tracking (Beads)
 
 This project uses `bd` (beads) for issue tracking. Do not use markdown TODO lists or TASKS.md files for task tracking.

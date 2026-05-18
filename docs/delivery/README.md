@@ -17,5 +17,11 @@ Agents should update these files as they complete beads:
 - Future files owned by reporting beads, such as a spec coverage matrix, demo
   runbook, or final delivery report, should be linked here when they are added.
 
+When a phase is completed, record a cumulative phase audit. The audit should
+cover Phase 1 through the phase that just completed, compare implementation
+against the relevant specs, and state whether gaps were fixed or filed as new
+beads. Record the audit command or manual review in `QUALITY_LOG.md`, and record
+the delivery evidence or follow-up bead in `IMPLEMENTATION_LEDGER.md`.
+
 Keep entries concise and factual. Prefer links to PRs and bead IDs over long
 narrative.
