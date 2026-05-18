@@ -1,7 +1,6 @@
 package com.cargo.booking.repository;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +17,11 @@ public class BookingReferenceCounterRepository {
             RETURNING next_value - 1
             """;
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
+
+    public BookingReferenceCounterRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     public Long getNextReferenceSeqForYear(int year) {
