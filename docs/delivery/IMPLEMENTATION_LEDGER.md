@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 13 |
-| PRs merged | 10 |
-| Merge commits recorded | 12 |
-| Verification blockers recorded | 11 |
-| Entries with elapsed time | 13 |
+| Beads recorded | 14 |
+| PRs merged | 11 |
+| Merge commits recorded | 13 |
+| Verification blockers recorded | 12 |
+| Entries with elapsed time | 14 |
 
 ## Entries
 
@@ -380,11 +380,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-43o-phase-1-2-audit` |
 | PR | https://github.com/AgenticFunProject/booking/pull/21 |
-| Merge commit | Pending |
+| Merge commit | `6a7fcd6` |
 | Started UTC | 2026-05-18T10:30:42Z |
 | Completed UTC | 2026-05-18T10:31:03Z |
 | Elapsed wall time | 21s |
@@ -407,6 +407,37 @@ Verification:
 Notes:
 
 - Compile and runtime validation still require Java 21 on the machine.
+
+### bo-eyx.1 - Add BookingRepository
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-eyx-1-booking-repository` |
+| PR | https://github.com/AgenticFunProject/booking/pull/22 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:40:59Z |
+| Completed UTC | 2026-05-18T10:41:28Z |
+| Elapsed wall time | 29s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `BookingRepository` in the repository package.
+- Extended `JpaRepository<Booking, Long>` and `JpaSpecificationExecutor<Booking>`.
+- Added derived query methods for booking reference, customer, status, customer/status, schedule, reference existence, and customer/status counts.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Eager equipment-line fetch methods are intentionally left for the separate `bo-eyx.3` bead.
 
 ## Entry Template
 
