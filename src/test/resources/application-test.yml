@@ -1,8 +1,5 @@
 spring:
   datasource:
-    url: ${TEST_DATABASE_URL:jdbc:postgresql://localhost:5432/booking_test}
-    username: ${TEST_DB_USERNAME:booking_test}
-    password: ${TEST_DB_PASSWORD:booking_test}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

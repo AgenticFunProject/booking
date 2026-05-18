@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 28 |
-| Passed | 18 |
+| Checks recorded | 32 |
+| Passed | 21 |
 | Failed | 0 |
-| Blocked/skipped | 10 |
+| Blocked/skipped | 11 |
 
 ## Checks
 
@@ -43,6 +43,10 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-7or.6` | https://github.com/AgenticFunProject/booking/pull/18 | `rg -n "EqualsAndHashCode\\|ToString.Exclude\\|JsonIgnore\\|OneToMany\\|ManyToOne" src/main/java/com/cargo/booking/model/entity` | Entity safeguards | Passed | Expected equality, relationship, and JSON recursion annotations found. |
 | 2026-05-18 | `bo-7or.5` | https://github.com/AgenticFunProject/booking/pull/19 | `git diff --check` | Booking schema migration | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-7or.5` | https://github.com/AgenticFunProject/booking/pull/19 | `mvn compile` | Booking schema migration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | Manual spec audit | Phase 1 and Phase 2 implementation | Passed | Found and fixed test profile datasource mismatch; no other concrete spec mismatches found. |
+| 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | `git diff --check` | Phase 1/2 audit fix | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | `rg <portable-path-patterns> .` | Portable-path scan | Passed | No user-specific absolute paths found. |
+| 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | `mvn compile` | Phase 1/2 audit fix compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
