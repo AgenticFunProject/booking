@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 23 |
-| PRs merged | 21 |
-| Merge commits recorded | 23 |
+| Beads recorded | 24 |
+| PRs merged | 22 |
+| Merge commits recorded | 24 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 23 |
+| Entries with elapsed time | 24 |
 
 ## Entries
 
@@ -695,11 +695,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-0wh-1-service-exceptions` |
 | PR | https://github.com/AgenticFunProject/booking/pull/35 |
-| Merge commit | Pending |
+| Merge commit | `c9639b2` |
 | Started UTC | 2026-05-18T12:40:00Z |
 | Completed UTC | 2026-05-18T12:41:52Z |
 | Elapsed wall time | 1m 52s |
@@ -720,6 +720,38 @@ Verification:
 Notes:
 
 - No broad catch-all exception behavior was added.
+
+### bo-0wh.5 - Add BookingReferenceGenerator
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-0wh-5-reference-generator` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T12:42:00Z |
+| Completed UTC | 2026-05-18T12:44:37Z |
+| Elapsed wall time | 2m 37s |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingReferenceGenerator.java`, `src/test/java/com/cargo/booking/service/BookingReferenceGeneratorTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added a Spring `BookingReferenceGenerator` service using constructor injection.
+- Generated references with the UTC year and zero-padded five-digit sequence values from `BookingReferenceCounterRepository`.
+- Added a focused unit test covering UTC year selection and sequence formatting.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingReferenceGeneratorTest` passed with 1 test, 0 failures, 0 errors.
+
+Notes:
+
+- The database counter repository remains responsible for concurrent sequence allocation.
 
 ## Entry Template
 
