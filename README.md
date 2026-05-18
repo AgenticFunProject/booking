@@ -1,10 +1,15 @@
-# Booking Service — AI-Driven Specification
+# Booking Service
 
 ## What is this?
 
-This repository contains a set of **sequential specification files** that describe a complete **Cargo Booking Service** built with Spring Boot. The specifications are written in a Gherkin-inspired format designed to be consumed by a generative AI agent, which will use them to scaffold and build the application from scratch.
+This repository contains the Cargo Booking Service implementation and the
+sequential specification files used to build it. The service accepts and manages
+cargo booking requests and coordinates a shipment lifecycle. Messaging/event
+streaming is intentionally out of scope for v1.
 
-The service accepts and manages cargo booking requests and coordinates a shipment lifecycle. Messaging/event streaming is intentionally out of scope for v1.
+The generated Spring Boot application is being built in small implementation
+phases. See `IMPLEMENTATION.md` for the current phase plan, branch policy,
+verification rules, and delivery evidence workflow.
 
 ## How it works
 
@@ -23,7 +28,20 @@ The AI agent reads the specification files **in order** (001 → 010). Each file
                                          └─▶ 010 Deployment
 ```
 
-After processing all files, the result is a fully runnable Spring Boot microservice with Docker support, tests, and CI configuration.
+After processing all files, the result should be a runnable Spring Boot
+microservice with Docker support, tests, and CI configuration.
+
+## Current Implementation Status
+
+The repository currently has the Maven project baseline and foundation package
+structure. Later phases add application configuration, domain model, data access,
+service logic, REST API, security, tests, and deployment assets.
+
+For implementation progress and verification evidence, see:
+
+- `docs/delivery/IMPLEMENTATION_LEDGER.md`
+- `docs/delivery/QUALITY_LOG.md`
+- `docs/delivery/README.md`
 
 ## Specification Files
 
@@ -100,21 +118,30 @@ Stub implementations are provided for local development (`@Profile("local")`).
 
 ## Getting Started
 
-Once the AI agent has generated the codebase from these specs:
+Use these commands as the implementation matures:
+
+```bash
+# Compile the service when Java 21 and Maven are available
+mvn compile
+
+# Run tests once test code exists
+mvn test
+```
+
+Once Docker and runtime configuration have been generated:
 
 ```bash
 # Start infrastructure (PostgreSQL and app)
 docker-compose up -d
 
 # Run the application locally with stubs
-./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 
 # Open Swagger UI
 open http://localhost:8081/swagger-ui
-
-# Run tests
-./mvnw test
 ```
+
+`MAVEN.md` documents the current Maven invocation and wrapper generation notes.
 
 ## Contributing
 

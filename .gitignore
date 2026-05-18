@@ -1,0 +1,35 @@
+# Build output
+target/
+out/
+build/
+
+# IDE and editor files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+
+# Environment and local overrides
+.env
+.env.*
+!.env.example
+application-local-override.yml
+docker-compose.override.yml
+
+# Logs and runtime files
+*.log
+logs/
+tmp/
+*.pid
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test and coverage reports
+coverage/
+*.exec
