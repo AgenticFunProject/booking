@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 17 |
-| PRs merged | 14 |
-| Merge commits recorded | 16 |
-| Verification blockers recorded | 15 |
-| Entries with elapsed time | 17 |
+| Beads recorded | 18 |
+| PRs merged | 15 |
+| Merge commits recorded | 17 |
+| Verification blockers recorded | 16 |
+| Entries with elapsed time | 18 |
 
 ## Entries
 
@@ -507,11 +507,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-eyx-3-eager-fetch-queries` |
 | PR | https://github.com/AgenticFunProject/booking/pull/25 |
-| Merge commit | Pending |
+| Merge commit | `e17de8d` |
 | Started UTC | 2026-05-18T10:46:57Z |
 | Completed UTC | 2026-05-18T10:47:10Z |
 | Elapsed wall time | 13s |
@@ -533,6 +533,37 @@ Verification:
 Notes:
 
 - Fetch-query behavior is covered by the later data-access slice test bead.
+
+### bo-eyx.4 - Add BookingSpecification
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-eyx-4-booking-specification` |
+| PR | https://github.com/AgenticFunProject/booking/pull/26 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:48:37Z |
+| Completed UTC | 2026-05-18T10:48:57Z |
+| Elapsed wall time | 20s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingSpecification.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `BookingSpecification` in the repository package.
+- Added null-safe `hasCustomerId`, `hasStatus`, `hasScheduleId`, `createdAfter`, and `createdBefore` helpers.
+- Used entity field names for criteria paths so the specifications compose with Spring Data JPA filtering.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Specification query behavior is covered by the later data-access slice test bead.
 
 ## Entry Template
 
