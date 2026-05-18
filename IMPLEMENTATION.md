@@ -58,6 +58,17 @@ Use a bead-oriented branch name when a bead exists, or a short docs/planning
 branch name for coordination changes. Commit the change there, push the branch,
 and open a pull request unless the active workflow explicitly says otherwise.
 
+## Dark Factory Flow
+
+The human does not want to manually review or merge routine implementation PRs.
+
+Agents and workers should still open pull requests from task branches. After the
+required local checks and any configured CI checks pass, and the PR is mergeable,
+merge the PR and delete the branch without asking the human.
+
+Escalate instead of merging only when there is a blocker, an unfixable failing
+check, a destructive change, or an explicit product/architecture decision.
+
 ## Start A Bead
 
 1. Run `bd prime` from the booking rig root.
