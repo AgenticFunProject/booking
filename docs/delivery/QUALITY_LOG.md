@@ -80,15 +80,15 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.4` | https://github.com/AgenticFunProject/booking/pull/38 | `mvn test -Dtest=BookingStateMachineTest` | BookingStateMachine unit test | Passed | 3 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.7` | https://github.com/AgenticFunProject/booking/pull/39 | `mvn test -Dtest=BookingServiceReadTest` | Booking read service flows | Passed | 7 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.7` | https://github.com/AgenticFunProject/booking/pull/39 | `git diff --check` | Booking read service flows and delivery evidence | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-0wh.3` | Pending | `./mvnw compile` | Local stub client compile | Blocked | Maven wrapper is not present in this checkout; used installed `mvn` instead. |
-| 2026-05-18 | `bo-0wh.3` | Pending | `mvn compile` | Local stub client compile | Passed | Compile completed successfully. |
-| 2026-05-18 | `bo-0wh.3` | Pending | `mvn test -Dtest="ClientStubTest"` | Local stub client unit test | Passed | 4 tests, 0 failures, 0 errors. |
-| 2026-05-18 | `bo-0wh.3` | Pending | `git diff --check` | Local stub client implementation and evidence | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-0wh.6` | Pending merge queue submission | `./mvnw compile` | Create booking service flow compile | Blocked | This checkout does not include a Maven wrapper. |
-| 2026-05-18 | `bo-0wh.6` | Pending merge queue submission | `mvn compile` | Create booking service flow compile | Passed | Compile completed successfully. |
-| 2026-05-18 | `bo-0wh.6` | Pending merge queue submission | `mvn test -Dtest=BookingServiceCreateTest` | Create booking service flow unit tests | Passed | 6 tests, 0 failures, 0 errors. |
-| 2026-05-18 | `bo-0wh.6` | Pending merge queue submission | `mvn test -Dtest=BookingServiceReadTest` | Existing read service regression tests | Passed | 7 tests, 0 failures, 0 errors. |
-| 2026-05-18 | `bo-0wh.6` | Pending merge queue submission | `git diff --check` | Create booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.3` | https://github.com/AgenticFunProject/booking/pull/41 | `./mvnw compile` | Local stub client compile | Blocked | Maven wrapper is not present in this checkout; used installed `mvn` instead. |
+| 2026-05-18 | `bo-0wh.3` | https://github.com/AgenticFunProject/booking/pull/41 | `mvn compile` | Local stub client compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.3` | https://github.com/AgenticFunProject/booking/pull/41 | `mvn test -Dtest="ClientStubTest"` | Local stub client unit test | Passed | 4 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.3` | https://github.com/AgenticFunProject/booking/pull/41 | `git diff --check` | Local stub client implementation and evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `./mvnw compile` | Create booking service flow compile | Blocked | This checkout does not include a Maven wrapper. |
+| 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `mvn compile` | Create booking service flow compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `mvn test -Dtest=BookingServiceCreateTest` | Create booking service flow unit tests | Passed | 6 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `mvn test -Dtest=BookingServiceReadTest` | Existing read service regression tests | Passed | 7 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.6` | https://github.com/AgenticFunProject/booking/pull/43 | `git diff --check` | Create booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 

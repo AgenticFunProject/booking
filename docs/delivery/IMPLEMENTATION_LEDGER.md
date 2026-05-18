@@ -7,8 +7,8 @@ This ledger records delivery evidence for completed implementation beads.
 | Metric | Value |
 | --- | ---: |
 | Beads recorded | 29 |
-| PRs merged | 26 |
-| Merge commits recorded | 28 |
+| PRs merged | 27 |
+| Merge commits recorded | 29 |
 | Verification blockers recorded | 19 |
 | Entries with elapsed time | 29 |
 
@@ -884,11 +884,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | Ready for merge queue |
+| Status | Closed |
 | Agent | polecat/quartz |
 | Branch | `polecat/quartz/bo-0wh.6@mpbbr762` |
-| PR | Pending merge queue submission |
-| Merge commit | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/43 |
+| Merge commit | `9f82c28` |
 | Started UTC | 2026-05-18T14:54:20Z |
 | Completed UTC | 2026-05-18T14:59:39Z |
 | Elapsed wall time | 5m 19s |
