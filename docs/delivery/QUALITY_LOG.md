@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 40 |
-| Passed | 25 |
+| Checks recorded | 42 |
+| Passed | 26 |
 | Failed | 0 |
-| Blocked/skipped | 15 |
+| Blocked/skipped | 16 |
 
 ## Checks
 
@@ -55,6 +55,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-eyx.5` | https://github.com/AgenticFunProject/booking/pull/24 | `mvn compile` | BookingReferenceCounterRepository compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 | 2026-05-18 | `bo-eyx.3` | https://github.com/AgenticFunProject/booking/pull/25 | `git diff --check` | Eager booking fetch queries | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-eyx.3` | https://github.com/AgenticFunProject/booking/pull/25 | `mvn compile` | Eager booking fetch queries compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-eyx.4` | https://github.com/AgenticFunProject/booking/pull/26 | `git diff --check` | BookingSpecification | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-eyx.4` | https://github.com/AgenticFunProject/booking/pull/26 | `mvn compile` | BookingSpecification compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
