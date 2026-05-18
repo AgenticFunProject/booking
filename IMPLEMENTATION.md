@@ -2,6 +2,32 @@
 
 Read this before starting any implementation bead.
 
+## Fast Context
+
+Before reading broad project docs, inspect the current repo state:
+
+```bash
+git status --short --branch
+find . -maxdepth 2 -type f | sort | head -80
+bd show <bead-id>
+```
+
+Use the bead as the source of truth for scope. If the Spring app already exists,
+extend the existing structure. If it does not, create only the structure required
+by the bead.
+
+Do not re-plan the backlog unless the bead asks for planning. The implementation
+beads already exist and are dependency-linked.
+
+For small beads, read only:
+
+1. `IMPLEMENTATION.md`
+2. `AGENTS.md`
+3. the bead's `Spec:` file
+4. specs listed in that file's `# Depends on:` header
+
+Do not read every spec by default.
+
 ## Workspace
 
 - Use `/home/gaborvatany/gt/booking/mayor/rig` for all git and code changes.
