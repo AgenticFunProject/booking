@@ -264,7 +264,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-7or-entities` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/18 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:14:37Z |
 | Completed UTC | 2026-05-18T10:15:21Z |
@@ -294,7 +294,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-7or-entities` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/18 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:14:37Z |
 | Completed UTC | 2026-05-18T10:15:21Z |

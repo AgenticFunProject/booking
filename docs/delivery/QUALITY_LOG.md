@@ -36,10 +36,10 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-7or.1` | https://github.com/AgenticFunProject/booking/pull/16 | `mvn compile` | BookingStatus enum compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 | 2026-05-18 | `bo-7or.2` | https://github.com/AgenticFunProject/booking/pull/17 | `git diff --check` | EquipmentType enum | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-7or.2` | https://github.com/AgenticFunProject/booking/pull/17 | `mvn compile` | EquipmentType enum compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
-| 2026-05-18 | `bo-7or.3` | Pending PR | `git diff --check` | Booking entity | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-7or.3` | Pending PR | `mvn compile` | Booking entity compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
-| 2026-05-18 | `bo-7or.4` | Pending PR | `git diff --check` | BookingEquipmentLine entity | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-7or.4` | Pending PR | `mvn compile` | BookingEquipmentLine entity compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-7or.3` | https://github.com/AgenticFunProject/booking/pull/18 | `git diff --check` | Booking entity | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-7or.3` | https://github.com/AgenticFunProject/booking/pull/18 | `mvn compile` | Booking entity compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-7or.4` | https://github.com/AgenticFunProject/booking/pull/18 | `git diff --check` | BookingEquipmentLine entity | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-7or.4` | https://github.com/AgenticFunProject/booking/pull/18 | `mvn compile` | BookingEquipmentLine entity compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
