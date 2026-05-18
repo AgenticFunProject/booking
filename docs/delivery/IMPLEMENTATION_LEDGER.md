@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 29 |
+| Beads recorded | 30 |
 | PRs merged | 27 |
 | Merge commits recorded | 29 |
-| Verification blockers recorded | 19 |
-| Entries with elapsed time | 29 |
+| Verification blockers recorded | 20 |
+| Entries with elapsed time | 30 |
 
 ## Entries
 
@@ -915,6 +915,42 @@ Notes:
 
 - Authorization remains outside the service method for later API/security beads.
 - Local stub client files were not edited.
+
+### bo-0wh.8 - Implement confirm booking flow
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.8@mpbc87v2` |
+| PR | Pending merge queue submission |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T15:07:32Z |
+| Completed UTC | 2026-05-18T15:13:09Z |
+| Elapsed wall time | 5m 37s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceConfirmTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Implemented transactional `BookingService.confirmBooking(Long)` for PENDING to CONFIRMED only.
+- Loaded bookings with equipment lines, validated the lifecycle transition before reservation, reserved equipment through `EquipmentClient`, then saved the CONFIRMED status.
+- Mapped booking equipment lines to external `EquipmentLineDTO` values using the public equipment type code.
+- Added focused confirm-flow unit tests for success, missing booking, invalid transition, and equipment reservation failure.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- Initial `mvn test -Dtest="BookingServiceConfirmTest"` failed because the new test mixed raw values and Mockito matchers; the test was corrected.
+- `mvn test -Dtest="BookingServiceConfirmTest"` passed with 4 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- The status is changed only after `reserveEquipment` returns successfully, so reservation failures leave the booking status unchanged.
+- This bead intentionally avoids `startBooking`, `completeBooking`, and `cancelBooking`; those lifecycle flows are owned by separate beads.
 
 ## Entry Template
 
