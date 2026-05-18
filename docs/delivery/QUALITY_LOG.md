@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 7 |
-| Passed | 6 |
+| Checks recorded | 9 |
+| Passed | 7 |
 | Failed | 0 |
-| Blocked/skipped | 1 |
+| Blocked/skipped | 2 |
 
 ## Checks
 
@@ -22,6 +22,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-dbh` | https://github.com/AgenticFunProject/booking/pull/9 | `rg <portable-path-patterns> .` | Portable-path scan | Passed | No user-specific absolute paths found. |
 | 2026-05-18 | `bo-51o` | https://github.com/AgenticFunProject/booking/pull/10 | `git diff --check` | Phase plan docs | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-51o` | https://github.com/AgenticFunProject/booking/pull/10 | `rg <portable-path-patterns> .` | Portable-path scan | Passed | No user-specific absolute paths found. |
+| 2026-05-18 | `bo-u2r.2` | https://github.com/AgenticFunProject/booking/pull/11 | `git diff --check` | Base package structure | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-u2r.2` | https://github.com/AgenticFunProject/booking/pull/11 | `mvn compile` | Base package structure compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
