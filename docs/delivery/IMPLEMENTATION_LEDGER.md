@@ -234,7 +234,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-7or-2-equipment-type` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/17 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:11:23Z |
 | Completed UTC | 2026-05-18T10:11:48Z |

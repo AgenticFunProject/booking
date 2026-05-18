@@ -34,8 +34,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-u2r.5` | https://github.com/AgenticFunProject/booking/pull/15 | `mvn compile` | Test profile configuration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 | 2026-05-18 | `bo-7or.1` | https://github.com/AgenticFunProject/booking/pull/16 | `git diff --check` | BookingStatus enum | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-7or.1` | https://github.com/AgenticFunProject/booking/pull/16 | `mvn compile` | BookingStatus enum compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
-| 2026-05-18 | `bo-7or.2` | Pending PR | `git diff --check` | EquipmentType enum | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-7or.2` | Pending PR | `mvn compile` | EquipmentType enum compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-7or.2` | https://github.com/AgenticFunProject/booking/pull/17 | `git diff --check` | EquipmentType enum | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-7or.2` | https://github.com/AgenticFunProject/booking/pull/17 | `mvn compile` | EquipmentType enum compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
