@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 63 |
-| Passed | 46 |
+| Checks recorded | 65 |
+| Passed | 48 |
 | Failed | 0 |
 | Blocked/skipped | 17 |
 
@@ -78,6 +78,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.4` | https://github.com/AgenticFunProject/booking/pull/38 | `git diff --check` | BookingStateMachine | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-0wh.4` | https://github.com/AgenticFunProject/booking/pull/38 | `mvn compile` | BookingStateMachine compile | Passed | Compile completed successfully. |
 | 2026-05-18 | `bo-0wh.4` | https://github.com/AgenticFunProject/booking/pull/38 | `mvn test -Dtest=BookingStateMachineTest` | BookingStateMachine unit test | Passed | 3 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.7` | https://github.com/AgenticFunProject/booking/pull/39 | `mvn test -Dtest=BookingServiceReadTest` | Booking read service flows | Passed | 7 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.7` | https://github.com/AgenticFunProject/booking/pull/39 | `git diff --check` | Booking read service flows and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 

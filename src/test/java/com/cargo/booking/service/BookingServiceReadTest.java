@@ -1,0 +1,102 @@
+package com.cargo.booking.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.cargo.booking.exception.BookingNotFoundException;
+import com.cargo.booking.model.entity.Booking;
+import com.cargo.booking.model.enums.BookingStatus;
+import com.cargo.booking.repository.BookingRepository;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+@ExtendWith(MockitoExtension.class)
+class BookingServiceReadTest {
+
+    @Mock
+    private BookingRepository bookingRepository;
+
+    @Test
+    void shouldGetBookingByIdWithEquipmentLines() {
+        Booking booking = Booking.builder().id(42L).bookingReference("BKG-2026-00042").build();
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
+
+        assertThat(bookingService.getBookingById(42L)).isSameAs(booking);
+    }
+
+    @Test
+    void shouldThrowWhenBookingIdIsMissing() {
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        when(bookingRepository.findWithEquipmentLinesById(404L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> bookingService.getBookingById(404L))
+                .isInstanceOf(BookingNotFoundException.class)
+                .hasMessageContaining("404");
+    }
+
+    @Test
+    void shouldGetBookingByReferenceWithEquipmentLines() {
+        Booking booking = Booking.builder().id(42L).bookingReference("BKG-2026-00042").build();
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        when(bookingRepository.findWithEquipmentLinesByBookingReference("BKG-2026-00042"))
+                .thenReturn(Optional.of(booking));
+
+        assertThat(bookingService.getBookingByReference("BKG-2026-00042")).isSameAs(booking);
+    }
+
+    @Test
+    void shouldListBookingsByCustomerAndStatus() {
+        Pageable pageable = PageRequest.of(0, 20);
+        Page<Booking> bookings = new PageImpl<>(List.of(Booking.builder().id(1L).build()));
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        when(bookingRepository.findByCustomerIdAndStatus(7L, BookingStatus.PENDING, pageable))
+                .thenReturn(bookings);
+
+        assertThat(bookingService.getBookings(7L, BookingStatus.PENDING, pageable)).isSameAs(bookings);
+    }
+
+    @Test
+    void shouldListBookingsByCustomerOnly() {
+        Pageable pageable = PageRequest.of(0, 20);
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        bookingService.getBookings(7L, null, pageable);
+
+        verify(bookingRepository).findByCustomerId(7L, pageable);
+    }
+
+    @Test
+    void shouldListBookingsByStatusOnly() {
+        Pageable pageable = PageRequest.of(0, 20);
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        bookingService.getBookings(null, BookingStatus.CONFIRMED, pageable);
+
+        verify(bookingRepository).findByStatus(BookingStatus.CONFIRMED, pageable);
+    }
+
+    @Test
+    void shouldListAllBookingsWithoutFilters() {
+        Pageable pageable = PageRequest.of(0, 20);
+        BookingService bookingService = new BookingService(bookingRepository);
+
+        bookingService.getBookings(null, null, pageable);
+
+        verify(bookingRepository).findAll(pageable);
+    }
+}
