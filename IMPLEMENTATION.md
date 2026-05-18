@@ -30,8 +30,15 @@ Do not read every spec by default.
 
 ## Workspace
 
-- Use `/home/gaborvatany/gt/booking/mayor/rig` for all git and code changes.
-- Use `/home/gaborvatany/gt/booking` for `bd` issue commands.
+- Use this git checkout, `booking/mayor/rig`, for all git and code changes.
+- Use the booking rig root, `booking/`, for `bd` issue commands.
+- In a Gas Town checkout, the rig root is usually two directories above this repo:
+
+```bash
+cd ../..
+bd ready
+```
+
 - Do not work from `crew/`, `polecats/`, or `refinery/` directories unless explicitly assigned there by Gas Town.
 
 ## Branch Policy
@@ -51,7 +58,7 @@ and open a pull request unless the active workflow explicitly says otherwise.
 
 ## Start A Bead
 
-1. Run `bd prime` from `/home/gaborvatany/gt/booking`.
+1. Run `bd prime` from the booking rig root.
 2. Run `bd show <bead-id>` and read the description, dependencies, spec link, and acceptance criteria.
 3. Claim the bead with `bd update <bead-id> --claim`.
 4. In the git checkout, read `AGENTS.md`, the bead's `Spec:` file, and every file listed in that spec's `# Depends on:` header.
@@ -106,13 +113,13 @@ If a gate cannot run because the project is not far enough along, note the reaso
 ## Useful Commands
 
 ```bash
-cd /home/gaborvatany/gt/booking
+cd ../..
 bd ready
 bd show <bead-id>
 bd update <bead-id> --claim
 bd close <bead-id>
 
-cd /home/gaborvatany/gt/booking/mayor/rig
+cd mayor/rig
 git status --short --branch
 ./mvnw compile
 ```
