@@ -204,7 +204,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-7or-1-booking-status` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/16 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:09:09Z |
 | Completed UTC | 2026-05-18T10:09:26Z |
