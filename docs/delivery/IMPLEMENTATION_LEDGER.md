@@ -7,8 +7,8 @@ This ledger records delivery evidence for completed implementation beads.
 | Metric | Value |
 | --- | ---: |
 | Beads recorded | 12 |
-| PRs merged | 9 |
-| Merge commits recorded | 11 |
+| PRs merged | 10 |
+| Merge commits recorded | 12 |
 | Verification blockers recorded | 10 |
 | Entries with elapsed time | 12 |
 
@@ -350,11 +350,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-7or-5-booking-migration` |
 | PR | https://github.com/AgenticFunProject/booking/pull/19 |
-| Merge commit | Pending |
+| Merge commit | `7ed0265` |
 | Started UTC | 2026-05-18T10:18:18Z |
 | Completed UTC | 2026-05-18T10:18:50Z |
 | Elapsed wall time | 32s |
