@@ -94,20 +94,148 @@ not overlap.
 4. In the git checkout, read `AGENTS.md`, the bead's `Spec:` file, and every file listed in that spec's `# Depends on:` header.
 5. Keep the change scoped to the bead. Do not opportunistically implement later beads.
 
-## Implementation Order
+## Phase Plan
 
-Start with `bo-u2r.1`, then continue through the ready queue from `bd ready`.
+Use `bd ready` as the source of truth for exact task IDs and dependency state.
+The phases below are the GitHub-readable roadmap: they describe what a person or
+agent should deliver without requiring access to this machine's local bead IDs.
 
-High-level sequence:
+### Phase 1: Foundation Setup
 
-1. Foundation: `bo-u2r.*`
-2. Domain model: `bo-7or.*`
-3. Data access: `bo-eyx.*`
-4. Service layer: `bo-0wh.*`
-5. REST API: `bo-2tm.*`
-6. Error handling, integrations, tests, security, and deployment as they become ready
+Goal: make the repository a usable Spring Boot skeleton.
 
-Use `bd ready` as the source of truth for what can be worked next.
+Deliverables:
+
+- Maven project and dependency baseline.
+- Java package tree for controllers, services, repositories, models, DTOs, config, exceptions, clients, mappers, and security.
+- Spring Boot application entry point.
+- Base application configuration and test profile configuration.
+- Project ignore rules and generated-service developer README shell.
+
+Completion signal: the project has a coherent source/resource/test structure,
+foundation docs exist, and the smallest meaningful quality gate has been run or
+its environment blocker is recorded.
+
+Parallelism: package structure and developer docs can be done together. After
+the package structure lands, application entry point, base config, and test
+profile config can usually run in separate PRs.
+
+### Phase 2: Domain Model
+
+Goal: implement the booking aggregate, lifecycle vocabulary, validation shape,
+and database migration.
+
+Deliverables:
+
+- Booking status enum with the specified lifecycle values.
+- Equipment type enum with stable API codes.
+- Booking and equipment-line entities.
+- Entity equality, `toString`, and JSON serialization safeguards.
+- Flyway migration for booking tables, indexes, constraints, and reference counter.
+
+Completion signal: entities and migrations match the domain spec, compile where
+the environment permits it, and domain gaps are recorded in delivery evidence.
+
+Parallelism: the status and equipment enums can run together. Entity and
+migration work should be mostly sequential because they must agree on field and
+table shape.
+
+### Phase 3: Data Access
+
+Goal: add persistence APIs and query helpers used by the service layer.
+
+Deliverables:
+
+- Booking repository with reference, customer, status, schedule, and count queries.
+- Equipment-line repository.
+- Eager fetch queries for bookings with equipment lines.
+- Null-safe booking specifications for optional filters.
+- Concurrency-safe yearly reference counter persistence.
+- Repository/data-access slice tests when the test environment is ready.
+
+Completion signal: repositories expose the data access contract required by the
+service layer, migrations support those queries, and repository verification is
+logged.
+
+### Phase 4: Service Layer
+
+Goal: implement business orchestration and lifecycle behavior.
+
+Deliverables:
+
+- Business exception classes.
+- External client interfaces and local stub implementations.
+- Booking state machine.
+- Booking reference generator.
+- Create, read, list, confirm, start, complete, and cancel service flows.
+- Focused service tests.
+
+Completion signal: the service layer owns business rules, keeps authorization at
+the API/security boundary, and tests or verification notes cover lifecycle
+success and failure paths.
+
+### Phase 5: API And Error Handling
+
+Goal: expose the service through REST endpoints with structured API errors.
+
+Deliverables:
+
+- Request and response DTO records.
+- Booking mapper.
+- Booking controller endpoints for create, get, list, cancel, confirm, start, and complete.
+- OpenAPI annotations and paths.
+- Structured error response DTOs.
+- Global exception handler mappings for business, validation, and framework errors.
+- Controller and error-handling tests.
+
+Completion signal: API behavior matches the endpoint specs, entities are not
+exposed directly, and error responses use the documented shape.
+
+### Phase 6: Integration And Security
+
+Goal: add production-facing client infrastructure and authorization behavior.
+
+Deliverables:
+
+- Typed integration properties.
+- RestClient configuration and logging interceptor.
+- Resilience4j defaults and health configuration.
+- JWT properties, token provider, authentication filter, security config, and error handlers.
+- Security context helper and booking access authorizer.
+- Ownership checks wired into controllers.
+- Integration and security tests.
+
+Completion signal: local stubs remain usable, production client/security
+infrastructure is present, and ownership rules are verified or documented.
+
+### Phase 7: Test Suite
+
+Goal: broaden confidence across unit, integration, security, and end-to-end flows.
+
+Deliverables:
+
+- Test data builders and JWT test helpers.
+- Domain, repository, service, controller, security, and full lifecycle tests.
+- Focused commands documented for running each test category.
+
+Completion signal: the intended test groups can be run, failures are fixed or
+recorded with clear blockers, and the quality log reflects the real state.
+
+### Phase 8: Deployment And Final Report
+
+Goal: make the service runnable/demoable and produce coworker-facing evidence.
+
+Deliverables:
+
+- Dockerfile, Docker Compose stack, profile-specific config, logging, request tracing, environment example, CI workflow, Makefile, and final README pass.
+- Spec coverage matrix.
+- Demo and API runbook.
+- Final delivery report.
+- Final quality gate.
+
+Completion signal: another person can understand what was built from GitHub,
+run or inspect the service using documented steps, and review implementation,
+quality, demo, and known-limitation evidence.
 
 ## Project Rules
 
