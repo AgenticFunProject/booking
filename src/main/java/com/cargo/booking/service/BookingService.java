@@ -154,6 +154,37 @@ public class BookingService {
         return savedBooking;
     }
 
+    @Transactional
+    public Booking startBooking(Long id) {
+        Booking booking = getBookingForLifecycleChange(id);
+
+        bookingStateMachine.validateTransition(booking.getStatus(), BookingStatus.IN_PROGRESS);
+        booking.setStatus(BookingStatus.IN_PROGRESS);
+
+        Booking savedBooking = bookingRepository.save(booking);
+        log.info("Started booking {}", savedBooking.getBookingReference());
+
+        return savedBooking;
+    }
+
+    @Transactional
+    public Booking completeBooking(Long id) {
+        Booking booking = getBookingForLifecycleChange(id);
+
+        bookingStateMachine.validateTransition(booking.getStatus(), BookingStatus.COMPLETED);
+        booking.setStatus(BookingStatus.COMPLETED);
+
+        Booking savedBooking = bookingRepository.save(booking);
+        log.info("Completed booking {}", savedBooking.getBookingReference());
+
+        return savedBooking;
+    }
+
+    private Booking getBookingForLifecycleChange(Long id) {
+        return bookingRepository.findById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
+    }
+
     private void validateCreateRequest(CreateBookingRequest request) {
         if (request == null) {
             throw new BookingValidationException("Booking request is required");

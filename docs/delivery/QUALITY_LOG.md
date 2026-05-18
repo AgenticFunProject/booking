@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 79 |
-| Passed | 58 |
+| Checks recorded | 89 |
+| Passed | 66 |
 | Failed | 1 |
-| Blocked/skipped | 20 |
+| Blocked/skipped | 22 |
 
 ## Checks
 
@@ -94,6 +94,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.8` | https://github.com/AgenticFunProject/booking/pull/45 | `mvn test -Dtest="BookingServiceConfirmTest"` | Confirm booking service flow unit tests | Failed | Initial new test verification mixed raw values and Mockito matchers; test was corrected before rerun. |
 | 2026-05-18 | `bo-0wh.8` | https://github.com/AgenticFunProject/booking/pull/45 | `mvn test -Dtest="BookingServiceConfirmTest"` | Confirm booking service flow unit tests | Passed | 4 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.8` | https://github.com/AgenticFunProject/booking/pull/45 | `git diff --check` | Confirm booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `./mvnw compile` | Start and complete booking service flow compile | Blocked | This checkout does not include a Maven wrapper. |
+| 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `mvn compile` | Start and complete booking service flow compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingServiceLifecycleTest` | Start and complete booking service flow unit tests | Passed | 6 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after start/complete lifecycle flows | Passed | 48 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.9` | Pending merge queue submission via `gt done` | `git diff --check` | Start and complete booking service flow and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 

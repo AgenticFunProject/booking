@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 30 |
+| Beads recorded | 31 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 20 |
-| Entries with elapsed time | 30 |
+| Verification blockers recorded | 21 |
+| Entries with elapsed time | 31 |
 
 ## Entries
 
@@ -951,6 +951,40 @@ Notes:
 
 - The status is changed only after `reserveEquipment` returns successfully, so reservation failures leave the booking status unchanged.
 - This bead intentionally avoids `startBooking`, `completeBooking`, and `cancelBooking`; those lifecycle flows are owned by separate beads.
+
+### bo-0wh.9 - Implement start and complete booking flows
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-0wh.9@mpbca64c` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:09:05Z |
+| Completed UTC | 2026-05-18T15:17:42Z |
+| Elapsed wall time | 8m 37s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceLifecycleTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added transactional `BookingService.startBooking` and `BookingService.completeBooking` flows.
+- Loaded bookings by ID, validated `CONFIRMED -> IN_PROGRESS` and `IN_PROGRESS -> COMPLETED` transitions through `BookingStateMachine`, updated status only after validation, saved the booking, and returned the persisted result.
+- Added focused lifecycle unit tests covering success, missing bookings, and invalid transition rejection without persistence.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingServiceLifecycleTest` passed with 6 tests, 0 failures, 0 errors.
+- `mvn test` passed with 48 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Confirm and cancel flows were intentionally not changed; those remain separate lifecycle beads.
 
 ## Entry Template
 
