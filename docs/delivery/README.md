@@ -1,7 +1,8 @@
 # Delivery Evidence
 
 This directory contains the coworker-facing evidence produced by the dark factory
-implementation workflow.
+implementation workflow. It must be complete enough for another person or agent
+to understand delivery from GitHub on their own machine.
 
 These files are the GitHub-readable source of truth for delivery reporting. Do
 not require readers to inspect local Beads databases to understand what was
@@ -9,8 +10,12 @@ delivered, when it started, when it finished, or how long it took.
 
 Agents should update these files as they complete beads:
 
-- `IMPLEMENTATION_LEDGER.md` records bead-level delivery evidence.
-- `QUALITY_LOG.md` records verification commands and outcomes.
+- `IMPLEMENTATION_LEDGER.md` records bead-level delivery evidence, including
+  PRs, merge commits, changed files, UTC timing, elapsed wall time, and blockers.
+- `QUALITY_LOG.md` records verification commands, outcomes, skipped checks, and
+  environment blockers.
+- Future files owned by reporting beads, such as a spec coverage matrix, demo
+  runbook, or final delivery report, should be linked here when they are added.
 
 Keep entries concise and factual. Prefer links to PRs and bead IDs over long
 narrative.
