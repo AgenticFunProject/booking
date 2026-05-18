@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 19 |
-| PRs merged | 17 |
-| Merge commits recorded | 19 |
+| Beads recorded | 21 |
+| PRs merged | 19 |
+| Merge commits recorded | 21 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 19 |
+| Entries with elapsed time | 21 |
 
 ## Entries
 
@@ -595,6 +595,71 @@ Verification:
 Notes:
 
 - Runtime execution of the new tests requires a Java 21 environment with Maven dependency resolution available.
+
+### bo-7yn - Use native embedded PostgreSQL provider for repository tests
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/native-embedded-postgres-tests` |
+| PR | https://github.com/AgenticFunProject/booking/pull/29 |
+| Merge commit | `903c393` |
+| Started UTC | 2026-05-18T11:03:00Z |
+| Completed UTC | 2026-05-18T11:05:00Z |
+| Elapsed wall time | 2m |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `pom.xml`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java` |
+| Spec | `specs/003_data_access.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added the native `io.zonky.test:embedded-postgres` test dependency.
+- Configured repository slice tests to use `AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY` instead of the default Docker provider.
+- Enabled repository tests to run in WSL without a Docker socket.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+- `mvn test` passed with 17 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Java and Maven were installed user-locally in WSL before this PR; those machine-local tool installs are not repository files.
+
+### bo-1co - Use constructor injection in reference counter repository
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/reference-counter-constructor-injection` |
+| PR | https://github.com/AgenticFunProject/booking/pull/30 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T11:09:00Z |
+| Completed UTC | 2026-05-18T11:09:58Z |
+| Elapsed wall time | 58s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingReferenceCounterRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md`, `specs/003_data_access.md` |
+
+Delivered:
+
+- Audited Phase 1, Phase 2, and Phase 3 implementation against the setup, domain model, and data access specs.
+- Replaced `EntityManager` field injection in `BookingReferenceCounterRepository` with constructor injection to satisfy the Phase 1 Spring bean convention.
+- Preserved the native PostgreSQL upsert sequence behavior.
+
+Verification:
+
+- Manual Phase 1-3 spec audit found this as the only concrete implementation mismatch.
+- `git diff --check` passed.
+- `mvn compile` passed.
+- `mvn test` passed with 17 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Existing historical ledger entries still record their original Java-environment blockers; current verification now passes after the WSL Java/Maven setup was fixed.
 
 ## Entry Template
 
