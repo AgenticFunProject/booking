@@ -70,9 +70,9 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-jyh` | https://github.com/AgenticFunProject/booking/pull/33 | `git diff --check` | Phase 4 execution plan docs | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-0wh.1` | https://github.com/AgenticFunProject/booking/pull/35 | `git diff --check` | Service exception classes | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-0wh.1` | https://github.com/AgenticFunProject/booking/pull/35 | `mvn compile` | Service exception classes compile | Passed | Compile completed successfully. |
-| 2026-05-18 | `bo-0wh.5` | Pending | `git diff --check` | BookingReferenceGenerator | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-0wh.5` | Pending | `mvn compile` | BookingReferenceGenerator compile | Passed | Compile completed successfully. |
-| 2026-05-18 | `bo-0wh.5` | Pending | `mvn test -Dtest=BookingReferenceGeneratorTest` | BookingReferenceGenerator unit test | Passed | 1 test, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.5` | https://github.com/AgenticFunProject/booking/pull/36 | `git diff --check` | BookingReferenceGenerator | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.5` | https://github.com/AgenticFunProject/booking/pull/36 | `mvn compile` | BookingReferenceGenerator compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.5` | https://github.com/AgenticFunProject/booking/pull/36 | `mvn test -Dtest=BookingReferenceGeneratorTest` | BookingReferenceGenerator unit test | Passed | 1 test, 0 failures, 0 errors. |
 
 ## Entry Template
 

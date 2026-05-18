@@ -728,7 +728,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-0wh-5-reference-generator` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/36 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T12:42:00Z |
 | Completed UTC | 2026-05-18T12:44:37Z |
