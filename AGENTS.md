@@ -6,7 +6,7 @@ Cargo booking microservice built with Spring Boot 3.5.x and Java 21. Accepts boo
 
 This project is built from sequential specification files. Before writing code, read this file, then the target spec and every file listed in that spec's `# Depends on:` header.
 
-Before starting an implementation bead, also read `IMPLEMENTATION.md` for the bead workflow, verification expectations, and dispatch order.
+Before starting an implementation bead, also read `IMPLEMENTATION.md` for the bead workflow, verification expectations, delivery evidence requirements, and dispatch order.
 
 ```
 specs/001_project_setup.md      → Maven project, dependencies, packages, conventions
@@ -54,6 +54,22 @@ When working across multiple layers, read the affected specs in order so depende
 Maven Surefire must be configured so `-Dgroups` selects JUnit 5 `@Tag` values (`integration`, `e2e`).
 
 Always run `./mvnw compile` after editing Java files to catch errors early. Run the relevant test class after any code change, not the full suite. For documentation/spec-only changes, run `git diff --check`.
+
+## Delivery Evidence
+
+This repo is intended to be understandable from GitHub by another person or
+agent using their own Gas Town workspace. Do not rely on local Beads databases,
+local shell history, or machine-specific paths for the final work report.
+
+Before closing an implementation bead, update the delivery evidence files:
+
+- `docs/delivery/IMPLEMENTATION_LEDGER.md` records bead-level delivery, PR, merge commit, changed files, started/completed UTC timestamps, elapsed wall time, and blockers.
+- `docs/delivery/QUALITY_LOG.md` records verification commands, results, skipped checks, and environment blockers.
+- `docs/delivery/README.md` explains the evidence format and should stay aligned when new report files are added.
+
+Record evidence in the same PR as the implementation whenever practical. If a
+bead is documentation-only, still record verification in the PR body or
+`QUALITY_LOG.md` when it affects the delivery workflow.
 
 ## Issue Tracking (Beads)
 

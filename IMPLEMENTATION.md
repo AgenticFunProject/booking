@@ -25,6 +25,7 @@ For small beads, read only:
 2. `AGENTS.md`
 3. the bead's `Spec:` file
 4. specs listed in that file's `# Depends on:` header
+5. `docs/delivery/README.md` before finishing the bead
 
 Do not read every spec by default.
 
@@ -162,6 +163,7 @@ spec coverage matrix, demo runbook, and final delivery report.
 
 Current evidence files:
 
+- `docs/delivery/README.md`
 - `docs/delivery/IMPLEMENTATION_LEDGER.md`
 - `docs/delivery/QUALITY_LOG.md`
 
@@ -169,7 +171,7 @@ Current evidence files:
 
 1. Check `git status`.
 2. Run the relevant verification.
-3. Record delivery evidence for the bead.
+3. Record delivery evidence for the bead in `docs/delivery/IMPLEMENTATION_LEDGER.md` and, when verification changed or ran, `docs/delivery/QUALITY_LOG.md`.
 4. Commit the code change.
 5. Push the branch/commit according to the active workflow.
 6. Close the bead with `bd close <bead-id>` only after the acceptance criteria are met.
