@@ -760,7 +760,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-0wh-2-client-contracts` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/37 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T12:47:00Z |
 | Completed UTC | 2026-05-18T12:48:00Z |
