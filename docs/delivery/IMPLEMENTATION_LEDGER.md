@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 2 |
-| PRs merged | 1 |
-| Merge commits recorded | 1 |
+| Beads recorded | 3 |
+| PRs merged | 2 |
+| Merge commits recorded | 2 |
 | Verification blockers recorded | 2 |
-| Entries with elapsed time | 2 |
+| Entries with elapsed time | 3 |
 
 ## Entries
 
@@ -51,11 +51,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-u2r-2-package-structure` |
 | PR | https://github.com/AgenticFunProject/booking/pull/11 |
-| Merge commit | Pending |
+| Merge commit | `f66c10b` |
 | Started UTC | 2026-05-18T09:46:28Z |
 | Completed UTC | 2026-05-18T09:46:54Z |
 | Elapsed wall time | 26s |
@@ -76,6 +76,36 @@ Verification:
 Notes:
 
 - Empty packages are represented with `package-info.java` files so the package structure is tracked by Git.
+
+### bo-u2r.6 - Add project ignore and developer docs shell
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-u2r-6-ignore-docs-shell` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T09:49:38Z |
+| Completed UTC | 2026-05-18T09:50:36Z |
+| Elapsed wall time | 58s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `.gitignore`, `README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added project ignore rules for build output, IDE/editor files, environment files, logs, OS files, and test/coverage output.
+- Updated the README to describe the generated service status, implementation plan, delivery evidence files, and current Maven commands.
+
+Verification:
+
+- `git diff --check` passed.
+- Portable absolute-path scan passed.
+
+Notes:
+
+- Maven wrapper artifacts are not ignored so a future wrapper-generation bead can commit them if needed.
 
 ## Entry Template
 
