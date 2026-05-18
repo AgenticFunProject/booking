@@ -790,7 +790,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-0wh-4-state-machine` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/38 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T12:49:00Z |
 | Completed UTC | 2026-05-18T12:50:39Z |
