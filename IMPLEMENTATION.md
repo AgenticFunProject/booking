@@ -89,6 +89,7 @@ Use `bd ready` as the source of truth for what can be worked next.
 - Timestamps are `Instant` in UTC.
 - Messaging/event streaming is out of scope for v1. Do not add Kafka.
 - External service real clients are out of scope until contracts exist. Implement interfaces and local stubs only.
+- Keep documentation, specs, comments, and examples portable. Do not write user-specific absolute home-directory paths; use repo-relative paths or Gas Town role paths like `booking/mayor/rig`.
 
 ## Verification
 
