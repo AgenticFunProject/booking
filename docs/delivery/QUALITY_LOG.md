@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 11 |
-| Passed | 9 |
+| Checks recorded | 13 |
+| Passed | 10 |
 | Failed | 0 |
-| Blocked/skipped | 2 |
+| Blocked/skipped | 3 |
 
 ## Checks
 
@@ -26,6 +26,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-u2r.2` | https://github.com/AgenticFunProject/booking/pull/11 | `mvn compile` | Base package structure compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 | 2026-05-18 | `bo-u2r.6` | https://github.com/AgenticFunProject/booking/pull/12 | `git diff --check` | Ignore rules and README shell | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-u2r.6` | https://github.com/AgenticFunProject/booking/pull/12 | `rg <portable-path-patterns> .` | Portable-path scan | Passed | No user-specific absolute paths found. |
+| 2026-05-18 | `bo-u2r.3` | Pending PR | `git diff --check` | Spring Boot application entry point | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-u2r.3` | Pending PR | `mvn compile` | Spring Boot application entry point compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
