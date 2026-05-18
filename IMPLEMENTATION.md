@@ -151,6 +151,11 @@ delivery evidence files once they exist:
 The reporting epic is `bo-8z3`. It owns the implementation ledger, quality log,
 spec coverage matrix, demo runbook, and final delivery report.
 
+Current evidence files:
+
+- `docs/delivery/IMPLEMENTATION_LEDGER.md`
+- `docs/delivery/QUALITY_LOG.md`
+
 ## Finish A Bead
 
 1. Check `git status`.
