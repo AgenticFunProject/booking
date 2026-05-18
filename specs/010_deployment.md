@@ -246,8 +246,8 @@ Feature: Deployment and Infrastructure
     Given a file ".github/workflows/ci.yml"
     Then it must define a workflow named "CI" triggered on:
       | trigger          | branches       |
-      | push             | main, develop  |
-      | pull_request     | main, develop  |
+      | push             | master, develop |
+      | pull_request     | master, develop |
 
   @deployment @ci
   Scenario: CI pipeline jobs
@@ -271,7 +271,7 @@ Feature: Deployment and Infrastructure
       | 1    | Checkout code           | actions/checkout@v4                                 |
       | 2    | Set up Docker Buildx    | docker/setup-buildx-action@v3                       |
       | 3    | Build Docker image      | docker build -t booking-service:${{ github.sha }}   |
-      | 4    | Tag as latest           | Only on main branch                                 |
+      | 4    | Tag as latest           | Only on master branch                               |
 
   @deployment @ci
   Scenario: CI pipeline services
