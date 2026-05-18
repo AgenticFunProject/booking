@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 13 |
-| Passed | 10 |
+| Checks recorded | 15 |
+| Passed | 11 |
 | Failed | 0 |
-| Blocked/skipped | 3 |
+| Blocked/skipped | 4 |
 
 ## Checks
 
@@ -28,6 +28,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-u2r.6` | https://github.com/AgenticFunProject/booking/pull/12 | `rg <portable-path-patterns> .` | Portable-path scan | Passed | No user-specific absolute paths found. |
 | 2026-05-18 | `bo-u2r.3` | https://github.com/AgenticFunProject/booking/pull/13 | `git diff --check` | Spring Boot application entry point | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-u2r.3` | https://github.com/AgenticFunProject/booking/pull/13 | `mvn compile` | Spring Boot application entry point compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-u2r.4` | https://github.com/AgenticFunProject/booking/pull/14 | `git diff --check` | Base application configuration | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-u2r.4` | https://github.com/AgenticFunProject/booking/pull/14 | `mvn compile` | Base application configuration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
