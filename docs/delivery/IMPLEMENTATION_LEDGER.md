@@ -144,7 +144,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-u2r-4-base-application-config` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/14 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:00:33Z |
 | Completed UTC | 2026-05-18T10:00:52Z |
