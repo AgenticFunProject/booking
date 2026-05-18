@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 16 |
-| PRs merged | 13 |
-| Merge commits recorded | 15 |
-| Verification blockers recorded | 14 |
-| Entries with elapsed time | 16 |
+| Beads recorded | 17 |
+| PRs merged | 14 |
+| Merge commits recorded | 16 |
+| Verification blockers recorded | 15 |
+| Entries with elapsed time | 17 |
 
 ## Entries
 
@@ -475,11 +475,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-eyx-5-reference-counter-repository` |
 | PR | https://github.com/AgenticFunProject/booking/pull/24 |
-| Merge commit | Pending |
+| Merge commit | `9a666ae` |
 | Started UTC | 2026-05-18T10:45:03Z |
 | Completed UTC | 2026-05-18T10:45:20Z |
 | Elapsed wall time | 17s |
@@ -502,6 +502,37 @@ Verification:
 Notes:
 
 - Runtime validation of the upsert behavior is deferred to the data-access slice test bead.
+
+### bo-eyx.3 - Add eager booking fetch queries
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-eyx-3-eager-fetch-queries` |
+| PR | https://github.com/AgenticFunProject/booking/pull/25 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:46:57Z |
+| Completed UTC | 2026-05-18T10:47:10Z |
+| Elapsed wall time | 13s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `findWithEquipmentLinesById(Long id)` to `BookingRepository`.
+- Added `findWithEquipmentLinesByBookingReference(String reference)` to `BookingRepository`.
+- Used JPQL `LEFT JOIN FETCH` queries so equipment lines can be loaded explicitly while the entity relationship stays lazy by default.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Fetch-query behavior is covered by the later data-access slice test bead.
 
 ## Entry Template
 
