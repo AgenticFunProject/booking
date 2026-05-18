@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 18 |
-| PRs merged | 15 |
-| Merge commits recorded | 17 |
-| Verification blockers recorded | 16 |
-| Entries with elapsed time | 18 |
+| Beads recorded | 19 |
+| PRs merged | 16 |
+| Merge commits recorded | 18 |
+| Verification blockers recorded | 17 |
+| Entries with elapsed time | 19 |
 
 ## Entries
 
@@ -538,11 +538,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-eyx-4-booking-specification` |
 | PR | https://github.com/AgenticFunProject/booking/pull/26 |
-| Merge commit | Pending |
+| Merge commit | `7335b8d` |
 | Started UTC | 2026-05-18T10:48:37Z |
 | Completed UTC | 2026-05-18T10:48:57Z |
 | Elapsed wall time | 20s |
@@ -564,6 +564,37 @@ Verification:
 Notes:
 
 - Specification query behavior is covered by the later data-access slice test bead.
+
+### bo-eyx.6 - Add data access slice tests
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-eyx-6-data-access-tests` |
+| PR | https://github.com/AgenticFunProject/booking/pull/27 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:51:12Z |
+| Completed UTC | 2026-05-18T10:53:02Z |
+| Elapsed wall time | 1m 50s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added embedded PostgreSQL `@DataJpaTest` coverage for booking repository persistence and derived queries.
+- Covered eager equipment-line fetch queries, cascade save/delete behavior, and composable specifications.
+- Added counter repository tests for new year allocation, existing year increments, independent yearly counters, migration shape, and concurrent allocation.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn test` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Runtime execution of the new tests requires a Java 21 environment with Maven dependency resolution available.
 
 ## Entry Template
 
