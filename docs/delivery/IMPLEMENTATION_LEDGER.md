@@ -114,7 +114,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-u2r-3-application-entrypoint` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/13 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T09:58:14Z |
 | Completed UTC | 2026-05-18T09:58:34Z |
