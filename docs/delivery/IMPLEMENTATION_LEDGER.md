@@ -668,7 +668,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-jyh-phase-4-plan` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/33 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T12:02:32Z |
 | Completed UTC | 2026-05-18T12:03:12Z |
