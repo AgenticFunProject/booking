@@ -34,6 +34,21 @@ Do not read every spec by default.
 - Use `/home/gaborvatany/gt/booking` for `bd` issue commands.
 - Do not work from `crew/`, `polecats/`, or `refinery/` directories unless explicitly assigned there by Gas Town.
 
+## Branch Policy
+
+Agents and workers must not implement directly on `master`.
+
+Before editing code:
+
+```bash
+git switch master
+git pull --ff-only origin master
+git switch -c work/<bead-id>-short-title
+```
+
+Use a bead-oriented branch name, commit the bead's change there, push the branch,
+and open a pull request unless the active workflow explicitly says otherwise.
+
 ## Start A Bead
 
 1. Run `bd prime` from `/home/gaborvatany/gt/booking`.
