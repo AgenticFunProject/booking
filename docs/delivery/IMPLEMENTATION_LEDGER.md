@@ -84,7 +84,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-u2r-6-ignore-docs-shell` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/12 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T09:49:38Z |
 | Completed UTC | 2026-05-18T09:50:36Z |
