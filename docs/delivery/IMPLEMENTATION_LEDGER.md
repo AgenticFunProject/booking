@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 25 |
-| PRs merged | 23 |
-| Merge commits recorded | 25 |
+| Beads recorded | 26 |
+| PRs merged | 24 |
+| Merge commits recorded | 26 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 25 |
+| Entries with elapsed time | 26 |
 
 ## Entries
 
@@ -757,11 +757,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-0wh-2-client-contracts` |
 | PR | https://github.com/AgenticFunProject/booking/pull/37 |
-| Merge commit | Pending |
+| Merge commit | `b28b0dd` |
 | Started UTC | 2026-05-18T12:47:00Z |
 | Completed UTC | 2026-05-18T12:48:00Z |
 | Elapsed wall time | 1m |
@@ -782,6 +782,38 @@ Verification:
 Notes:
 
 - Real external integrations remain deferred to `specs/008_integrations.md`.
+
+### bo-0wh.4 - Add BookingStateMachine
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-0wh-4-state-machine` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T12:49:00Z |
+| Completed UTC | 2026-05-18T12:50:39Z |
+| Elapsed wall time | 1m 39s |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingStateMachine.java`, `src/test/java/com/cargo/booking/service/BookingStateMachineTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `BookingStateMachine` as a Spring component.
+- Implemented the allowed lifecycle transitions from the domain model spec.
+- Added focused tests for allowed transitions, rejected transitions, and null status handling.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingStateMachineTest` passed with 3 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Rejected transition messages include the current and target statuses for downstream error handling.
 
 ## Entry Template
 
