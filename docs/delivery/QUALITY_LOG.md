@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 53 |
-| Passed | 36 |
+| Checks recorded | 55 |
+| Passed | 38 |
 | Failed | 0 |
 | Blocked/skipped | 17 |
 
@@ -68,6 +68,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-1co` | https://github.com/AgenticFunProject/booking/pull/30 | `mvn test` | Current project test suite after audit fix | Passed | 17 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-un5` | https://github.com/AgenticFunProject/booking/pull/32 | `git diff --check` | Cumulative phase audit instruction docs | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-jyh` | https://github.com/AgenticFunProject/booking/pull/33 | `git diff --check` | Phase 4 execution plan docs | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.1` | https://github.com/AgenticFunProject/booking/pull/35 | `git diff --check` | Service exception classes | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.1` | https://github.com/AgenticFunProject/booking/pull/35 | `mvn compile` | Service exception classes compile | Passed | Compile completed successfully. |
 
 ## Entry Template
 

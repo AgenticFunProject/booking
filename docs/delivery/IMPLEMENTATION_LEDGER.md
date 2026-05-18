@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 22 |
-| PRs merged | 20 |
-| Merge commits recorded | 22 |
+| Beads recorded | 23 |
+| PRs merged | 21 |
+| Merge commits recorded | 23 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 22 |
+| Entries with elapsed time | 23 |
 
 ## Entries
 
@@ -690,6 +690,36 @@ Verification:
 Notes:
 
 - Bead dependency metadata is local Gas Town state; the GitHub-readable execution order is recorded in `IMPLEMENTATION.md`.
+
+### bo-0wh.1 - Add service exception classes
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-0wh-1-service-exceptions` |
+| PR | https://github.com/AgenticFunProject/booking/pull/35 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T12:40:00Z |
+| Completed UTC | 2026-05-18T12:41:52Z |
+| Elapsed wall time | 1m 52s |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/exception/*.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added all six service/business exception classes required by the business-rules spec.
+- Provided String-message and String-message-plus-cause constructors on each exception.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+
+Notes:
+
+- No broad catch-all exception behavior was added.
 
 ## Entry Template
 
