@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 12 |
+| Beads recorded | 13 |
 | PRs merged | 10 |
 | Merge commits recorded | 12 |
-| Verification blockers recorded | 10 |
-| Entries with elapsed time | 12 |
+| Verification blockers recorded | 11 |
+| Entries with elapsed time | 13 |
 
 ## Entries
 
@@ -375,6 +375,38 @@ Verification:
 Notes:
 
 - The migration stores enum values using Java enum names, matching `@Enumerated(EnumType.STRING)`.
+
+### bo-43o - Audit and fix Phase 1-2 implementation
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-43o-phase-1-2-audit` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:30:42Z |
+| Completed UTC | 2026-05-18T10:31:03Z |
+| Elapsed wall time | 21s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md`, `specs/002_domain_model.md` |
+
+Delivered:
+
+- Audited Phase 1 and Phase 2 implementation against the project setup and domain model specs.
+- Removed fallback test datasource URL and credentials from `application-test.yml` so the datasource can be provided by the embedded PostgreSQL test bootstrap as specified.
+
+Verification:
+
+- Manual spec audit found the remaining Phase 1 and Phase 2 implementation aligned after the test-profile fix.
+- `git diff --check` passed.
+- Portable absolute-path scan passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Compile and runtime validation still require Java 21 on the machine.
 
 ## Entry Template
 
