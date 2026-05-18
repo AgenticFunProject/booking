@@ -7,10 +7,10 @@ This ledger records delivery evidence for completed implementation beads.
 | Metric | Value |
 | --- | ---: |
 | Beads recorded | 27 |
-| PRs merged | 24 |
-| Merge commits recorded | 26 |
+| PRs merged | 25 |
+| Merge commits recorded | 27 |
 | Verification blockers recorded | 17 |
-| Entries with elapsed time | 26 |
+| Entries with elapsed time | 27 |
 
 ## Entries
 
@@ -787,11 +787,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-0wh-4-state-machine` |
 | PR | https://github.com/AgenticFunProject/booking/pull/38 |
-| Merge commit | Pending |
+| Merge commit | `c77e745` |
 | Started UTC | 2026-05-18T12:49:00Z |
 | Completed UTC | 2026-05-18T12:50:39Z |
 | Elapsed wall time | 1m 39s |
