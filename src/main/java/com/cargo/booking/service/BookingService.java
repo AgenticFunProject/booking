@@ -158,12 +158,13 @@ public class BookingService {
     @Transactional
     public Booking startBooking(Long id) {
         Booking booking = getBookingForLifecycleChange(id);
+        BookingStatus currentStatus = booking.getStatus();
 
-        bookingStateMachine.validateTransition(booking.getStatus(), BookingStatus.IN_PROGRESS);
+        bookingStateMachine.validateTransition(currentStatus, BookingStatus.IN_PROGRESS);
         booking.setStatus(BookingStatus.IN_PROGRESS);
 
         Booking savedBooking = bookingRepository.save(booking);
-        log.info("Started booking {}", savedBooking.getBookingReference());
+        logStateTransition(savedBooking, currentStatus, BookingStatus.IN_PROGRESS);
 
         return savedBooking;
     }
@@ -171,12 +172,13 @@ public class BookingService {
     @Transactional
     public Booking completeBooking(Long id) {
         Booking booking = getBookingForLifecycleChange(id);
+        BookingStatus currentStatus = booking.getStatus();
 
-        bookingStateMachine.validateTransition(booking.getStatus(), BookingStatus.COMPLETED);
+        bookingStateMachine.validateTransition(currentStatus, BookingStatus.COMPLETED);
         booking.setStatus(BookingStatus.COMPLETED);
 
         Booking savedBooking = bookingRepository.save(booking);
-        log.info("Completed booking {}", savedBooking.getBookingReference());
+        logStateTransition(savedBooking, currentStatus, BookingStatus.COMPLETED);
 
         return savedBooking;
     }
@@ -194,7 +196,7 @@ public class BookingService {
 
         booking.setStatus(BookingStatus.CANCELLED);
         Booking savedBooking = bookingRepository.save(booking);
-        log.info("Cancelled booking {}", savedBooking.getBookingReference());
+        logStateTransition(savedBooking, currentStatus, BookingStatus.CANCELLED);
 
         return savedBooking;
     }
@@ -213,6 +215,14 @@ public class BookingService {
                     ex.getMessage()
             );
         }
+    }
+
+    private void logStateTransition(Booking booking, BookingStatus from, BookingStatus to) {
+        log.info("Booking {} transitioned from {} to {}",
+                booking.getBookingReference(),
+                from,
+                to
+        );
     }
 
     private void validateCreateRequest(CreateBookingRequest request) {

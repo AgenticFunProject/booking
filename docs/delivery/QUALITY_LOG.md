@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 101 |
-| Passed | 76 |
+| Checks recorded | 107 |
+| Passed | 81 |
 | Failed | 1 |
-| Blocked/skipped | 24 |
+| Blocked/skipped | 25 |
 
 ## Checks
 
@@ -111,6 +111,12 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done` | `git diff --check` | Service unit tests and delivery evidence | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase compile gate | Passed | Compile completed successfully after `git fetch origin master && git rebase origin/master`. |
 | 2026-05-18 | `bo-0wh.11` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 58 tests, 0 failures, 0 errors after `git fetch origin master && git rebase origin/master`. |
+| 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | Manual spec audit | Phase 1 through Phase 4 implementation against `IMPLEMENTATION.md` and specs 001-004 | Passed | Found and fixed Lombok dependency scope and lifecycle transition logging gaps; no remaining concrete Phase 1-4 spec gaps found. |
+| 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `./mvnw compile` | Cumulative audit compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `mvn compile` | Cumulative Phase 1-4 audit fixes compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingServiceLifecycleTest,BookingServiceCancelTest"` | Lifecycle logging-adjacent service regression tests | Passed | 11 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after cumulative Phase 1-4 audit fixes | Passed | 58 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `git diff --check` | Cumulative audit fixes and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 

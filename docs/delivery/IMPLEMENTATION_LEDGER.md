@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 33 |
+| Beads recorded | 34 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 23 |
-| Entries with elapsed time | 33 |
+| Verification blockers recorded | 24 |
+| Entries with elapsed time | 34 |
 
 ## Entries
 
@@ -1056,6 +1056,42 @@ Verification:
 Notes:
 
 - The main service implementation was already present on `origin/master`; this bead adds focused edge-case tests without changing production service behavior.
+
+### bo-2cu - Run cumulative Phase 1-4 audit
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-2cu@mpbdpigb` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:49:02Z |
+| Completed UTC | 2026-05-18T15:54:00Z |
+| Elapsed wall time | 4m 58s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/service/BookingService.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md` |
+
+Delivered:
+
+- Audited Phase 1 foundation, Phase 2 domain, Phase 3 data access, and Phase 4 service layer against the implementation guide and specs 001 through 004.
+- Confirmed the expected Maven/Spring Boot foundation, Java package tree, application and test configuration, domain enums/entities/migration, repositories/specifications/reference counter, service exceptions, client interfaces/stubs, reference generator, state machine, service flows, and focused tests are present.
+- Fixed the concrete Phase 1 dependency-scope gap by changing Lombok to Maven `provided` scope as specified.
+- Fixed the concrete Phase 4 logging gap by making start, complete, and cancel lifecycle success logs include booking reference plus `from` and `to` statuses.
+
+Verification:
+
+- Manual spec audit passed after the two fixes above; no remaining concrete Phase 1-4 spec gaps were found.
+- `mvn compile` passed.
+- `mvn test -Dtest="BookingServiceLifecycleTest,BookingServiceCancelTest"` passed with 11 tests, 0 failures, 0 errors.
+- `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper; installed `mvn` was used for the compile and test gates.
+
+Notes:
+
+- Later API, security, global error handling, real integrations, E2E testing, and deployment requirements remain out of scope for this Phase 1-4 audit and are covered by later specs.
 
 ## Entry Template
 
