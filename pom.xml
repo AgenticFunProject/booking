@@ -25,6 +25,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <springdoc-openapi.version>3.0.3</springdoc-openapi.version>
         <embedded-database-spring-test.version>2.8.0</embedded-database-spring-test.version>
+        <embedded-postgres.version>2.2.2</embedded-postgres.version>
     </properties>
 
     <dependencies>
@@ -79,6 +80,12 @@
             <groupId>io.zonky.test</groupId>
             <artifactId>embedded-database-spring-test</artifactId>
             <version>${embedded-database-spring-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.zonky.test</groupId>
+            <artifactId>embedded-postgres</artifactId>
+            <version>${embedded-postgres.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
