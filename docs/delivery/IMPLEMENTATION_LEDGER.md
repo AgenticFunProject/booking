@@ -6,7 +6,7 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 26 |
+| Beads recorded | 27 |
 | PRs merged | 24 |
 | Merge commits recorded | 26 |
 | Verification blockers recorded | 17 |
@@ -814,6 +814,38 @@ Verification:
 Notes:
 
 - Rejected transition messages include the current and target statuses for downstream error handling.
+
+### bo-0wh.7 - Implement booking read service flows
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-0wh-7-booking-read-flows` |
+| PR | https://github.com/AgenticFunProject/booking/pull/39 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T12:52:42Z |
+| Completed UTC | 2026-05-18T14:49:04Z |
+| Elapsed wall time | 1h 56m 22s |
+| Timing source | Started time copied from bead `started_at`; completed time captured by agent when verification passed |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `BookingService` read orchestration with constructor injection and a service logger.
+- Implemented `getBookingById` and `getBookingByReference` using eager equipment-line repository queries.
+- Implemented pageable `getBookings` with optional customer and status filters.
+- Added focused unit tests for found/missing reads and all list filter combinations.
+
+Verification:
+
+- `mvn test -Dtest=BookingServiceReadTest` passed with 7 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Authorization and caller visibility remain at the later API/security boundary per `specs/004_business_rules.md`.
 
 ## Entry Template
 
