@@ -6,6 +6,8 @@ Cargo booking microservice built with Spring Boot 3.5.x and Java 21. Accepts boo
 
 This project is built from sequential specification files. Before writing code, read this file, then the target spec and every file listed in that spec's `# Depends on:` header.
 
+Before starting an implementation bead, also read `IMPLEMENTATION.md` for the bead workflow, verification expectations, and dispatch order.
+
 ```
 specs/001_project_setup.md      → Maven project, dependencies, packages, conventions
 specs/002_domain_model.md       → Entities, enums, validations, Flyway migrations
