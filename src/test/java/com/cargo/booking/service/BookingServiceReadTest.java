@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.cargo.booking.client.EquipmentClient;
+import com.cargo.booking.client.QuoteClient;
+import com.cargo.booking.client.ScheduleClient;
 import com.cargo.booking.exception.BookingNotFoundException;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
@@ -26,10 +29,25 @@ class BookingServiceReadTest {
     @Mock
     private BookingRepository bookingRepository;
 
+    @Mock
+    private BookingReferenceGenerator bookingReferenceGenerator;
+
+    @Mock
+    private ScheduleClient scheduleClient;
+
+    @Mock
+    private EquipmentClient equipmentClient;
+
+    @Mock
+    private QuoteClient quoteClient;
+
+    @Mock
+    private BookingStateMachine bookingStateMachine;
+
     @Test
     void shouldGetBookingByIdWithEquipmentLines() {
         Booking booking = Booking.builder().id(42L).bookingReference("BKG-2026-00042").build();
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
 
@@ -38,7 +56,7 @@ class BookingServiceReadTest {
 
     @Test
     void shouldThrowWhenBookingIdIsMissing() {
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         when(bookingRepository.findWithEquipmentLinesById(404L)).thenReturn(Optional.empty());
 
@@ -50,7 +68,7 @@ class BookingServiceReadTest {
     @Test
     void shouldGetBookingByReferenceWithEquipmentLines() {
         Booking booking = Booking.builder().id(42L).bookingReference("BKG-2026-00042").build();
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         when(bookingRepository.findWithEquipmentLinesByBookingReference("BKG-2026-00042"))
                 .thenReturn(Optional.of(booking));
@@ -62,7 +80,7 @@ class BookingServiceReadTest {
     void shouldListBookingsByCustomerAndStatus() {
         Pageable pageable = PageRequest.of(0, 20);
         Page<Booking> bookings = new PageImpl<>(List.of(Booking.builder().id(1L).build()));
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         when(bookingRepository.findByCustomerIdAndStatus(7L, BookingStatus.PENDING, pageable))
                 .thenReturn(bookings);
@@ -73,7 +91,7 @@ class BookingServiceReadTest {
     @Test
     void shouldListBookingsByCustomerOnly() {
         Pageable pageable = PageRequest.of(0, 20);
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         bookingService.getBookings(7L, null, pageable);
 
@@ -83,7 +101,7 @@ class BookingServiceReadTest {
     @Test
     void shouldListBookingsByStatusOnly() {
         Pageable pageable = PageRequest.of(0, 20);
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         bookingService.getBookings(null, BookingStatus.CONFIRMED, pageable);
 
@@ -93,10 +111,21 @@ class BookingServiceReadTest {
     @Test
     void shouldListAllBookingsWithoutFilters() {
         Pageable pageable = PageRequest.of(0, 20);
-        BookingService bookingService = new BookingService(bookingRepository);
+        BookingService bookingService = bookingService();
 
         bookingService.getBookings(null, null, pageable);
 
         verify(bookingRepository).findAll(pageable);
+    }
+
+    private BookingService bookingService() {
+        return new BookingService(
+                bookingRepository,
+                bookingReferenceGenerator,
+                scheduleClient,
+                equipmentClient,
+                quoteClient,
+                bookingStateMachine
+        );
     }
 }
