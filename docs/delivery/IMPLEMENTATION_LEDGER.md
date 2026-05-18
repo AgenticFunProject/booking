@@ -698,7 +698,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-0wh-1-service-exceptions` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/35 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T12:40:00Z |
 | Completed UTC | 2026-05-18T12:41:52Z |
