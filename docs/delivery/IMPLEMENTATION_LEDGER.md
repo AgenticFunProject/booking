@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 27 |
+| Beads recorded | 28 |
 | PRs merged | 25 |
 | Merge commits recorded | 27 |
-| Verification blockers recorded | 17 |
-| Entries with elapsed time | 27 |
+| Verification blockers recorded | 18 |
+| Entries with elapsed time | 28 |
 
 ## Entries
 
@@ -846,6 +846,39 @@ Verification:
 Notes:
 
 - Authorization and caller visibility remain at the later API/security boundary per `specs/004_business_rules.md`.
+
+### bo-0wh.3 - Add local stub client implementations
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.3@mpbbizq5` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T14:47:59Z |
+| Completed UTC | 2026-05-18T14:51:26Z |
+| Elapsed wall time | 3m 27s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/client/ScheduleClientStub.java`, `src/main/java/com/cargo/booking/client/EquipmentClientStub.java`, `src/main/java/com/cargo/booking/client/QuoteClientStub.java`, `src/test/java/com/cargo/booking/client/ClientStubTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `@Service` and `@Profile("local")` stub implementations for `ScheduleClient`, `EquipmentClient`, and `QuoteClient`.
+- Returned deterministic local schedule data and unconditional success for schedule and quote validation.
+- Logged local equipment reservation and release actions without external calls.
+- Added focused tests covering stub behavior and local-profile service annotations.
+
+Verification:
+
+- `./mvnw compile` blocked because the Maven wrapper is not present in this checkout.
+- `mvn compile` passed.
+- `mvn test -Dtest="ClientStubTest"` passed with 4 tests, 0 failures, 0 errors.
+
+Notes:
+
+- No `BookingService` or service-flow files were changed; this bead stayed within the assigned parallel write set.
 
 ## Entry Template
 

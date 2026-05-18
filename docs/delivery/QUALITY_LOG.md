@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 65 |
-| Passed | 48 |
+| Checks recorded | 69 |
+| Passed | 51 |
 | Failed | 0 |
-| Blocked/skipped | 17 |
+| Blocked/skipped | 18 |
 
 ## Checks
 
@@ -80,6 +80,10 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-0wh.4` | https://github.com/AgenticFunProject/booking/pull/38 | `mvn test -Dtest=BookingStateMachineTest` | BookingStateMachine unit test | Passed | 3 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.7` | https://github.com/AgenticFunProject/booking/pull/39 | `mvn test -Dtest=BookingServiceReadTest` | Booking read service flows | Passed | 7 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-0wh.7` | https://github.com/AgenticFunProject/booking/pull/39 | `git diff --check` | Booking read service flows and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-0wh.3` | Pending | `./mvnw compile` | Local stub client compile | Blocked | Maven wrapper is not present in this checkout; used installed `mvn` instead. |
+| 2026-05-18 | `bo-0wh.3` | Pending | `mvn compile` | Local stub client compile | Passed | Compile completed successfully. |
+| 2026-05-18 | `bo-0wh.3` | Pending | `mvn test -Dtest="ClientStubTest"` | Local stub client unit test | Passed | 4 tests, 0 failures, 0 errors. |
+| 2026-05-18 | `bo-0wh.3` | Pending | `git diff --check` | Local stub client implementation and evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 
