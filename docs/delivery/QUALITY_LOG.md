@@ -41,8 +41,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-7or.4` | https://github.com/AgenticFunProject/booking/pull/18 | `git diff --check` | BookingEquipmentLine entity | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-7or.4` | https://github.com/AgenticFunProject/booking/pull/18 | `mvn compile` | BookingEquipmentLine entity compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 | 2026-05-18 | `bo-7or.6` | https://github.com/AgenticFunProject/booking/pull/18 | `rg -n "EqualsAndHashCode\\|ToString.Exclude\\|JsonIgnore\\|OneToMany\\|ManyToOne" src/main/java/com/cargo/booking/model/entity` | Entity safeguards | Passed | Expected equality, relationship, and JSON recursion annotations found. |
-| 2026-05-18 | `bo-7or.5` | Pending PR | `git diff --check` | Booking schema migration | Passed | No whitespace/diff errors. |
-| 2026-05-18 | `bo-7or.5` | Pending PR | `mvn compile` | Booking schema migration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-7or.5` | https://github.com/AgenticFunProject/booking/pull/19 | `git diff --check` | Booking schema migration | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-7or.5` | https://github.com/AgenticFunProject/booking/pull/19 | `mvn compile` | Booking schema migration compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 

@@ -353,7 +353,7 @@ Notes:
 | Status | In review |
 | Agent | mayor |
 | Branch | `work/bo-7or-5-booking-migration` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/19 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-18T10:18:18Z |
 | Completed UTC | 2026-05-18T10:18:50Z |
