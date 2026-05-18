@@ -115,14 +115,35 @@ Run the smallest meaningful gate for the bead:
 
 If a gate cannot run because the project is not far enough along, note the reason on the bead before closing it.
 
+## Delivery Evidence
+
+Every implementation bead should leave enough evidence for a coworker-facing
+delivery report.
+
+When finishing a bead, record the important details in the bead notes or in the
+delivery evidence files once they exist:
+
+- bead ID and title
+- branch name
+- PR URL
+- merge commit
+- verification commands and results
+- notable files changed
+- blockers, skipped checks, or follow-up beads
+- demo notes or API examples, when relevant
+
+The reporting epic is `bo-8z3`. It owns the implementation ledger, quality log,
+spec coverage matrix, demo runbook, and final delivery report.
+
 ## Finish A Bead
 
 1. Check `git status`.
 2. Run the relevant verification.
-3. Commit the code change.
-4. Push the branch/commit according to the active workflow.
-5. Close the bead with `bd close <bead-id>` only after the acceptance criteria are met.
-6. If you discover follow-up work, create a new bead instead of leaving TODO comments.
+3. Record delivery evidence for the bead.
+4. Commit the code change.
+5. Push the branch/commit according to the active workflow.
+6. Close the bead with `bd close <bead-id>` only after the acceptance criteria are met.
+7. If you discover follow-up work, create a new bead instead of leaving TODO comments.
 
 ## Useful Commands
 
