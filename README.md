@@ -56,7 +56,7 @@ Key elements in each file:
 | Component | Technology |
 |-----------|-----------|
 | Language | Java 21 (LTS) |
-| Framework | Spring Boot 4.0.6 |
+| Framework | Spring Boot 3.5.x |
 | Build Tool | Maven |
 | Database | PostgreSQL 16 |
 | Auth | Optional JWT (stateless) |

@@ -51,7 +51,7 @@ Feature: Integration Infrastructure
     Given the pom.xml dependency section
     Then it must include the following additional dependencies (not listed in 001):
       | groupId                 | artifactId                 | purpose                    |
-      | io.github.resilience4j | resilience4j-spring-boot4  | Circuit breaker and retry  |
+      | io.github.resilience4j | resilience4j-spring-boot3  | Circuit breaker and retry  |
       | io.github.resilience4j | resilience4j-circuitbreaker| Circuit breaker module     |
       | io.github.resilience4j | resilience4j-retry         | Retry module               |
       | org.springframework.boot | spring-boot-starter-aop   | AOP support for annotations|

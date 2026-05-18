@@ -24,7 +24,7 @@ Feature: Project Setup and Configuration
     Given I am creating a new Spring Boot project
     Then the build tool must be Maven
     And the Java version must be 21 (latest LTS)
-    And the Spring Boot version must be 4.0.6
+    And the Spring Boot version must be 3.5.x (latest stable 3.5 release)
     And the pom.xml must set <maven.compiler.source> and <maven.compiler.target> to 21
     And the packaging must be "jar"
 
@@ -37,7 +37,7 @@ Feature: Project Setup and Configuration
     Given the pom.xml dependency section
     Then it must include the following starters:
       | groupId                        | artifactId                         | purpose                            |
-      | org.springframework.boot       | spring-boot-starter-webmvc         | Spring MVC REST API support        |
+      | org.springframework.boot       | spring-boot-starter-web            | Spring MVC REST API support        |
       | org.springframework.boot       | spring-boot-starter-data-jpa       | JPA / Hibernate persistence        |
       | org.springframework.boot       | spring-boot-starter-validation     | Bean validation (Jakarta)          |
       | org.springframework.boot       | spring-boot-starter-actuator       | Health checks and metrics          |

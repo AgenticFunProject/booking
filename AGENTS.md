@@ -1,6 +1,6 @@
 # Booking Service
 
-Cargo booking microservice built with Spring Boot 4.0.6 and Java 21. Accepts booking requests and manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED). Messaging/event streaming is out of scope for v1.
+Cargo booking microservice built with Spring Boot 3.5.x and Java 21. Accepts booking requests and manages a shipment lifecycle (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED / CANCELLED). Messaging/event streaming is out of scope for v1.
 
 ## Specifications
 
@@ -122,7 +122,7 @@ src/test/java/com/cargo/booking/
 
 ## Conventions & Patterns
 
-- **Java 21 LTS**, Spring Boot 4.0.6, Maven
+- **Java 21 LTS**, Spring Boot 3.5.x, Maven
 - **Layered architecture**: Controller → Service → Repository. No skipping layers, except security authorizers may query repositories for ownership checks only.
 - **DTOs are Java records** (immutable). Never expose JPA entities in API responses.
 - **Constructor injection** only. No `@Autowired` on fields.
@@ -133,7 +133,7 @@ src/test/java/com/cargo/booking/
 - **API prefix**: `/api/v1`
 - **Logging**: SLF4J. INFO for business actions, WARN for client errors, ERROR for system failures. Never log sensitive data (email, phone, tokens).
 - **Tests**: Method names use `should...()` pattern. One behavior per test. Arrange-Act-Assert structure. Integration tests use embedded PostgreSQL.
-- **Spring Boot 4 tests**: Use `@MockitoBean` for MVC slice mocks, not the older `@MockBean`.
+- **Spring Boot 3.5 tests**: Use `@MockitoBean` for MVC slice mocks, not the older `@MockBean`.
 
 ## Key Domain Rules
 
