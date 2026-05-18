@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 32 |
-| Passed | 21 |
+| Checks recorded | 34 |
+| Passed | 22 |
 | Failed | 0 |
-| Blocked/skipped | 11 |
+| Blocked/skipped | 12 |
 
 ## Checks
 
@@ -47,6 +47,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | `git diff --check` | Phase 1/2 audit fix | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | `rg <portable-path-patterns> .` | Portable-path scan | Passed | No user-specific absolute paths found. |
 | 2026-05-18 | `bo-43o` | https://github.com/AgenticFunProject/booking/pull/21 | `mvn compile` | Phase 1/2 audit fix compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
+| 2026-05-18 | `bo-eyx.1` | https://github.com/AgenticFunProject/booking/pull/22 | `git diff --check` | BookingRepository | Passed | No whitespace/diff errors. |
+| 2026-05-18 | `bo-eyx.1` | https://github.com/AgenticFunProject/booking/pull/22 | `mvn compile` | BookingRepository compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
 
 ## Entry Template
 
