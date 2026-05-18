@@ -632,11 +632,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/reference-counter-constructor-injection` |
 | PR | https://github.com/AgenticFunProject/booking/pull/30 |
-| Merge commit | Pending |
+| Merge commit | `b489335` |
 | Started UTC | 2026-05-18T11:09:00Z |
 | Completed UTC | 2026-05-18T11:09:58Z |
 | Elapsed wall time | 58s |
