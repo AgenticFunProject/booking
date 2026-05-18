@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 6 |
-| PRs merged | 5 |
-| Merge commits recorded | 5 |
-| Verification blockers recorded | 5 |
-| Entries with elapsed time | 6 |
+| Beads recorded | 7 |
+| PRs merged | 6 |
+| Merge commits recorded | 6 |
+| Verification blockers recorded | 6 |
+| Entries with elapsed time | 7 |
 
 ## Entries
 
@@ -171,11 +171,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-u2r-5-test-profile-config` |
 | PR | https://github.com/AgenticFunProject/booking/pull/15 |
-| Merge commit | Pending |
+| Merge commit | `346c36c` |
 | Started UTC | 2026-05-18T10:02:47Z |
 | Completed UTC | 2026-05-18T10:03:05Z |
 | Elapsed wall time | 18s |
@@ -196,6 +196,36 @@ Verification:
 Notes:
 
 - Embedded PostgreSQL test bootstrap code is planned in later test/integration beads; this profile provides the expected configuration surface.
+
+### bo-7or.1 - Add BookingStatus enum
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-7or-1-booking-status` |
+| PR | https://github.com/AgenticFunProject/booking/pull/16 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:09:09Z |
+| Completed UTC | 2026-05-18T10:09:26Z |
+| Elapsed wall time | 17s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/model/enums/BookingStatus.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Added the `BookingStatus` enum in the domain enum package.
+- Added lifecycle values in the exact spec order: `PENDING`, `CONFIRMED`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Transition validation remains in the later service-layer state machine task.
 
 ## Entry Template
 
