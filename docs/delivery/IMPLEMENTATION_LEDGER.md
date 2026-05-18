@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 10 |
-| PRs merged | 8 |
-| Merge commits recorded | 8 |
-| Verification blockers recorded | 9 |
-| Entries with elapsed time | 10 |
+| Beads recorded | 12 |
+| PRs merged | 9 |
+| Merge commits recorded | 11 |
+| Verification blockers recorded | 10 |
+| Entries with elapsed time | 12 |
 
 ## Entries
 
@@ -261,11 +261,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-7or-entities` |
 | PR | https://github.com/AgenticFunProject/booking/pull/18 |
-| Merge commit | Pending |
+| Merge commit | `94fefad` |
 | Started UTC | 2026-05-18T10:14:37Z |
 | Completed UTC | 2026-05-18T10:15:21Z |
 | Elapsed wall time | 44s |
@@ -291,11 +291,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-7or-entities` |
 | PR | https://github.com/AgenticFunProject/booking/pull/18 |
-| Merge commit | Pending |
+| Merge commit | `94fefad` |
 | Started UTC | 2026-05-18T10:14:37Z |
 | Completed UTC | 2026-05-18T10:15:21Z |
 | Elapsed wall time | 44s |
@@ -316,6 +316,65 @@ Verification:
 Notes:
 
 - Entity safeguards are present here; the dedicated safeguards bead will verify and close any remaining gaps.
+
+### bo-7or.6 - Add entity equality and serialization safeguards
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-7or-entities` |
+| PR | https://github.com/AgenticFunProject/booking/pull/18 |
+| Merge commit | `94fefad` |
+| Started UTC | 2026-05-18T10:17:25Z |
+| Completed UTC | 2026-05-18T10:17:25Z |
+| Elapsed wall time | 0s |
+| Timing source | Closed as verification of safeguards delivered by PR #18 |
+| Files changed | `src/main/java/com/cargo/booking/model/entity/Booking.java`, `src/main/java/com/cargo/booking/model/entity/BookingEquipmentLine.java` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Verified both entities use ID-only Lombok equality configuration.
+- Verified relationship fields avoid recursive `toString`, and the equipment-line back-reference is ignored for JSON serialization.
+
+Verification:
+
+- `rg` annotation scan confirmed `@EqualsAndHashCode`, `@EqualsAndHashCode.Include`, `@ToString.Exclude`, and `@JsonIgnore` placement.
+
+Notes:
+
+- No additional code PR was required after PR #18.
+
+### bo-7or.5 - Add booking reference counter migration
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-7or-5-booking-migration` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:18:18Z |
+| Completed UTC | 2026-05-18T10:18:50Z |
+| Elapsed wall time | 32s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/resources/db/migration/V1__create_booking_tables.sql`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Added the initial Flyway migration for `bookings`, `booking_equipment_lines`, and `booking_reference_counters`.
+- Added indexes, constraints, PostgreSQL column types, foreign key behavior, and reference counter shape.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- The migration stores enum values using Java enum names, matching `@Enumerated(EnumType.STRING)`.
 
 ## Entry Template
 
