@@ -6,6 +6,7 @@ import com.cargo.booking.client.QuoteClient;
 import com.cargo.booking.client.ScheduleClient;
 import com.cargo.booking.exception.BookingNotFoundException;
 import com.cargo.booking.exception.BookingValidationException;
+import com.cargo.booking.exception.EquipmentReservationException;
 import com.cargo.booking.exception.QuoteNotValidException;
 import com.cargo.booking.exception.ScheduleNotAvailableException;
 import com.cargo.booking.model.entity.Booking;
@@ -180,9 +181,38 @@ public class BookingService {
         return savedBooking;
     }
 
+    @Transactional
+    public Booking cancelBooking(Long id) {
+        Booking booking = bookingRepository.findWithEquipmentLinesById(id)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
+        BookingStatus currentStatus = booking.getStatus();
+
+        bookingStateMachine.validateTransition(currentStatus, BookingStatus.CANCELLED);
+        if (currentStatus == BookingStatus.CONFIRMED) {
+            releaseReservedEquipment(booking);
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        Booking savedBooking = bookingRepository.save(booking);
+        log.info("Cancelled booking {}", savedBooking.getBookingReference());
+
+        return savedBooking;
+    }
+
     private Booking getBookingForLifecycleChange(Long id) {
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
+    }
+
+    private void releaseReservedEquipment(Booking booking) {
+        try {
+            equipmentClient.releaseEquipment(booking.getId());
+        } catch (EquipmentReservationException ex) {
+            log.warn("Equipment release failed for cancelled booking {}: {}",
+                    booking.getBookingReference(),
+                    ex.getMessage()
+            );
+        }
     }
 
     private void validateCreateRequest(CreateBookingRequest request) {
