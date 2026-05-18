@@ -69,6 +69,22 @@ merge the PR and delete the branch without asking the human.
 Escalate instead of merging only when there is a blocker, an unfixable failing
 check, a destructive change, or an explicit product/architecture decision.
 
+## Parallel PR Coordination
+
+Parallel work is allowed only when beads are independent and likely write sets do
+not overlap.
+
+- Use one branch per bead.
+- Merge only when GitHub reports the PR is clean/mergeable.
+- If another PR merges first, update the branch with `git fetch origin` and
+  `git rebase origin/master`.
+- Rerun the relevant verification after every rebase.
+- Push rebased branches with `git push --force-with-lease`, never plain force.
+- Do not intentionally parallelize beads that are likely to edit the same central
+  files, such as `pom.xml`, `application.yml`, central service/controller/security
+  classes, `AGENTS.md`, or `IMPLEMENTATION.md`.
+- Escalate semantic conflicts or unclear merge decisions instead of guessing.
+
 ## Start A Bead
 
 1. Run `bd prime` from the booking rig root.
