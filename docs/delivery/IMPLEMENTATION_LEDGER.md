@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 3 |
-| PRs merged | 2 |
-| Merge commits recorded | 2 |
-| Verification blockers recorded | 2 |
-| Entries with elapsed time | 3 |
+| Beads recorded | 4 |
+| PRs merged | 3 |
+| Merge commits recorded | 3 |
+| Verification blockers recorded | 3 |
+| Entries with elapsed time | 4 |
 
 ## Entries
 
@@ -81,11 +81,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-u2r-6-ignore-docs-shell` |
 | PR | https://github.com/AgenticFunProject/booking/pull/12 |
-| Merge commit | Pending |
+| Merge commit | `471e92c` |
 | Started UTC | 2026-05-18T09:49:38Z |
 | Completed UTC | 2026-05-18T09:50:36Z |
 | Elapsed wall time | 58s |
@@ -106,6 +106,36 @@ Verification:
 Notes:
 
 - Maven wrapper artifacts are not ignored so a future wrapper-generation bead can commit them if needed.
+
+### bo-u2r.3 - Add BookingServiceApplication entry point
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-u2r-3-application-entrypoint` |
+| PR | https://github.com/AgenticFunProject/booking/pull/13 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T09:58:14Z |
+| Completed UTC | 2026-05-18T09:58:34Z |
+| Elapsed wall time | 20s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/BookingServiceApplication.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added the `BookingServiceApplication` Spring Boot main class in the base package.
+- Added a standard `main` method calling `SpringApplication.run`.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Compile verification remains environment-blocked until Java 21 is available in this workspace.
 
 ## Entry Template
 
