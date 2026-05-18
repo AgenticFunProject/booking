@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 8 |
-| PRs merged | 7 |
-| Merge commits recorded | 7 |
-| Verification blockers recorded | 7 |
-| Entries with elapsed time | 8 |
+| Beads recorded | 10 |
+| PRs merged | 8 |
+| Merge commits recorded | 8 |
+| Verification blockers recorded | 9 |
+| Entries with elapsed time | 10 |
 
 ## Entries
 
@@ -231,11 +231,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-7or-2-equipment-type` |
 | PR | https://github.com/AgenticFunProject/booking/pull/17 |
-| Merge commit | Pending |
+| Merge commit | `012ad52` |
 | Started UTC | 2026-05-18T10:11:23Z |
 | Completed UTC | 2026-05-18T10:11:48Z |
 | Elapsed wall time | 25s |
@@ -256,6 +256,66 @@ Verification:
 Notes:
 
 - Invalid or blank codes currently throw `IllegalArgumentException`; API-level error mapping is handled in later error/API tasks.
+
+### bo-7or.3 - Add Booking entity
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-7or-entities` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:14:37Z |
+| Completed UTC | 2026-05-18T10:15:21Z |
+| Elapsed wall time | 44s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/model/entity/Booking.java`, `src/main/java/com/cargo/booking/model/entity/BookingEquipmentLine.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Added the `Booking` aggregate root with Long identity, reference, status, schedule, quote, customer, cargo, and timestamp fields.
+- Added validation annotations, table/index metadata, UTC timestamp annotations, and the equipment-line relationship.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- This PR also includes `BookingEquipmentLine` because the two entities reference each other.
+
+### bo-7or.4 - Add BookingEquipmentLine entity
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-7or-entities` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:14:37Z |
+| Completed UTC | 2026-05-18T10:15:21Z |
+| Elapsed wall time | 44s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/model/entity/BookingEquipmentLine.java`, `src/main/java/com/cargo/booking/model/entity/Booking.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Added `BookingEquipmentLine` with Long identity, equipment type, quantity validation, and lazy `Booking` back-reference.
+- Added JSON/toString recursion safeguards and ID-based equality configuration needed by the relationship.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Entity safeguards are present here; the dedicated safeguards bead will verify and close any remaining gaps.
 
 ## Entry Template
 
