@@ -1,11 +1,12 @@
 # File: 006_security.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt, 005_api_endpoints.md
+# Depends on: 001_project_setup.md, 002_domain_model.md, 005_api_endpoints.md
 # Produces: Security configuration, JWT filter, authentication entry point, role-based access,
 #           CORS configuration, security-related DTOs
-# Context: Defines authentication and authorization for the Cargo Booking Service. Since this
-#          is a microservice behind an API gateway, it validates JWTs issued by an external
-#          identity provider rather than managing users directly. The AI agent must have
-#          processed 001–005 so that endpoints and conventions are known.
+# Context: Defines optional authentication and authorization for the Cargo Booking Service.
+#          When security is enabled, it validates JWTs issued by an external identity
+#          provider. When security is disabled, the service must still work using request
+#          data such as customerId. The AI agent must have processed 001–005 so that
+#          endpoints and conventions are known.
 
 Feature: Security
   As an AI code generator
@@ -16,7 +17,7 @@ Feature: Security
     Given the base package is "com.cargo.booking"
     And security classes reside in "com.cargo.booking.security"
     And all endpoints from 005_api_endpoints.md are known
-    And the API prefix is "/api/v1" as defined in 001_project_setup.txt
+    And the API prefix is "/api/v1" as defined in 001_project_setup.md
 
   # ---------------------------------------------------------------------------
   # Security Dependency
@@ -42,9 +43,19 @@ Feature: Security
     Given the file "src/main/resources/application.yml"
     Then it must include the following security-related properties:
       | property                          | value                                        | description                      |
+      | app.security.enabled              | ${SECURITY_ENABLED:true}                     | Enables JWT auth and authorization |
       | app.security.jwt.secret           | ${JWT_SECRET:default-dev-secret-key-min-256-bits-long-for-hs256} | HMAC signing key     |
       | app.security.jwt.issuer           | ${JWT_ISSUER:cargo-platform}                 | Expected token issuer            |
       | app.security.jwt.expiration-ms    | ${JWT_EXPIRATION:3600000}                    | Token validity (1 hour default)  |
+
+  @security @config
+  Scenario: Security can be disabled for local or unsecured deployments
+    Given app.security.enabled is false
+    Then the SecurityFilterChain must permit all API requests
+    And JwtAuthenticationFilter must either not be registered or must short-circuit without validating tokens
+    And customerId must come from request data or query parameters
+    And no ownership checks based on JWT subject must run
+    And this mode is intended for local development, demos, or deployments where authentication is handled outside this service
 
   @security @config
   Scenario: JwtProperties configuration class
@@ -55,7 +66,17 @@ Feature: Security
       | secret       | String | The HMAC signing key          |
       | issuer       | String | Expected issuer claim         |
       | expirationMs | long   | Token expiration in milliseconds |
-    And @EnableConfigurationProperties(JwtProperties.class) must be added to the security config or main app class
+    And SecurityConfig must enable JwtProperties with @EnableConfigurationProperties so MVC slice tests importing SecurityConfig also receive this bean
+
+  @security @config
+  Scenario: SecurityProperties configuration class
+    Given a class "SecurityProperties" in package "com.cargo.booking.security"
+    Then it must be annotated with @ConfigurationProperties(prefix = "app.security")
+    And it must expose:
+      | field   | type    | description                              |
+      | enabled | boolean | Enables JWT authentication/authorization |
+    And SecurityConfig must depend on SecurityProperties to decide whether to permit all API requests
+    And SecurityConfig must enable SecurityProperties with @EnableConfigurationProperties so MVC slice tests importing SecurityConfig also receive this bean
 
   # ---------------------------------------------------------------------------
   # Roles
@@ -66,11 +87,14 @@ Feature: Security
     Given the Booking Service authorization model
     Then the following roles must be recognized:
       | role          | description                                                        |
-      | ROLE_CUSTOMER | Can create bookings, view own bookings, cancel own bookings         |
+      | ROLE_CUSTOMER | Direct customer caller; can create, view, and cancel own bookings when token contains a customerId claim |
+      | ROLE_SERVICE  | Trusted service-to-service caller; can create, read, and cancel bookings on behalf of customers |
       | ROLE_OPERATOR | Can view all bookings, confirm, start, and complete bookings        |
       | ROLE_ADMIN    | Full access to all operations including all operator permissions    |
     And roles are extracted from the JWT claims (field: "roles" — an array of strings)
     And the role prefix "ROLE_" must be prepended if not already present in the token
+    And the JWT subject identifies the authenticated requester (user or service), not necessarily the booking customer
+    And the optional JWT customerId claim may be named "customerId" or "customer_id" when the token represents a direct customer
 
   # ---------------------------------------------------------------------------
   # JWT Token Service
@@ -84,7 +108,8 @@ Feature: Security
     And it must provide the following methods:
       | method                                          | returns                  | description                                      |
       | validateToken(String token)                     | boolean                  | Validates signature, expiration, and issuer       |
-      | getUserIdFromToken(String token)                | UUID                     | Extracts the subject claim as a UUID              |
+      | getSubjectFromToken(String token)               | String                   | Extracts the subject claim for the authenticated requester |
+      | getCustomerIdFromToken(String token)            | Optional<Long>           | Extracts optional customerId/customer_id claim when present |
       | getUsernameFromToken(String token)              | String                   | Extracts the "username" or "name" claim           |
       | getRolesFromToken(String token)                 | List<String>             | Extracts the "roles" claim as a list of strings   |
       | getAuthentication(String token)                 | Authentication           | Builds a UsernamePasswordAuthenticationToken      |
@@ -175,6 +200,7 @@ Feature: Security
     Then it must be annotated with @Configuration and @EnableWebSecurity and @EnableMethodSecurity
     And it must depend on:
       | dependency                   | purpose                               |
+      | SecurityProperties           | Controls whether security is enabled  |
       | JwtAuthenticationFilter      | JWT validation filter                 |
       | JwtAuthenticationEntryPoint  | 401 error handling                    |
       | JwtAccessDeniedHandler       | 403 error handling                    |
@@ -185,16 +211,17 @@ Feature: Security
       | Register JwtAuthenticationEntryPoint as the exception handling entry point             |
       | Register JwtAccessDeniedHandler as the access denied handler                           |
       | Add JwtAuthenticationFilter before UsernamePasswordAuthenticationFilter                |
+      | If securityProperties.enabled is false, configure permitAll and skip JWT validation     |
 
   @security @config
   Scenario: Endpoint-level access rules
     Given the SecurityFilterChain bean
     Then the following endpoint access rules must be configured:
       | pattern                              | method | access                                    |
-      | /api/v1/bookings                     | POST   | hasAnyRole('CUSTOMER', 'ADMIN')            |
-      | /api/v1/bookings                     | GET    | hasAnyRole('CUSTOMER', 'OPERATOR', 'ADMIN')|
-      | /api/v1/bookings/{id}                | GET    | hasAnyRole('CUSTOMER', 'OPERATOR', 'ADMIN')|
-      | /api/v1/bookings/{id}/cancel         | PATCH  | hasAnyRole('CUSTOMER', 'ADMIN')            |
+      | /api/v1/bookings                     | POST   | hasAnyRole('CUSTOMER', 'SERVICE', 'ADMIN') |
+      | /api/v1/bookings                     | GET    | hasAnyRole('CUSTOMER', 'SERVICE', 'OPERATOR', 'ADMIN') |
+      | /api/v1/bookings/{id}                | GET    | hasAnyRole('CUSTOMER', 'SERVICE', 'OPERATOR', 'ADMIN') |
+      | /api/v1/bookings/{id}/cancel         | PATCH  | hasAnyRole('CUSTOMER', 'SERVICE', 'ADMIN') |
       | /api/v1/bookings/{id}/confirm        | PATCH  | hasAnyRole('OPERATOR', 'ADMIN')            |
       | /api/v1/bookings/{id}/start          | PATCH  | hasAnyRole('OPERATOR', 'ADMIN')            |
       | /api/v1/bookings/{id}/complete       | PATCH  | hasAnyRole('OPERATOR', 'ADMIN')            |
@@ -211,34 +238,75 @@ Feature: Security
 
   @security @ownership
   Scenario: Customers can only access their own bookings
-    Given a request from a user with role ROLE_CUSTOMER
+    Given security is enabled
+    And a request from a user with role ROLE_CUSTOMER
+    And the JWT contains a customerId or customer_id claim
     When the user calls GET /api/v1/bookings
-    Then the customerId query parameter must match the authenticated user's ID from the JWT
-    And if it does not match, the service must return HTTP 403 Forbidden
+    Then the customerId query parameter must match the customerId claim from the JWT
+    And if it does not match, the API/security layer must return HTTP 403 Forbidden before calling BookingService
+    And when the user calls POST /api/v1/bookings, request.customerId must match the customerId claim from the JWT
+    And if it does not match, the API/security layer must return HTTP 403 Forbidden before calling BookingService
+    And the Booking entity must store customerId from the request after this authorization check passes
+    And if the user calls GET /api/v1/bookings without customerId, the API/security layer must return HTTP 400 Bad Request before calling BookingService
+
+  @security @ownership
+  Scenario: Customer role without a customer identity claim
+    Given security is enabled
+    And a request from a user with role ROLE_CUSTOMER
+    And the JWT does not contain a customerId or customer_id claim
+    When the endpoint requires customer ownership validation
+    Then the API/security layer must return HTTP 403 Forbidden before calling BookingService
+    And it must not infer customerId from the JWT subject
 
   @security @ownership
   Scenario: Customers can only view and cancel their own bookings
-    Given a request from a user with role ROLE_CUSTOMER
+    Given security is enabled
+    And a request from a user with role ROLE_CUSTOMER
+    And the JWT contains a customerId or customer_id claim
     When the user calls GET /api/v1/bookings/{id} or PATCH /api/v1/bookings/{id}/cancel
-    Then the service must verify that the booking's customerId matches the authenticated user's ID
-    And if it does not match, the service must return HTTP 403 Forbidden
+    Then the API/security layer must verify that the booking's customerId matches the customerId claim from the JWT
+    And if it does not match, the API/security layer must return HTTP 403 Forbidden
 
   @security @ownership
-  Scenario: Operators and admins can access all bookings
-    Given a request from a user with role ROLE_OPERATOR or ROLE_ADMIN
-    When the user accesses any booking endpoint
-    Then no ownership check is required — they may access and manage any booking
+  Scenario: BookingAccessAuthorizer component
+    Given a component "BookingAccessAuthorizer" in package "com.cargo.booking.security"
+    Then it must be annotated with @Component
+    And it must depend on BookingRepository and use SecurityContextHelper
+    And it must provide methods for controller ownership checks:
+      | method                                           | purpose                                      |
+      | void authorizeCreateCustomer(Long customerId)    | Verify create request customer ownership     |
+      | void authorizeListCustomer(Long customerId)      | Verify list query customer ownership         |
+      | void authorizeBookingAccess(Long bookingId)      | Verify access to a booking identified by ID  |
+      | void authorizeBookingAccess(String reference)    | Verify access to a booking identified by reference |
+    And when security is disabled it must allow access without ownership checks
+    And when the caller has ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN it must allow access without customer ownership checks
+    And when the caller has ROLE_CUSTOMER and the checked customerId comes from a request body or query parameter it must compare that customerId with the JWT customerId/customer_id claim
+    And when the caller has ROLE_CUSTOMER and the checked customerId comes from an existing booking it must load the booking owner and compare it with the JWT customerId/customer_id claim
+    And if the customer identity claim is missing it must throw AccessDeniedException before checking request/query customerId values
+    And authorizeListCustomer must throw BookingValidationException when ROLE_CUSTOMER has a customer identity claim but omits the customerId query parameter while security is enabled
+    And if the repository lookup returns empty it must return without throwing so the subsequent BookingService call owns the BookingNotFoundException and final 404 response
+    And if the customer identity claim does not match the checked customerId it must throw AccessDeniedException before BookingService is called
+
+  @security @ownership
+  Scenario: Service callers, operators, and admins can act for requested customers
+    Given security is enabled
+    And a request from a caller with role ROLE_SERVICE, ROLE_OPERATOR, or ROLE_ADMIN
+    When the user accesses a booking endpoint allowed by the endpoint-level access rules
+    Then no customer ownership check is required
+    And they may act on behalf of the customer identified by request.customerId or query parameter customerId
+    And for GET /api/v1/bookings they may omit customerId to list all bookings
 
   @security @ownership
   Scenario: SecurityContextHelper utility
     Given a utility class "SecurityContextHelper" in package "com.cargo.booking.security"
     Then it must provide the following static methods:
       | method                          | returns      | description                                     |
-      | getCurrentUserId()              | UUID         | Extracts the user ID from SecurityContext        |
+      | getCurrentSubject()             | String       | Extracts the requester subject from SecurityContext |
+      | getCurrentCustomerId()          | Optional<Long> | Extracts optional customerId/customer_id claim |
       | getCurrentUsername()            | String       | Extracts the username from SecurityContext       |
       | getCurrentRoles()              | List<String> | Extracts the roles from SecurityContext          |
       | hasRole(String role)           | boolean      | Checks if the current user has a specific role   |
-      | isOwnerOrPrivileged(UUID ownerId) | boolean   | Returns true if user is the owner or has OPERATOR/ADMIN role |
+      | isOwnerOrPrivileged(Long ownerId) | boolean   | Returns true if token customerId matches ownerId or caller has SERVICE/OPERATOR/ADMIN role |
 
   # ---------------------------------------------------------------------------
   # CORS Configuration
@@ -250,7 +318,7 @@ Feature: Security
     Then it must define a CorsConfigurationSource bean with the following settings:
       | setting          | value                                                  |
       | allowed origins  | ${CORS_ALLOWED_ORIGINS:http://localhost:3000}           |
-      | allowed methods  | GET, POST, PATCH, DELETE, OPTIONS                      |
+      | allowed methods  | GET, POST, PATCH, OPTIONS                              |
       | allowed headers  | Authorization, Content-Type, Accept                    |
       | exposed headers  | Authorization                                          |
       | allow credentials| true                                                   |
@@ -267,10 +335,11 @@ Feature: Security
     Then a test configuration class "TestSecurityConfig" must exist in the test source set
     And it must provide an option to disable JWT validation for integration tests
     And it must provide a utility method or builder to create mock Authentication objects with:
-      | field    | description                                |
-      | userId   | The UUID to use as the authenticated user  |
-      | username | The username claim                         |
-      | roles    | List of roles to assign                    |
+      | field      | description                                      |
+      | subject    | The authenticated requester subject              |
+      | customerId | Optional customer ID claim for direct customer tokens |
+      | username   | The username/name claim                          |
+      | roles      | List of roles to assign                         |
     And tests must be able to use @WithMockUser or a custom annotation @WithMockJwt for convenience
 
   # ---------------------------------------------------------------------------
@@ -314,5 +383,5 @@ Feature: Security
       | topic                                          | deferred to           |
       | Error response mapping for security exceptions | 007_error_handling.md |
       | User management / registration                 | Out of scope for v1   |
-      | OAuth2 / OIDC integration with identity provider| 008_integrations.md  |
+      | OAuth2 / OIDC integration with identity provider| Out of scope for v1  |
       | Security-related integration tests             | 009_testing.md        |

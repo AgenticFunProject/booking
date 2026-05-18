@@ -1,9 +1,9 @@
 # File: 009_testing.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt, 003_data_access.md,
+# Depends on: 001_project_setup.md, 002_domain_model.md, 003_data_access.md,
 #             004_business_rules.md, 005_api_endpoints.md, 006_security.md,
 #             007_error_handling.md, 008_integrations.md
 # Produces: Unit tests, integration tests, test configuration, test utilities, test data builders,
-#           WireMock stubs, Testcontainers setup, MockMvc tests
+#           WireMock stubs, embedded PostgreSQL setup, MockMvc tests
 # Context: Defines the complete testing strategy for the Cargo Booking Service. The AI agent
 #          must have processed 001–008 so that all layers, exceptions, and integrations are known.
 
@@ -15,8 +15,8 @@ Feature: Testing Strategy
   Background:
     Given the base test package is "com.cargo.booking"
     And all test classes reside under "src/test/java/com/cargo/booking"
-    And the test profile "test" is activated via application-test.yml (defined in 001)
-    And the test dependencies from 001 include spring-boot-starter-test and H2
+    And the test profile "test" uses application-test.yml properties when activated by test annotations such as @ActiveProfiles("test")
+    And the test dependencies from 001 include spring-boot-starter-test and embedded PostgreSQL
 
   # ---------------------------------------------------------------------------
   # Additional Test Dependencies
@@ -25,17 +25,10 @@ Feature: Testing Strategy
   @testing @setup
   Scenario: Test dependencies in pom.xml
     Given the pom.xml dependency section
-    Then it must include the following test-scoped dependencies:
+    Then it must include the following additional test-scoped dependencies not already listed in 001_project_setup.md:
       | groupId                          | artifactId                           | scope | purpose                                |
-      | org.springframework.boot         | spring-boot-starter-test             | test  | Core test support (JUnit 5, Mockito, AssertJ) |
       | org.springframework.security     | spring-security-test                 | test  | MockMvc security testing               |
-      | org.springframework.kafka        | spring-kafka-test                    | test  | Embedded Kafka for event tests         |
-      | org.testcontainers               | testcontainers                       | test  | Testcontainers core                    |
-      | org.testcontainers               | postgresql                           | test  | PostgreSQL Testcontainer               |
-      | org.testcontainers               | kafka                                | test  | Kafka Testcontainer                    |
-      | org.testcontainers               | junit-jupiter                        | test  | JUnit 5 Testcontainers integration     |
       | org.wiremock                     | wiremock-standalone                   | test  | WireMock for external API mocking      |
-    And the Testcontainers BOM must be managed in the dependencyManagement section
 
   # ---------------------------------------------------------------------------
   # Test Configuration
@@ -46,29 +39,26 @@ Feature: Testing Strategy
     Given the file "src/test/resources/application-test.yml"
     Then it must include (extending what 001 defines):
       | property                                      | value                       | purpose                              |
-      | spring.datasource.url                         | jdbc:h2:mem:booking_test_db | In-memory DB for unit/slice tests    |
-      | spring.datasource.driver-class-name           | org.h2.Driver               | H2 driver                           |
-      | spring.jpa.hibernate.ddl-auto                 | create-drop                 | Auto-create schema for tests         |
-      | spring.flyway.enabled                         | false                       | Skip Flyway in H2 tests             |
-      | spring.kafka.bootstrap-servers                | ${spring.embedded.kafka.brokers:localhost:9092} | Embedded Kafka     |
+      | spring.datasource.url                         | Provided by embedded PostgreSQL test bootstrap | PostgreSQL-compatible test database |
+      | spring.datasource.driver-class-name           | org.postgresql.Driver       | PostgreSQL driver                    |
+      | spring.jpa.hibernate.ddl-auto                 | validate                    | Validate schema created by Flyway    |
+      | spring.flyway.enabled                         | true                        | Run migrations in tests              |
+      | app.security.enabled                          | true                        | Security is enabled by default in tests |
       | app.security.jwt.secret                       | test-secret-key-that-is-at-least-256-bits-long-for-hs256 | Test JWT key |
       | app.security.jwt.issuer                       | test-issuer                 | Test JWT issuer                      |
       | app.security.jwt.expiration-ms                | 3600000                     | 1 hour for tests                     |
 
   @testing @config
-  Scenario: Base integration test class with Testcontainers
+  Scenario: Base integration test class with embedded PostgreSQL
     Given an abstract class "BaseIntegrationTest" in package "com.cargo.booking"
     Then it must be annotated with:
       | annotation                                                      |
       | @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT) |
       | @ActiveProfiles("test")                                         |
-      | @Testcontainers                                                 |
-    And it must define the following shared containers:
-      | container                   | image                    | configuration                       |
-      | PostgreSQLContainer         | postgres:16-alpine       | Database: booking_test_db           |
-      | KafkaContainer              | confluentinc/cp-kafka    | Default settings                    |
-    And it must use @DynamicPropertySource to inject container connection details into Spring context
-    And the containers must be static (shared across all test classes extending this base)
+    And it must start an embedded PostgreSQL database shared by integration tests
+    And it must use @DynamicPropertySource to inject embedded PostgreSQL connection details into Spring context
+    And the embedded database must be static (shared across all test classes extending this base)
+    And tests that need local stub clients must activate both "test" and "local" profiles with @ActiveProfiles({"test", "local"})
 
   # ---------------------------------------------------------------------------
   # Test Utilities
@@ -90,9 +80,9 @@ Feature: Testing Strategy
       | field            | default value                                |
       | bookingReference | "BKG-2026-00001"                              |
       | status           | PENDING                                       |
-      | scheduleId       | UUID.fromString("aaaa-...-0001")              |
-      | quoteId          | UUID.fromString("bbbb-...-0001")              |
-      | customerId       | UUID.fromString("cccc-...-0001")              |
+      | scheduleId       | 1001L                                           |
+      | quoteId          | 2001L                                           |
+      | customerId       | 3001L                                           |
       | customerName     | "Test Customer"                                |
       | customerEmail    | "test@example.com"                            |
       | cargoDescription | "Test cargo"                                   |
@@ -105,22 +95,43 @@ Feature: Testing Strategy
     Given a class "JwtTestHelper" in package "com.cargo.booking.testutil"
     Then it must provide methods to generate valid JWT tokens for testing:
       | method                                                                 | returns | description                       |
-      | generateToken(UUID userId, String username, List<String> roles)       | String  | Valid JWT token for test user      |
-      | generateCustomerToken(UUID userId)                                    | String  | Token with ROLE_CUSTOMER           |
-      | generateOperatorToken(UUID userId)                                    | String  | Token with ROLE_OPERATOR           |
-      | generateAdminToken(UUID userId)                                       | String  | Token with ROLE_ADMIN              |
-      | generateExpiredToken(UUID userId)                                     | String  | Expired JWT for negative tests     |
+      | generateToken(String subject, String username, List<String> roles)    | String  | Valid JWT token for requester      |
+      | generateCustomerToken(Long customerId)                               | String  | Token with ROLE_CUSTOMER and customerId claim |
+      | generateServiceToken(String serviceName)                             | String  | Token with ROLE_SERVICE and no customerId claim |
+      | generateOperatorToken(String subject)                                | String  | Token with ROLE_OPERATOR           |
+      | generateAdminToken(String subject)                                   | String  | Token with ROLE_ADMIN              |
+      | generateExpiredToken(String subject)                                 | String  | Expired JWT for negative tests     |
     And it must use the test JWT secret from application-test.yml
     And it must set the issuer to "test-issuer"
+
+  @testing @unit @security
+  Scenario: BookingAccessAuthorizer tests
+    Given a test class "BookingAccessAuthorizerTest" in package "com.cargo.booking.security"
+    Then it must use @ExtendWith(MockitoExtension.class)
+    And it must mock BookingRepository
+    And it must include the following test cases:
+      | test method                                      | scenario                                      |
+      | shouldAllowPrivilegedCallerWithoutOwnerCheck()   | SERVICE, OPERATOR, or ADMIN can access        |
+      | shouldAllowCustomerWhenOwnerMatches()            | CUSTOMER token customerId matches booking owner |
+      | shouldRejectCustomerWhenOwnerDiffers()           | CUSTOMER token customerId does not match      |
+      | shouldRejectCustomerWithoutCustomerIdClaim()     | CUSTOMER token has no customerId/customer_id claim |
+      | shouldAllowCustomerCreateWhenRequestCustomerMatches() | request.customerId matches CUSTOMER token claim |
+      | shouldRejectCustomerCreateWhenRequestCustomerDiffers() | request.customerId does not match CUSTOMER token claim |
+      | shouldAllowCustomerListWhenQueryCustomerMatches() | query customerId matches CUSTOMER token claim |
+      | shouldRejectCustomerListWhenQueryCustomerMissing() | CUSTOMER has token customerId but omits customerId query parameter |
+      | shouldRejectCustomerListWhenTokenCustomerIdMissing() | CUSTOMER token has no customerId/customer_id claim |
+      | shouldRejectCustomerListWhenQueryCustomerDiffers() | query customerId does not match CUSTOMER token claim |
+      | shouldDeferNotFoundToBookingService()            | Repository empty returns without throwing so BookingService owns the 404 |
+      | shouldAllowAccessWhenSecurityDisabled()          | Disabled security skips ownership checks      |
 
   # ---------------------------------------------------------------------------
   # Unit Tests — Domain Model
   # ---------------------------------------------------------------------------
 
   @testing @unit @domain
-  Scenario: BookingStatus state transition tests
-    Given a test class "BookingStatusTest" in package "com.cargo.booking.model.enums"
-    Then it must verify all valid transitions from 002_domain_model.txt:
+  Scenario: BookingStateMachine state transition tests
+    Given a test class "BookingStateMachineTest" in package "com.cargo.booking.service"
+    Then it must verify all valid transitions from 002_domain_model.md:
       | test method                             | from        | to          | expected |
       | shouldAllowPendingToConfirmed()         | PENDING     | CONFIRMED   | allowed  |
       | shouldAllowPendingToCancelled()         | PENDING     | CANCELLED   | allowed  |
@@ -139,12 +150,12 @@ Feature: Testing Strategy
   @testing @unit @domain
   Scenario: BookingReferenceGenerator tests
     Given a test class "BookingReferenceGeneratorTest" in package "com.cargo.booking.service"
-    Then it must use Mockito to mock the BookingRepository
+    Then it must use Mockito to mock the BookingReferenceCounterRepository
     And it must verify:
       | test method                               | description                                        |
       | shouldGenerateReferenceWithCurrentYear()  | Reference starts with "BKG-{currentYear}-"          |
       | shouldPadSequenceTo5Digits()              | Sequence 1 becomes "00001", 42 becomes "00042"      |
-      | shouldUseSequenceFromRepository()         | The sequence value comes from the mocked repository |
+      | shouldUseSequenceFromCounterRepository()  | The sequence value comes from the mocked counter repository |
 
   # ---------------------------------------------------------------------------
   # Unit Tests — Service Layer
@@ -158,32 +169,30 @@ Feature: Testing Strategy
       | dependency                | purpose                                 |
       | BookingRepository         | Verify save is called with correct data |
       | BookingReferenceGenerator | Return predictable references           |
-      | BookingEventPublisher     | Verify event is published               |
       | ScheduleClient            | Control schedule validation result      |
       | EquipmentClient           | Not called during creation              |
       | QuoteClient               | Control quote validation result         |
-      | BookingMapper             | Return predictable mapped entities      |
     And it must include the following test cases:
       | test method                                            | scenario                                         |
       | shouldCreateBookingSuccessfully()                     | Happy path — valid request, all validations pass  |
       | shouldSetStatusToPending()                            | New booking always starts as PENDING              |
       | shouldGenerateUniqueReference()                       | Reference comes from BookingReferenceGenerator    |
-      | shouldPublishBookingCreatedEvent()                    | Verify event publisher is called after save       |
       | shouldThrowWhenScheduleNotAvailable()                 | ScheduleClient returns false                     |
       | shouldThrowWhenQuoteNotValid()                        | QuoteClient returns false                        |
       | shouldThrowWhenEquipmentListEmpty()                   | Request with empty equipment list                |
+      | shouldThrowWhenEquipmentTypeUnsupported()             | Equipment type is not recognized by EquipmentType.fromCode |
       | shouldNotPersistBookingWhenValidationFails()          | Verify repository.save() is never called on failure |
-      | shouldNotPublishEventWhenValidationFails()            | Verify publisher is never called on failure       |
 
   @testing @unit @service
   Scenario: BookingService state transition tests
     Given a test class "BookingServiceLifecycleTest" in package "com.cargo.booking.service"
     Then it must use @ExtendWith(MockitoExtension.class)
+    And it must mock BookingStateMachine because BookingStateMachineTest owns transition-rule coverage
+    And it must verify BookingService calls BookingStateMachine before every lifecycle status change
     And it must include the following test cases:
       | test method                                            | scenario                                         |
       | shouldConfirmPendingBooking()                         | PENDING → CONFIRMED happy path                    |
       | shouldReserveEquipmentOnConfirmation()                | Verify EquipmentClient.reserveEquipment() called  |
-      | shouldPublishConfirmedEvent()                         | Verify event published after confirmation         |
       | shouldThrowWhenConfirmingNonPendingBooking()          | CONFIRMED → CONFIRMED should fail                 |
       | shouldNotChangeStatusWhenEquipmentReservationFails()  | Status remains PENDING if equipment fails         |
       | shouldStartConfirmedBooking()                         | CONFIRMED → IN_PROGRESS happy path                |
@@ -191,7 +200,6 @@ Feature: Testing Strategy
       | shouldCancelPendingBooking()                          | PENDING → CANCELLED without equipment release     |
       | shouldCancelConfirmedBooking()                        | CONFIRMED → CANCELLED with equipment release      |
       | shouldCancelEvenWhenEquipmentReleaseFails()           | Cancellation proceeds despite release failure     |
-      | shouldPublishCancelledEvent()                         | Verify event published after cancellation         |
       | shouldThrowWhenCancellingCompletedBooking()           | COMPLETED → CANCELLED should fail                 |
 
   @testing @unit @service
@@ -215,8 +223,6 @@ Feature: Testing Strategy
     Given a test class "BookingMapperTest" in package "com.cargo.booking.mapper"
     Then it must verify:
       | test method                                        | description                                     |
-      | shouldMapRequestToEntity()                        | All fields correctly mapped from DTO to entity    |
-      | shouldSetStatusToPendingOnMapping()               | Status is always PENDING in mapped entity         |
       | shouldMapEntityToResponse()                       | All fields correctly mapped from entity to DTO    |
       | shouldMapEntityToCreatedResponse()                | Slim response has reference, status, createdAt    |
       | shouldMapEquipmentLinesToResponse()               | Equipment lines mapped correctly                  |
@@ -230,7 +236,7 @@ Feature: Testing Strategy
   Scenario: BookingRepository integration tests
     Given a test class "BookingRepositoryTest" in package "com.cargo.booking.repository"
     Then it must be annotated with @DataJpaTest and @ActiveProfiles("test")
-    And it must use @AutoConfigureTestDatabase(replace = Replace.NONE) if Testcontainers is used
+    And it must use Zonky @AutoConfigureEmbeddedDatabase or an imported shared test database configuration so the slice test runs against embedded PostgreSQL
     And it must include the following test cases:
       | test method                                          | description                                        |
       | shouldSaveAndFindBookingById()                      | Save a booking, retrieve by ID, verify fields       |
@@ -244,6 +250,19 @@ Feature: Testing Strategy
       | shouldCascadeSaveEquipmentLines()                   | Saving booking cascades to equipment lines          |
       | shouldCascadeDeleteEquipmentLines()                 | Orphan removal works when lines are cleared         |
 
+  @testing @integration @repository
+  Scenario: BookingReferenceCounterRepository integration tests
+    Given a test class "BookingReferenceCounterRepositoryTest" in package "com.cargo.booking.repository"
+    Then it must be annotated with @DataJpaTest and @ActiveProfiles("test")
+    And it must use Zonky @AutoConfigureEmbeddedDatabase or an imported shared test database configuration so the slice test runs against embedded PostgreSQL
+    And it must import or instantiate the custom BookingReferenceCounterRepository implementation
+    And it must include the following test cases:
+      | test method                                          | description                                        |
+      | shouldReturnOneForNewYear()                         | First call for a year returns sequence 1           |
+      | shouldIncrementExistingYearCounter()                 | Subsequent calls for same year return 2, 3, ...    |
+      | shouldKeepCountersIndependentAcrossYears()           | Different years have independent sequences         |
+      | shouldPersistCounterRowsWithNextValue()              | Counter table stores the next value after calls    |
+
   # ---------------------------------------------------------------------------
   # Integration Tests — Controller Layer (MockMvc)
   # ---------------------------------------------------------------------------
@@ -256,11 +275,14 @@ Feature: Testing Strategy
       | @WebMvcTest(BookingController.class)                                    |
       | @ActiveProfiles("test")                                                 |
       | @Import(SecurityConfig.class)                                           |
-    And it must use @MockBean for:
-      | dependency        | purpose                                   |
-      | BookingService    | Mock business logic                       |
-      | BookingMapper     | Mock entity-DTO conversion                |
-      | JwtTokenProvider  | Mock JWT validation for security context  |
+    And it must use @MockitoBean for:
+      | dependency       | purpose                                  |
+      | BookingService   | Mock business logic                      |
+      | BookingMapper    | Mock entity-DTO conversion               |
+      | JwtTokenProvider | Mock JWT validation for security context |
+      | BookingAccessAuthorizer | Mock ownership checks before service calls |
+    And it must import or component-scan the real JwtAuthenticationFilter, JwtAuthenticationEntryPoint, and JwtAccessDeniedHandler
+    And JwtAuthenticationFilter must not be mocked because mocked servlet filters may not call FilterChain.doFilter()
     And it must use JwtTestHelper to generate tokens for authenticated requests
 
   @testing @integration @controller
@@ -268,12 +290,18 @@ Feature: Testing Strategy
     Given the BookingControllerTest class
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
-      | shouldCreateBookingAndReturn201()                   | 201    | Valid request, authenticated as CUSTOMER         |
+      | shouldCreateBookingAndReturn201()                   | 201    | Valid request.customerId matching CUSTOMER token customerId claim |
+      | shouldCreateBookingAsAdminForAnyCustomer()          | 201    | ADMIN can create with any valid request.customerId |
+      | shouldCreateBookingAsServiceForAnyCustomer()        | 201    | SERVICE token can create on behalf of request.customerId |
       | shouldReturn400WhenRequestBodyInvalid()             | 400    | Missing required fields                          |
+      | shouldReturn400WhenCustomerIdMissingFromCreateRequest() | 400 | Missing customerId in request body                |
       | shouldReturn400WhenEmailInvalid()                   | 400    | Malformed email in customer request              |
       | shouldReturn400WhenEquipmentListEmpty()             | 400    | Empty equipment array                            |
+      | shouldReturn400WhenEquipmentTypeUnsupported()       | 400    | Service throws BookingValidationException for unsupported equipment type |
       | shouldReturn401WhenNoAuthToken()                    | 401    | Request without Authorization header             |
       | shouldReturn403WhenOperatorTriesToCreate()          | 403    | OPERATOR role cannot create bookings             |
+      | shouldReturn403WhenCustomerCreatesForAnotherCustomer() | 403 | request.customerId does not match JWT customerId claim |
+      | shouldReturn403WhenCustomerTokenHasNoCustomerIdClaim() | 403 | CUSTOMER token cannot infer customerId from subject |
       | shouldReturn422WhenScheduleNotAvailable()           | 422    | Service throws ScheduleNotAvailableException     |
       | shouldReturn422WhenQuoteNotValid()                  | 422    | Service throws QuoteNotValidException            |
 
@@ -282,10 +310,12 @@ Feature: Testing Strategy
     Given the BookingControllerTest class
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
-      | shouldGetBookingByIdAndReturn200()                  | 200    | Valid UUID, booking found                        |
+      | shouldGetBookingByIdAndReturn200()                  | 200    | Valid numeric ID, booking found                  |
       | shouldGetBookingByReferenceAndReturn200()           | 200    | Valid BKG reference, booking found               |
+      | shouldReturn400WhenBookingIdentifierFormatInvalid() | 400    | Invalid ID/reference format throws BookingValidationException |
       | shouldReturn404WhenBookingNotFound()                | 404    | Unknown ID returns 404                           |
       | shouldReturn401WhenNotAuthenticated()               | 401    | No token                                         |
+      | shouldReturn403WhenCustomerAccessesOtherCustomerBooking() | 403 | BookingAccessAuthorizer rejects ownership mismatch |
 
   @testing @integration @controller
   Scenario: GET /api/v1/bookings controller tests
@@ -293,7 +323,10 @@ Feature: Testing Strategy
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
       | shouldListBookingsByCustomerAndReturn200()          | 200    | Valid customerId, paginated results              |
-      | shouldReturn400WhenCustomerIdMissing()              | 400    | Required query param missing                     |
+      | shouldListAllBookingsForServiceWhenCustomerIdMissing() | 200 | SERVICE may omit customerId                       |
+      | shouldListAllBookingsForOperatorWhenCustomerIdMissing() | 200 | OPERATOR may omit customerId                     |
+      | shouldReturn400WhenCustomerIdMissingForCustomer()   | 400    | CUSTOMER must provide customerId query parameter when security is enabled |
+      | shouldReturn403WhenCustomerIdDoesNotMatchCustomer() | 403    | CUSTOMER cannot list another customer's bookings  |
       | shouldFilterByStatus()                              | 200    | customerId + status filter                       |
 
   @testing @integration @controller
@@ -302,8 +335,10 @@ Feature: Testing Strategy
     Then it must include the following MockMvc test cases:
       | test method                                          | status | description                                    |
       | shouldCancelBookingAndReturn200()                   | 200    | Valid cancel request by CUSTOMER                 |
+      | shouldCancelBookingAsService()                      | 200    | SERVICE can cancel on behalf of request customer |
       | shouldReturn409WhenInvalidStateTransition()         | 409    | Service throws IllegalStateTransitionException   |
       | shouldReturn403WhenOperatorTriesToCancel()          | 403    | OPERATOR cannot cancel                           |
+      | shouldReturn403WhenCustomerCancelsOtherCustomerBooking() | 403 | BookingAccessAuthorizer rejects ownership mismatch |
 
   @testing @integration @controller
   Scenario: PATCH lifecycle endpoint controller tests
@@ -315,6 +350,16 @@ Feature: Testing Strategy
       | shouldCompleteBookingAsOperator()                   | 200    | OPERATOR completes IN_PROGRESS booking           |
       | shouldReturn403WhenCustomerTriesToConfirm()         | 403    | CUSTOMER cannot confirm                          |
 
+  @testing @integration @controller
+  Scenario: BookingController tests with security disabled
+    Given a separate test class "BookingControllerSecurityDisabledTest" in package "com.cargo.booking.controller"
+    Then it must use the same controller slice setup as BookingControllerTest
+    And it must override app.security.enabled=false for the test context
+    And it must include the following MockMvc test cases:
+      | test method                                | status | description                                    |
+      | shouldCreateBookingWithoutJwtWhenSecurityDisabled() | 201 | Valid request.customerId without Authorization header |
+      | shouldListBookingsWithCustomerIdWhenSecurityDisabled() | 200 | customerId query parameter comes from request data |
+
   # ---------------------------------------------------------------------------
   # Integration Tests — Error Handling
   # ---------------------------------------------------------------------------
@@ -322,11 +367,13 @@ Feature: Testing Strategy
   @testing @integration @error
   Scenario: GlobalExceptionHandler integration tests
     Given a test class "ErrorHandlingTest" in package "com.cargo.booking.exception"
-    Then it must be annotated with @WebMvcTest and test the error response format
+    Then it must be annotated with @WebMvcTest and @AutoConfigureMockMvc(addFilters = false)
+    And it must test the error response format without security filters intercepting requests
     And it must verify:
       | test method                                        | description                                          |
       | shouldReturnStructuredErrorFor404()               | Error body matches ErrorResponse format               |
       | shouldReturnValidationErrorsWithFieldDetails()    | 400 response includes violations list                 |
+      | shouldReturnStructuredErrorForBookingValidationException() | BookingValidationException maps to standard 400 ErrorResponse |
       | shouldReturnSortedFieldViolations()               | Violations are alphabetically ordered                 |
       | shouldNotExposeInternalDetailsIn500()              | Generic message for unexpected exceptions             |
       | shouldIncludeRequestPathInError()                 | Path field matches the request URI                    |
@@ -340,6 +387,8 @@ Feature: Testing Strategy
   Scenario: Security integration tests
     Given a test class "SecurityIntegrationTest" in package "com.cargo.booking.security"
     Then it must extend BaseIntegrationTest
+    And it must activate both the "test" and "local" profiles so BookingService can use local stub clients
+    And it must explicitly override app.security.enabled=true because the local profile disables security by default
     And it must verify:
       | test method                                              | description                                      |
       | shouldAllowAccessToSwaggerWithoutAuth()                 | /swagger-ui/** is public                          |
@@ -349,28 +398,11 @@ Feature: Testing Strategy
       | shouldRejectRequestWithWrongIssuer()                    | 401 for wrong issuer claim                        |
       | shouldEnforceCustomerOwnershipOnGetBooking()            | CUSTOMER can only see own bookings                |
       | shouldEnforceCustomerOwnershipOnCancel()                | CUSTOMER can only cancel own bookings             |
+      | shouldRejectCustomerOwnershipCheckWithoutCustomerIdClaim() | CUSTOMER token without customerId claim gets 403 |
+      | shouldAllowServiceTokenToActForRequestedCustomer()       | SERVICE token can use request/query customerId    |
       | shouldAllowOperatorToAccessAnyBooking()                 | OPERATOR can view any booking                     |
       | shouldAllowAdminFullAccess()                            | ADMIN can access all endpoints                    |
 
-  # ---------------------------------------------------------------------------
-  # Integration Tests — Kafka Events
-  # ---------------------------------------------------------------------------
-
-  @testing @integration @kafka
-  Scenario: Kafka event publishing integration tests
-    Given a test class "BookingEventPublisherTest" in package "com.cargo.booking.event"
-    Then it must use @EmbeddedKafka or KafkaContainer from Testcontainers
-    And it must verify:
-      | test method                                           | description                                        |
-      | shouldPublishBookingCreatedEvent()                   | Event published to "booking.created" topic           |
-      | shouldPublishBookingConfirmedEvent()                 | Event published to "booking.confirmed" topic         |
-      | shouldPublishBookingCancelledEvent()                 | Event published to "booking.cancelled" topic         |
-      | shouldPublishBookingCompletedEvent()                 | Event published to "booking.completed" topic         |
-      | shouldUseBookingReferenceAsMessageKey()              | Kafka message key is the bookingReference            |
-      | shouldSerializeEventPayloadAsJson()                  | Message value is valid JSON with expected fields     |
-    And each test must consume from the topic using a test KafkaConsumer to verify the message
-
-  # ---------------------------------------------------------------------------
   # Integration Tests — External Service Clients (Deferred)
   # ---------------------------------------------------------------------------
 
@@ -400,29 +432,27 @@ Feature: Testing Strategy
   @testing @e2e
   Scenario: Full booking lifecycle end-to-end test
     Given a test class "BookingLifecycleE2ETest" in package "com.cargo.booking"
-    Then it must extend BaseIntegrationTest (Testcontainers with PostgreSQL and Kafka)
-    And it must use the "local" profile so that stub clients are active (no real external services)
-    And it must use TestRestTemplate or WebTestClient with a real JWT token
+    Then it must extend BaseIntegrationTest (embedded PostgreSQL)
+    And it must use both the "test" and "local" profiles so that test infrastructure and stub clients are active
+    And it must run with app.security.enabled=false to verify the service works without JWT security
+    And it must use TestRestTemplate or WebTestClient without requiring Authorization headers
     And it must verify the complete happy path:
       | step | action                                                     | expected                           |
-      | 1    | POST /api/v1/bookings with valid request as CUSTOMER       | 201, status=PENDING, reference set |
-      | 2    | GET /api/v1/bookings/{id} as CUSTOMER                      | 200, full booking details          |
-      | 3    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 200, status=CONFIRMED              |
-      | 4    | Verify "booking.confirmed" event on Kafka topic            | Event payload matches booking      |
-      | 5    | PATCH /api/v1/bookings/{id}/start as OPERATOR              | 200, status=IN_PROGRESS            |
-      | 6    | PATCH /api/v1/bookings/{id}/complete as OPERATOR           | 200, status=COMPLETED              |
-      | 7    | Verify "booking.completed" event on Kafka topic            | Event payload matches booking      |
-      | 8    | GET /api/v1/bookings?customerId={id} as CUSTOMER           | 200, list includes this booking    |
+      | 1    | POST /api/v1/bookings with valid request.customerId         | 201, status=PENDING, reference set |
+      | 2    | GET /api/v1/bookings/{id}                                  | 200, full booking details          |
+      | 3    | PATCH /api/v1/bookings/{id}/confirm                        | 200, status=CONFIRMED              |
+      | 4    | PATCH /api/v1/bookings/{id}/start                          | 200, status=IN_PROGRESS            |
+      | 5    | PATCH /api/v1/bookings/{id}/complete                       | 200, status=COMPLETED              |
+      | 6    | GET /api/v1/bookings?customerId={request.customerId}        | 200, list includes this booking    |
 
   @testing @e2e
   Scenario: Cancellation flow end-to-end test
     Given the BookingLifecycleE2ETest class
     Then it must also verify the cancellation flow:
       | step | action                                                     | expected                            |
-      | 1    | POST /api/v1/bookings with valid request as CUSTOMER       | 201, status=PENDING                 |
-      | 2    | PATCH /api/v1/bookings/{id}/cancel as CUSTOMER             | 200, status=CANCELLED               |
-      | 3    | Verify "booking.cancelled" event on Kafka topic            | Event payload matches booking       |
-      | 4    | PATCH /api/v1/bookings/{id}/confirm as OPERATOR            | 409, cannot confirm cancelled booking|
+      | 1    | POST /api/v1/bookings with valid request.customerId         | 201, status=PENDING                 |
+      | 2    | PATCH /api/v1/bookings/{id}/cancel                         | 200, status=CANCELLED               |
+      | 3    | PATCH /api/v1/bookings/{id}/confirm                        | 409, cannot confirm cancelled booking|
 
   # ---------------------------------------------------------------------------
   # Test Naming and Organization Conventions
@@ -452,7 +482,7 @@ Feature: Testing Strategy
       | Repository     | 80%+     | Custom queries and specifications              |
       | Mapper         | 90%+     | All mapping paths including edge cases         |
       | Security       | 85%+     | Auth, roles, and ownership checks              |
-      | Integration    | 75%+     | Client implementations with WireMock           |
+      | Integration    | 75%+     | Repository, controller, and security integration tests now; client WireMock tests when real clients exist |
     And these are targets, not hard gates — the AI should aim for them but not generate filler tests
 
   # ---------------------------------------------------------------------------

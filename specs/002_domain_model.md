@@ -1,8 +1,8 @@
-# File: 002_domain_model.txt
-# Depends on: 001_project_setup.txt
+# File: 002_domain_model.md
+# Depends on: 001_project_setup.md
 # Produces: JPA entities, enums, embeddable types, Flyway migration scripts
 # Context: Defines the Booking aggregate and all supporting value objects for the
-#          Cargo Booking Service. The AI agent must have processed 001_project_setup.txt
+#          Cargo Booking Service. The AI agent must have processed 001_project_setup.md
 #          before this file so that package names, conventions, and dependencies are known.
 
 Feature: Domain Model
@@ -15,7 +15,7 @@ Feature: Domain Model
     And all entities reside in "com.cargo.booking.model.entity"
     And all enums reside in "com.cargo.booking.model.enums"
     And database table names use lowercase_snake_case
-    And Lombok annotations are used as defined in 001_project_setup.txt
+    And Lombok annotations are used as defined in 001_project_setup.md
 
   # ---------------------------------------------------------------------------
   # Enums
@@ -35,12 +35,14 @@ Feature: Domain Model
   @domain @enum
   Scenario: EquipmentType enum
     Given the enum "EquipmentType" in package "com.cargo.booking.model.enums"
-    Then it must define the following values:
-      | value  | description              |
-      | 20FT   | 20-foot container        |
-      | 40FT   | 40-foot container        |
-      | 40HC   | 40-foot high cube        |
-      | REEFER | Refrigerated container   |
+    Then it must define Java-safe enum constants with external API codes:
+      | value     | code   | description              |
+      | TWENTY_FT | 20FT   | 20-foot container        |
+      | FORTY_FT  | 40FT   | 40-foot container        |
+      | FORTY_HC  | 40HC   | 40-foot high cube        |
+      | REEFER    | REEFER | Refrigerated container   |
+    And the enum must expose the code via @JsonValue so API JSON uses values such as "20FT" and "40HC"
+    And it must provide a fromCode(String code) factory for request parsing and validation
 
   # ---------------------------------------------------------------------------
   # Booking Entity (Aggregate Root)
@@ -53,12 +55,12 @@ Feature: Domain Model
     Then it must be annotated with @Entity, @Table, @Data, @Builder, @NoArgsConstructor, @AllArgsConstructor
     And it must have the following fields:
       | field            | javaType       | column              | nullable | unique | notes                                          |
-      | id               | UUID           | id                  | false    | true   | @Id, @GeneratedValue(strategy = GenerationType.UUID) |
+      | id               | Long           | id                  | false    | true   | @Id, @GeneratedValue(strategy = GenerationType.IDENTITY) |
       | bookingReference | String         | booking_reference   | false    | true   | Human-readable, format BKG-YYYY-NNNNN          |
       | status           | BookingStatus  | status              | false    | false  | @Enumerated(EnumType.STRING), default PENDING   |
-      | scheduleId       | UUID           | schedule_id         | false    | false  | References external Schedules API               |
-      | quoteId          | UUID           | quote_id            | false    | false  | References external Quotes API                  |
-      | customerId       | UUID           | customer_id         | false    | false  | Identifies the customer                         |
+      | scheduleId       | Long           | schedule_id         | false    | false  | References external Schedules API               |
+      | quoteId          | Long           | quote_id            | false    | false  | References external Quotes API                  |
+      | customerId       | Long           | customer_id         | false    | false  | Identifies the customer                         |
       | customerName     | String         | customer_name       | false    | false  | Max length 255                                  |
       | customerEmail    | String         | customer_email      | false    | false  | Max length 255, must be valid email format      |
       | customerPhone    | String         | customer_phone      | true     | false  | Max length 50                                   |
@@ -97,7 +99,7 @@ Feature: Domain Model
     Then it must be annotated with @Entity, @Table, @Data, @Builder, @NoArgsConstructor, @AllArgsConstructor
     And it must have the following fields:
       | field     | javaType      | column       | nullable | notes                                                  |
-      | id        | UUID          | id           | false    | @Id, @GeneratedValue(strategy = GenerationType.UUID)   |
+      | id        | Long          | id           | false    | @Id, @GeneratedValue(strategy = GenerationType.IDENTITY)   |
       | type      | EquipmentType | type         | false    | @Enumerated(EnumType.STRING)                           |
       | quantity  | Integer       | quantity     | false    | Must be greater than 0                                 |
 
@@ -131,12 +133,17 @@ Feature: Domain Model
     And it must be safe for concurrent usage (no duplicate references under load)
 
   @domain @logic
-  Scenario: Booking reference database sequence
-    Given the booking reference requires a sequential number
-    Then a PostgreSQL sequence named "booking_reference_seq" must be created
-    And it must start at 1 and increment by 1
-    And it must be reset or partitioned per year via application logic
-    And the Flyway migration must create this sequence alongside the tables
+  Scenario: Booking reference yearly counter
+    Given the booking reference requires a per-year sequential number
+    Then a PostgreSQL table named "booking_reference_counters" must be created
+    And it must have the following columns:
+      | column     | postgresType              | nullable | notes                         |
+      | year       | INTEGER                   | false    | Primary key, e.g. 2026        |
+      | next_value | BIGINT                    | false    | Next sequence value to assign |
+      | updated_at | TIMESTAMP WITH TIME ZONE  | false    | Last counter update           |
+    And the counter update must be atomic under concurrent requests
+    And the first reference generated for a new year must end in "00001"
+    And examples across years must reset as shown in the reference format scenario
 
   # ---------------------------------------------------------------------------
   # Entity Validation Rules
@@ -186,8 +193,8 @@ Feature: Domain Model
       | CONFIRMED   | IN_PROGRESS |
       | CONFIRMED   | CANCELLED   |
       | IN_PROGRESS | COMPLETED   |
-    And any transition not in this list must throw an IllegalStateTransitionException
-    And the transition validation logic must reside in the Booking entity or a dedicated domain service
+    And any transition not in this list is invalid
+    And transition validation and exception behavior are defined in 004_business_rules.md
 
   @domain @lifecycle
   Scenario Outline: State transition examples
@@ -221,11 +228,11 @@ Feature: Domain Model
     Then a migration file "V1__create_booking_tables.sql" must be created
     And it must create the "bookings" table with all columns matching the Booking entity
     And it must create the "booking_equipment_lines" table with a foreign key to "bookings"
-    And it must create the "booking_reference_seq" sequence
+    And it must create the "booking_reference_counters" table
     And it must create all indexes defined in the indexing scenario
     And all column types must match PostgreSQL equivalents:
       | javaType      | postgresType              |
-      | UUID          | UUID                      |
+      | Long          | BIGINT                    |
       | String        | VARCHAR(n)                |
       | BookingStatus | VARCHAR(20)               |
       | EquipmentType | VARCHAR(20)               |
@@ -253,8 +260,8 @@ Feature: Domain Model
     Given this is the domain model file only
     Then the following are NOT defined here and will be addressed in later files:
       | topic                                  | deferred to            |
-      | Repository interfaces and queries      | 003_data_access.txt    |
-      | State transition orchestration logic   | 004_business_rules.txt |
-      | Request/Response DTOs                  | 005_api_endpoints.txt  |
-      | Mapping between entities and DTOs      | 005_api_endpoints.txt  |
-      | Domain event payloads                  | 004_business_rules.txt |
+      | Repository interfaces and queries      | 003_data_access.md    |
+      | State transition orchestration logic   | 004_business_rules.md |
+      | Request/Response DTOs                  | 005_api_endpoints.md  |
+      | Mapping between entities and DTOs      | 005_api_endpoints.md  |
+      | Messaging payloads                     | Out of scope for v1   |

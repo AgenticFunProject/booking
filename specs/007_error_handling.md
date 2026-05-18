@@ -1,5 +1,5 @@
 # File: 007_error_handling.md
-# Depends on: 001_project_setup.txt, 004_business_rules.md, 005_api_endpoints.md, 006_security.md
+# Depends on: 001_project_setup.md, 004_business_rules.md, 005_api_endpoints.md, 006_security.md
 # Produces: Global exception handler, error response DTOs, exception-to-HTTP-status mapping,
 #           validation error formatting, logging configuration for errors
 # Context: Defines how the Cargo Booking Service handles and formats all error responses.
@@ -14,7 +14,7 @@ Feature: Error Handling
   Background:
     Given the base package is "com.cargo.booking"
     And exception handling classes reside in "com.cargo.booking.exception"
-    And the error response structure was defined in 001_project_setup.txt
+    And the error response structure was defined in 001_project_setup.md
     And all custom exceptions are defined in 004_business_rules.md
     And security error handling (401, 403) is defined in 006_security.md
 
@@ -32,12 +32,14 @@ Feature: Error Handling
       | error      | String        | HTTP reason phrase (e.g. "Not Found")          |
       | message    | String        | Human-readable error description               |
       | path       | String        | The request URI that caused the error          |
-    And it must match the error structure convention from 001_project_setup.txt
+      | requestId  | String        | Optional X-Request-ID correlation value        |
+    And it must match the error structure convention from 001_project_setup.md
 
   @error @dto
   Scenario: ValidationErrorResponse DTO
     Given a record "ValidationErrorResponse" in package "com.cargo.booking.exception"
-    Then it must extend or include all fields from ErrorResponse
+    Then it must include all fields from ErrorResponse
+    And it must not attempt to extend ErrorResponse because Java records cannot extend another record
     And it must add an additional field:
       | field       | type                    | description                                    |
       | violations  | List<FieldViolation>    | List of individual field validation errors      |
@@ -136,6 +138,7 @@ Feature: Error Handling
       | annotation                                            | status | error       |
       | @ExceptionHandler(BookingValidationException.class)   | 400    | Bad Request |
     And the message must describe the validation failure
+    And invalid booking identifiers for GET /api/v1/bookings/{id} must be handled here because the controller receives the path variable as String
     And the exception must be logged at WARN level
 
   # ---------------------------------------------------------------------------
@@ -162,6 +165,7 @@ Feature: Error Handling
         "error": "Bad Request",
         "message": "Validation failed with 2 error(s)",
         "path": "/api/v1/bookings",
+        "requestId": "req-123",
         "violations": [
           {
             "field": "cargo.weightKg",
@@ -203,7 +207,8 @@ Feature: Error Handling
     Then it must handle MissingServletRequestParameterException with:
       | annotation                                                            | status | error       |
       | @ExceptionHandler(MissingServletRequestParameterException.class)      | 400    | Bad Request |
-    And the message must indicate which parameter is missing (e.g. "Required parameter 'customerId' is missing")
+    And the message must indicate which parameter is missing
+    And conditional parameters such as customerId on GET /api/v1/bookings must be validated by controller/security logic, not by Spring's required-parameter mechanism
     And the exception must be logged at WARN level
 
   @error @handler @validation
@@ -213,7 +218,7 @@ Feature: Error Handling
       | annotation                                                          | status | error       |
       | @ExceptionHandler(MethodArgumentTypeMismatchException.class)        | 400    | Bad Request |
     And the message must indicate the parameter name and expected type
-    And example: "Parameter 'id' must be a valid UUID"
+    And example: "Parameter 'status' must be a valid BookingStatus"
     And the exception must be logged at WARN level
 
   # ---------------------------------------------------------------------------
@@ -241,6 +246,8 @@ Feature: Error Handling
     And the following property must be set in application.yml:
       | property                                            | value |
       | spring.mvc.throw-exception-if-no-handler-found      | true  |
+    And the implementation must preserve SpringDoc / Swagger UI static resource mappings
+    And unknown "/api/**" paths must still return the standard JSON ErrorResponse format
 
   # ---------------------------------------------------------------------------
   # Security Exceptions (fallback — primary handled in 006)
@@ -288,6 +295,7 @@ Feature: Error Handling
       | Set status from the HttpStatus code                           |
       | Set error from the HttpStatus reason phrase                   |
       | Set path from request.getRequestURI()                         |
+      | Set requestId from the X-Request-ID header when present        |
 
   # ---------------------------------------------------------------------------
   # Exception Hierarchy Summary
@@ -336,9 +344,10 @@ Feature: Error Handling
     Given incoming requests may carry an "X-Request-ID" header
     Then the error response should include the request ID if present:
       | field      | source                                              |
-      | requestId  | Value from X-Request-ID header, or null if absent   |
-    And the ErrorResponse record must include an optional "requestId" field (nullable)
+      | requestId  | Value from X-Request-ID header when present          |
+    And the ErrorResponse record already includes an optional "requestId" field (nullable)
     And the GlobalExceptionHandler must extract this header from the HttpServletRequest
+    And requestId must be omitted from JSON responses when absent because null fields are globally omitted
 
   # ---------------------------------------------------------------------------
   # Spring Boot Error Properties

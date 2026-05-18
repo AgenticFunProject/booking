@@ -1,5 +1,5 @@
 # File: 010_deployment.md
-# Depends on: 001_project_setup.txt, 006_security.md, 008_integrations.md, 009_testing.md
+# Depends on: 001_project_setup.md, 006_security.md, 008_integrations.md, 009_testing.md
 # Produces: Dockerfile, Docker Compose, environment-specific profiles, logging configuration,
 #           CI pipeline definition, health check scripts, README
 # Context: Defines how the Cargo Booking Service is built, containerized, and deployed.
@@ -15,8 +15,8 @@ Feature: Deployment and Infrastructure
     Given the application name is "booking-service"
     And the base package is "com.cargo.booking"
     And the build tool is Maven
-    And Java version is 21 (from 001_project_setup.txt)
-    And the application port is 8081 (from 001_project_setup.txt)
+    And Java version is 21 (from 001_project_setup.md)
+    And the application port is 8081 (from 001_project_setup.md)
 
   # ---------------------------------------------------------------------------
   # Dockerfile
@@ -47,7 +47,7 @@ Feature: Deployment and Infrastructure
       | 5    | USER appuser                                                         |
       | 6    | EXPOSE 8081                                                          |
       | 7    | HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://localhost:8081/actuator/health \|\| exit 1 |
-      | 8    | ENTRYPOINT ["java", "-jar", "app.jar"]                               |
+      | 8    | ENTRYPOINT uses the container-aware JVM settings defined in the JVM configuration scenario |
 
   @deployment @docker
   Scenario: Dockerfile best practices
@@ -79,13 +79,13 @@ Feature: Deployment and Infrastructure
       """
 
   # ---------------------------------------------------------------------------
-  # Docker Compose — Local Development
+  # Docker Compose - Local Development
   # ---------------------------------------------------------------------------
 
   @deployment @compose
   Scenario: Docker Compose for local development
     Given a file "docker-compose.yml" in the project root
-    Then it must define the following services:
+    Then it must define PostgreSQL and the Booking Service application
 
   @deployment @compose
   Scenario: PostgreSQL service
@@ -103,41 +103,6 @@ Feature: Deployment and Infrastructure
       | restart       | unless-stopped                       |
 
   @deployment @compose
-  Scenario: Kafka and Zookeeper services
-    Given the docker-compose.yml file
-    Then it must define a "zookeeper" service:
-      | setting       | value                                |
-      | image         | confluentinc/cp-zookeeper:7.6.0      |
-      | container_name| booking-zookeeper                    |
-      | ports         | 2181:2181                            |
-      | environment   | ZOOKEEPER_CLIENT_PORT=2181           |
-    And it must define a "kafka" service:
-      | setting       | value                                |
-      | image         | confluentinc/cp-kafka:7.6.0          |
-      | container_name| booking-kafka                        |
-      | ports         | 9092:9092                            |
-      | depends_on    | zookeeper                            |
-      | environment   | KAFKA_BROKER_ID=1                    |
-      | environment   | KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 |
-      | environment   | KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092 |
-      | environment   | KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 |
-      | healthcheck   | kafka-topics --bootstrap-server localhost:9092 --list |
-      | restart       | unless-stopped                       |
-
-  @deployment @compose
-  Scenario: Kafka UI service (optional developer tool)
-    Given the docker-compose.yml file
-    Then it must define a "kafka-ui" service:
-      | setting       | value                                |
-      | image         | provectuslabs/kafka-ui:latest        |
-      | container_name| booking-kafka-ui                     |
-      | ports         | 8080:8080                            |
-      | depends_on    | kafka                                |
-      | environment   | KAFKA_CLUSTERS_0_NAME=local          |
-      | environment   | KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092 |
-      | restart       | unless-stopped                       |
-
-  @deployment @compose
   Scenario: Booking Service application container
     Given the docker-compose.yml file
     Then it must define a "booking-service" service:
@@ -145,15 +110,15 @@ Feature: Deployment and Infrastructure
       | build         | . (current directory Dockerfile)     |
       | container_name| booking-service                      |
       | ports         | 8081:8081                            |
-      | depends_on    | postgres (condition: service_healthy), kafka (condition: service_healthy) |
+      | depends_on    | postgres (condition: service_healthy) |
       | environment   | SPRING_PROFILES_ACTIVE=local         |
       | environment   | DB_USERNAME=booking_user             |
       | environment   | DB_PASSWORD=booking_pass             |
       | environment   | SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db |
-      | environment   | KAFKA_BOOTSTRAP_SERVERS=kafka:9092   |
+      | environment   | SECURITY_ENABLED=false               |
       | environment   | JWT_SECRET=${JWT_SECRET:-dev-secret-key-that-is-at-least-256-bits-long-for-hs256} |
       | restart       | unless-stopped                       |
-    And it must use the "local" profile so stub clients are activated
+    And it must use the "local" profile so stub clients are activated and JWT security is disabled by default
 
   @deployment @compose
   Scenario: Docker Compose volumes
@@ -171,20 +136,21 @@ Feature: Deployment and Infrastructure
     Given the Booking Service
     Then the following Spring profiles must be supported:
       | profile     | purpose                                           | configuration                                |
-      | local       | Local development with stubs                      | Stub clients, local DB, console logging       |
-      | dev         | Development/staging environment                   | Real clients, dev DB, JSON logging            |
-      | prod        | Production environment                            | Real clients, prod DB, JSON logging, strict   |
-      | test        | Automated testing                                 | H2 or Testcontainers, embedded Kafka          |
+      | local       | Local development with stubs                      | Stub clients, local DB, security disabled, console logging |
+      | dev         | Development/staging environment                   | Real clients when contracts exist; dev DB, JSON logging |
+      | prod        | Production environment                            | Real clients when contracts exist; prod DB, JSON logging, strict |
+      | test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
+    And dev and prod profiles are configuration placeholders until real client implementations are added from finalized external API contracts
 
   @deployment @profiles
   Scenario: Profile-specific application properties
     Given the following profile-specific config files must exist:
       | file                                   | key overrides                                          |
-      | application.yml                        | Base config (defaults to local-friendly values)        |
-      | application-local.yml                  | Explicit local settings, verbose logging               |
-      | application-dev.yml                    | Dev environment URLs, JSON logging                     |
-      | application-prod.yml                   | Prod URLs, JSON logging, stricter security             |
-      | application-test.yml                   | H2 DB, embedded Kafka, test JWT secret                 |
+      | application.yml                        | Base config shared across profiles; does not activate client beans by itself |
+      | application-local.yml                  | Explicit local settings, security disabled, verbose logging |
+      | application-dev.yml                    | Dev environment URLs for future real clients, JSON logging |
+      | application-prod.yml                   | Prod URLs for future real clients, JSON logging, stricter security |
+      | application-test.yml                   | Embedded PostgreSQL, test JWT secret                   |
 
   @deployment @profiles
   Scenario: Production profile hardening
@@ -194,7 +160,7 @@ Feature: Deployment and Infrastructure
       | spring.jpa.show-sql                           | false                  | No SQL logging in prod               |
       | spring.jpa.open-in-view                       | false                  | Already set in base, reinforced here |
       | management.endpoints.web.exposure.include      | health,info            | Minimize exposed actuator endpoints  |
-      | management.endpoint.health.show-details        | never                  | Hide health details from external    |
+      | management.endpoint.health.show-details        | never                  | Hide health details from all prod callers, including ADMIN |
       | server.error.include-message                   | never                  | Never leak error details             |
       | server.error.include-stacktrace                | never                  | Never leak stack traces              |
       | logging.level.root                             | WARN                   | Less verbose in production           |
@@ -233,13 +199,15 @@ Feature: Deployment and Infrastructure
   @deployment @logging
   Scenario: MDC context for request tracing
     Given the Booking Service request handling
-    Then a filter or interceptor must add the following to the MDC:
+    Then request tracing must be split by when data is available:
       | mdc key        | source                                           |
-      | requestId      | X-Request-ID header, or generated UUID if absent |
-      | userId         | Extracted from JWT (authenticated requests only) |
-      | bookingRef     | Set by the service layer when available           |
+      | requestId      | Early request filter: X-Request-ID header when present; generated correlation ID for logs if absent |
+      | principal      | Post-auth filter/interceptor: JWT subject / authenticated requester when present |
+      | customerId     | Post-auth filter/interceptor: JWT customerId/customer_id claim when present |
+      | bookingRef     | Service layer when available                      |
     And the MDC must be cleared after each request
-    And the filter must be registered with the highest priority (runs first)
+    And the requestId filter must be registered with highest priority so all logs can include a correlation ID
+    And principal and customerId must be populated only after Spring Security has built the Authentication
 
   # ---------------------------------------------------------------------------
   # Environment Variables Reference
@@ -250,17 +218,17 @@ Feature: Deployment and Infrastructure
     Given the Booking Service deployment
     Then the following environment variables must be documented:
       | variable                  | required | default                          | description                    |
-      | DB_USERNAME               | yes      | booking_user                     | Database username              |
-      | DB_PASSWORD               | yes      | booking_pass                     | Database password              |
-      | SPRING_DATASOURCE_URL     | yes      | jdbc:postgresql://localhost:5432/booking_db | JDBC URL          |
-      | KAFKA_BOOTSTRAP_SERVERS   | yes      | localhost:9092                   | Kafka bootstrap servers        |
-      | JWT_SECRET                | yes      | (dev default in yml)             | JWT signing key (min 256 bits) |
+      | DB_USERNAME               | conditional: yes outside local/dev defaults | booking_user | Database username |
+      | DB_PASSWORD               | conditional: yes outside local/dev defaults | booking_pass | Database password |
+      | SPRING_DATASOURCE_URL     | conditional: yes outside local/dev defaults | jdbc:postgresql://localhost:5432/booking_db | JDBC URL |
+      | SECURITY_ENABLED          | no       | true                              | Enable JWT authentication and authorization |
+      | JWT_SECRET                | conditional: yes when SECURITY_ENABLED=true | (dev default in yml) | JWT signing key (min 256 bits) |
       | JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
       | SCHEDULE_API_URL          | no       | http://localhost:8082            | Schedules API base URL         |
       | EQUIPMENT_API_URL         | no       | http://localhost:8083            | Equipment API base URL         |
       | QUOTE_API_URL             | no       | http://localhost:8084            | Quotes API base URL            |
       | CORS_ALLOWED_ORIGINS      | no       | http://localhost:3000            | CORS allowed origins           |
-      | SPRING_PROFILES_ACTIVE    | no       | (none, defaults apply)           | Active Spring profile          |
+      | SPRING_PROFILES_ACTIVE    | yes      | local for local/docker usage     | Active Spring profile; required so either stub or real client beans are available |
 
   @deployment @env
   Scenario: .env.example file
@@ -278,8 +246,8 @@ Feature: Deployment and Infrastructure
     Given a file ".github/workflows/ci.yml"
     Then it must define a workflow named "CI" triggered on:
       | trigger          | branches       |
-      | push             | main, develop  |
-      | pull_request     | main, develop  |
+      | push             | master, develop |
+      | pull_request     | master, develop |
 
   @deployment @ci
   Scenario: CI pipeline jobs
@@ -303,16 +271,13 @@ Feature: Deployment and Infrastructure
       | 1    | Checkout code           | actions/checkout@v4                                 |
       | 2    | Set up Docker Buildx    | docker/setup-buildx-action@v3                       |
       | 3    | Build Docker image      | docker build -t booking-service:${{ github.sha }}   |
-      | 4    | Tag as latest           | Only on main branch                                 |
+      | 4    | Tag as latest           | Only on master branch                               |
 
   @deployment @ci
   Scenario: CI pipeline services
     Given the CI "build-and-test" job
-    Then it must define the following services for integration tests:
-      | service     | image                        | ports     | env                              |
-      | postgres    | postgres:16-alpine           | 5432:5432 | POSTGRES_DB=booking_test_db      |
-      | kafka       | confluentinc/cp-kafka:7.6.0  | 9092:9092 | Standard single-node config      |
-    And test environment variables must point to these CI services
+    Then it must not define a PostgreSQL service for tests
+    And integration tests must use the embedded PostgreSQL setup from 009_testing.md
 
   # ---------------------------------------------------------------------------
   # JVM Tuning
@@ -331,7 +296,7 @@ Feature: Deployment and Infrastructure
         "-jar", "app.jar"]
       """
     And these settings ensure the JVM respects container memory limits
-    And -Djava.security.egd speeds up random number generation for UUID and JWT
+    And -Djava.security.egd speeds up random number generation for JWT and correlation IDs
 
   # ---------------------------------------------------------------------------
   # Graceful Shutdown
@@ -344,7 +309,6 @@ Feature: Deployment and Infrastructure
       | property                                      | value    | purpose                                     |
       | server.shutdown                               | graceful | Wait for in-flight requests to complete     |
       | spring.lifecycle.timeout-per-shutdown-phase    | 30s      | Max wait time before forced shutdown        |
-    And the Kafka producer must flush pending messages during shutdown
     And the application must handle SIGTERM gracefully in the Docker container
 
   # ---------------------------------------------------------------------------
@@ -364,9 +328,8 @@ Feature: Deployment and Infrastructure
       | API Documentation    | Link to Swagger UI at http://localhost:8081/swagger-ui         |
       | Environment Variables| Table from the env vars scenario above                        |
       | Running Tests        | mvnw test, mvnw test -Dgroups="integration"                  |
-      | Project Structure    | Package layout from 001_project_setup.txt                     |
+      | Project Structure    | Package layout from 001_project_setup.md                     |
       | Architecture         | Brief description of layers and external dependencies         |
-      | Kafka Topics         | Table of events from 004_business_rules.md                    |
       | Contributing         | Branch naming, PR process, test requirements                  |
 
   # ---------------------------------------------------------------------------
@@ -439,14 +402,14 @@ Feature: Deployment and Infrastructure
     Given all specification files have been processed
     Then the AI agent has built the Booking Service from the following sequence:
       | file                      | produces                                              |
-      | 001_project_setup.txt     | Maven project, dependencies, packages, conventions    |
-      | 002_domain_model.txt      | Entities, enums, validations, migrations              |
+      | 001_project_setup.md     | Maven project, dependencies, packages, conventions    |
+      | 002_domain_model.md      | Entities, enums, validations, migrations              |
       | 003_data_access.md        | Repositories, queries, specifications                 |
-      | 004_business_rules.md     | Services, events, clients, exceptions                 |
+      | 004_business_rules.md     | Services, lifecycle, clients, exceptions              |
       | 005_api_endpoints.md      | Controllers, DTOs, mappers, OpenAPI                   |
       | 006_security.md           | JWT auth, roles, ownership, CORS                      |
       | 007_error_handling.md     | Global exception handler, error responses             |
-      | 008_integrations.md       | Real clients, resilience, Kafka config, health        |
+      | 008_integrations.md       | Integration properties, RestClient pattern, resilience, health |
       | 009_testing.md            | Unit, integration, E2E tests, test utilities          |
       | 010_deployment.md         | Docker, Compose, CI, profiles, logging, README        |
     And the application should be fully runnable with "docker-compose up -d"

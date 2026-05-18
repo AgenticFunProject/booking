@@ -1,5 +1,5 @@
 # File: 003_data_access.md
-# Depends on: 001_project_setup.txt, 002_domain_model.txt
+# Depends on: 001_project_setup.md, 002_domain_model.md
 # Produces: Repository interfaces, custom queries, pagination/sorting config, specifications
 # Context: Defines how the Booking Service reads and writes data. The AI agent must have
 #          processed 001 and 002 so that entities, enums, and conventions are known.
@@ -12,8 +12,8 @@ Feature: Data Access Layer
   Background:
     Given the base package is "com.cargo.booking"
     And all repositories reside in "com.cargo.booking.repository"
-    And all entities and enums are defined in 002_domain_model.txt
-    And Spring Data JPA is on the classpath as defined in 001_project_setup.txt
+    And all entities and enums are defined in 002_domain_model.md
+    And Spring Data JPA is on the classpath as defined in 001_project_setup.md
 
   # ---------------------------------------------------------------------------
   # Booking Repository
@@ -22,7 +22,7 @@ Feature: Data Access Layer
   @data-access @repository
   Scenario: BookingRepository interface
     Given a repository interface "BookingRepository" in package "com.cargo.booking.repository"
-    Then it must extend JpaRepository<Booking, UUID>
+    Then it must extend JpaRepository<Booking, Long>
     And it must also extend JpaSpecificationExecutor<Booking> for dynamic filtering
     And it must be annotated with @Repository
 
@@ -38,7 +38,7 @@ Feature: Data Access Layer
     Given the BookingRepository interface
     Then it must define the following query method:
       | method                                                                          | returns        | description                           |
-      | findByCustomerId(UUID customerId, Pageable pageable)                            | Page<Booking>  | Paginated list of customer bookings   |
+      | findByCustomerId(Long customerId, Pageable pageable)                            | Page<Booking>  | Paginated list of customer bookings   |
 
   @data-access @query
   Scenario: Find bookings by status
@@ -52,14 +52,14 @@ Feature: Data Access Layer
     Given the BookingRepository interface
     Then it must define the following query method:
       | method                                                                                          | returns        | description                                    |
-      | findByCustomerIdAndStatus(UUID customerId, BookingStatus status, Pageable pageable)             | Page<Booking>  | Paginated list filtered by customer and status  |
+      | findByCustomerIdAndStatus(Long customerId, BookingStatus status, Pageable pageable)             | Page<Booking>  | Paginated list filtered by customer and status  |
 
   @data-access @query
   Scenario: Find bookings by schedule
     Given the BookingRepository interface
     Then it must define the following query method:
       | method                                              | returns         | description                                   |
-      | findByScheduleId(UUID scheduleId)                   | List<Booking>   | All bookings linked to a specific schedule     |
+      | findByScheduleId(Long scheduleId)                   | List<Booking>   | All bookings linked to a specific schedule     |
 
   @data-access @query
   Scenario: Check if booking reference already exists
@@ -73,7 +73,7 @@ Feature: Data Access Layer
     Given the BookingRepository interface
     Then it must define the following query method:
       | method                                                          | returns | description                              |
-      | countByCustomerIdAndStatus(UUID customerId, BookingStatus status)| long    | Count bookings in a given state          |
+      | countByCustomerIdAndStatus(Long customerId, BookingStatus status)| long    | Count bookings in a given state          |
 
   # ---------------------------------------------------------------------------
   # BookingEquipmentLine Repository
@@ -82,7 +82,7 @@ Feature: Data Access Layer
   @data-access @repository
   Scenario: BookingEquipmentLineRepository interface
     Given a repository interface "BookingEquipmentLineRepository" in package "com.cargo.booking.repository"
-    Then it must extend JpaRepository<BookingEquipmentLine, UUID>
+    Then it must extend JpaRepository<BookingEquipmentLine, Long>
     And it must be annotated with @Repository
 
   @data-access @query
@@ -90,26 +90,31 @@ Feature: Data Access Layer
     Given the BookingEquipmentLineRepository interface
     Then it must define the following query method:
       | method                                              | returns                     | description                            |
-      | findByBookingId(UUID bookingId)                     | List<BookingEquipmentLine>  | All equipment lines for a booking      |
+      | findByBookingId(Long bookingId)                     | List<BookingEquipmentLine>  | All equipment lines for a booking      |
 
   @data-access @query
   Scenario: Delete equipment lines by booking
     Given the BookingEquipmentLineRepository interface
     Then it must define the following method:
       | method                                  | returns | description                                        |
-      | deleteByBookingId(UUID bookingId)        | void    | Remove all equipment lines when a booking changes  |
+      | deleteByBookingId(Long bookingId)        | void    | Remove all equipment lines when a booking changes  |
     And this method must be annotated with @Modifying and @Transactional
 
   # ---------------------------------------------------------------------------
-  # Booking Reference Sequence
+  # Booking Reference Counter
   # ---------------------------------------------------------------------------
 
   @data-access @sequence
-  Scenario: Fetch next booking reference sequence value
-    Given the BookingRepository interface
-    Then it must define a native query to fetch the next sequence value:
-      | method                  | annotation                                                         | returns | description                          |
-      | getNextReferenceSeq()   | @Query(value = "SELECT nextval('booking_reference_seq')", nativeQuery = true) | Long    | Next value from PostgreSQL sequence  |
+  Scenario: Fetch next booking reference sequence value for year
+    Given a custom repository component "BookingReferenceCounterRepository" in package "com.cargo.booking.repository"
+    Then it must define a method to atomically fetch and increment the next yearly counter value:
+      | method                         | returns | description                                  |
+      | getNextReferenceSeqForYear(int year) | Long    | Next value for the given UTC calendar year   |
+    And the method must be implemented with EntityManager or JdbcClient using native PostgreSQL SQL
+    And the native SQL must insert a row for a new year with next_value = 2 and return 1
+    And for an existing year it must increment next_value by 1 and return the previous value
+    And it must rely on PostgreSQL INSERT ... ON CONFLICT ... DO UPDATE semantics for concurrency safety
+    And the method must be annotated or executed within @Transactional
 
   # ---------------------------------------------------------------------------
   # Pagination and Sorting Defaults
@@ -134,7 +139,7 @@ Feature: Data Access Layer
 
   @data-access @fetching
   Scenario: Eager and lazy loading rules
-    Given the entity relationships defined in 002_domain_model.txt
+    Given the entity relationships defined in 002_domain_model.md
     Then the following fetch strategies must be applied:
       | entity               | relationship     | fetch type | reason                                              |
       | Booking              | equipmentLines   | LAZY       | Not always needed; load explicitly when required     |
@@ -145,7 +150,7 @@ Feature: Data Access Layer
     Given the BookingRepository interface
     Then it must define a JPQL query to eagerly fetch equipment lines:
       | method                                                          | annotation                                                                                     | returns          |
-      | findWithEquipmentLinesById(UUID id)                             | @Query("SELECT b FROM Booking b LEFT JOIN FETCH b.equipmentLines WHERE b.id = :id")           | Optional<Booking>|
+      | findWithEquipmentLinesById(Long id)                             | @Query("SELECT b FROM Booking b LEFT JOIN FETCH b.equipmentLines WHERE b.id = :id")           | Optional<Booking>|
       | findWithEquipmentLinesByBookingReference(String reference)      | @Query("SELECT b FROM Booking b LEFT JOIN FETCH b.equipmentLines WHERE b.bookingReference = :reference") | Optional<Booking>|
 
   # ---------------------------------------------------------------------------
@@ -159,8 +164,9 @@ Feature: Data Access Layer
       | rule                                                                                              |
       | All read-only queries should use @Transactional(readOnly = true) at the service layer             |
       | All write operations should use @Transactional at the service layer                               |
-      | Repository interfaces themselves must NOT declare @Transactional (leave it to the service layer)  |
-      | The deleteByBookingId method is the only exception — it needs @Modifying and @Transactional       |
+      | Repository interfaces themselves must NOT declare @Transactional unless the method performs a custom modifying query |
+      | deleteByBookingId needs @Modifying and @Transactional                                            |
+      | getNextReferenceSeqForYear must be implemented as a custom repository method returning Long, not as a Spring Data @Modifying query |
 
   # ---------------------------------------------------------------------------
   # Specifications for Dynamic Filtering (Optional Advanced Queries)
@@ -170,12 +176,13 @@ Feature: Data Access Layer
   Scenario: BookingSpecification class for dynamic filtering
     Given a class "BookingSpecification" in package "com.cargo.booking.repository"
     Then it must provide static methods that return Specification<Booking>:
-      | method                                          | filters by          | description                                  |
-      | hasCustomerId(UUID customerId)                  | customer_id         | Exact match on customer                      |
+      | method                                          | entity field        | description                                  |
+      | hasCustomerId(Long customerId)                  | customerId          | Exact match on customer                      |
       | hasStatus(BookingStatus status)                 | status              | Exact match on status                        |
-      | hasScheduleId(UUID scheduleId)                  | schedule_id         | Exact match on schedule                      |
-      | createdAfter(Instant from)                      | created_at          | Bookings created on or after a timestamp     |
-      | createdBefore(Instant to)                       | created_at          | Bookings created on or before a timestamp    |
+      | hasScheduleId(Long scheduleId)                  | scheduleId          | Exact match on schedule                      |
+      | createdAfter(Instant from)                      | createdAt           | Bookings created on or after a timestamp     |
+      | createdBefore(Instant to)                       | createdAt           | Bookings created on or before a timestamp    |
+    And JPA Criteria paths must use entity field names, not database column names
     And each method must return null when the input parameter is null (to allow optional filtering)
     And these specifications must be composable using Specification.where().and()
 
@@ -188,7 +195,7 @@ Feature: Data Access Layer
     Given this is the data access file only
     Then the following are NOT defined here and will be addressed in later files:
       | topic                                      | deferred to            |
-      | Service layer orchestration and validation  | 004_business_rules.txt |
-      | DTO mapping from query results              | 005_api_endpoints.txt  |
-      | Caching strategies                          | 008_integrations.txt   |
-      | Test data setup and repository tests        | 009_testing.txt        |
+      | Service layer orchestration and validation  | 004_business_rules.md |
+      | DTO mapping from query results              | 005_api_endpoints.md  |
+      | Caching strategies                          | 008_integrations.md   |
+      | Test data setup and repository tests        | 009_testing.md        |
