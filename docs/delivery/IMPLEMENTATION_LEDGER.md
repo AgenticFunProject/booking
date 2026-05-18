@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 14 |
-| PRs merged | 11 |
-| Merge commits recorded | 13 |
-| Verification blockers recorded | 12 |
-| Entries with elapsed time | 14 |
+| Beads recorded | 15 |
+| PRs merged | 12 |
+| Merge commits recorded | 14 |
+| Verification blockers recorded | 13 |
+| Entries with elapsed time | 15 |
 
 ## Entries
 
@@ -412,11 +412,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-eyx-1-booking-repository` |
 | PR | https://github.com/AgenticFunProject/booking/pull/22 |
-| Merge commit | Pending |
+| Merge commit | `9983dc8` |
 | Started UTC | 2026-05-18T10:40:59Z |
 | Completed UTC | 2026-05-18T10:41:28Z |
 | Elapsed wall time | 29s |
@@ -438,6 +438,38 @@ Verification:
 Notes:
 
 - Eager equipment-line fetch methods are intentionally left for the separate `bo-eyx.3` bead.
+
+### bo-eyx.2 - Add BookingEquipmentLineRepository
+
+| Field | Value |
+| --- | --- |
+| Status | In review |
+| Agent | mayor |
+| Branch | `work/bo-eyx-2-equipment-line-repository` |
+| PR | https://github.com/AgenticFunProject/booking/pull/23 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-18T10:43:21Z |
+| Completed UTC | 2026-05-18T10:43:36Z |
+| Elapsed wall time | 15s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingEquipmentLineRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `BookingEquipmentLineRepository` in the repository package.
+- Extended `JpaRepository<BookingEquipmentLine, Long>`.
+- Added `findByBookingId(Long bookingId)` and `deleteByBookingId(Long bookingId)`.
+- Annotated the delete method with `@Modifying` and `@Transactional` as required by the data-access transaction rules.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- The delete transaction is scoped to the modifying repository method, matching the explicit exception in `specs/003_data_access.md`.
 
 ## Entry Template
 
