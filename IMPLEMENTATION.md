@@ -43,9 +43,10 @@ bd ready
 
 ## Branch Policy
 
-Agents and workers must not implement directly on `master`.
+The Mayor, agents, and workers must not make GitHub-pushed repo changes directly
+on `master`. This applies to implementation, specs, docs, and planning files.
 
-Before editing code:
+Before editing files:
 
 ```bash
 git switch master
@@ -53,7 +54,8 @@ git pull --ff-only origin master
 git switch -c work/<bead-id>-short-title
 ```
 
-Use a bead-oriented branch name, commit the bead's change there, push the branch,
+Use a bead-oriented branch name when a bead exists, or a short docs/planning
+branch name for coordination changes. Commit the change there, push the branch,
 and open a pull request unless the active workflow explicitly says otherwise.
 
 ## Start A Bead
