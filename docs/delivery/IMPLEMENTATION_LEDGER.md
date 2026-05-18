@@ -7,8 +7,8 @@ This ledger records delivery evidence for completed implementation beads.
 | Metric | Value |
 | --- | ---: |
 | Beads recorded | 19 |
-| PRs merged | 16 |
-| Merge commits recorded | 18 |
+| PRs merged | 17 |
+| Merge commits recorded | 19 |
 | Verification blockers recorded | 17 |
 | Entries with elapsed time | 19 |
 
@@ -569,11 +569,11 @@ Notes:
 
 | Field | Value |
 | --- | --- |
-| Status | In review |
+| Status | Closed |
 | Agent | mayor |
 | Branch | `work/bo-eyx-6-data-access-tests` |
 | PR | https://github.com/AgenticFunProject/booking/pull/27 |
-| Merge commit | Pending |
+| Merge commit | `8299fd0` |
 | Started UTC | 2026-05-18T10:51:12Z |
 | Completed UTC | 2026-05-18T10:53:02Z |
 | Elapsed wall time | 1m 50s |
