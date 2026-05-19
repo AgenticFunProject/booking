@@ -161,6 +161,12 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase create booking endpoint compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
 | 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 72 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
 | 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD` | Post-rebase diff whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done` | `./mvnw compile` | Framework exception mapping compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done` | `mvn compile` | Framework exception mapping compile gate | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest=GlobalExceptionHandlerTest` | Framework exception mapping unit tests | Failed | Initial test-source compilation missed `ConstraintViolationException` import and used a private Spring constructor; corrected before rerun. |
+| 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest=GlobalExceptionHandlerTest` | Framework exception mapping unit tests | Passed | 9 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase framework exception mapping compile gate | Passed | Branch was already up to date with `origin/master`; diff check and compile completed successfully. |
+| 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 80 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 

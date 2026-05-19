@@ -1330,6 +1330,41 @@ Notes:
 
 - `GlobalExceptionHandler` and `ErrorResponseBuilder` remain out of scope for this DTO bead and are covered by later error-handling beads.
 
+### bo-b0p.4 - Map framework validation and HTTP exceptions
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-b0p.4@mpcliuk8` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T12:15:34Z |
+| Completed UTC | 2026-05-19T12:25:34Z |
+| Elapsed wall time | 10m 00s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/main/resources/application.yml`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
+
+Delivered:
+
+- Mapped business, validation, malformed JSON, missing parameter, type mismatch, unsupported method/media, no-handler, access-denied fallback, equipment availability, and catch-all errors through `GlobalExceptionHandler`.
+- Added validation response generation with sorted field violations for `MethodArgumentNotValidException` and Jakarta `ConstraintViolationException`.
+- Configured Spring MVC to throw `NoHandlerFoundException` for missing handlers while preserving static resource mappings.
+- Added `spring-security-core` so the fallback Spring Security `AccessDeniedException` handler compiles without enabling web security auto-configuration.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=GlobalExceptionHandlerTest` initially failed during test-source compilation because of a missing test import and a private Spring constructor call; the test source was corrected.
+- `mvn test -Dtest=GlobalExceptionHandlerTest` passed with 9 tests, 0 failures, 0 errors.
+- After rebasing onto the latest `origin/master`, `git diff --check origin/master...HEAD`, `mvn compile`, and `mvn test` passed with 80 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Full gate output included expected application/test logging from exception handler and repository tests.
+
 ## Entry Template
 
 ```md
