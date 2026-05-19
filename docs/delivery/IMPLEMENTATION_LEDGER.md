@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 35 |
+| Beads recorded | 36 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 24 |
-| Entries with elapsed time | 35 |
+| Verification blockers recorded | 25 |
+| Entries with elapsed time | 36 |
 
 ## Entries
 
@@ -1122,6 +1122,41 @@ Verification:
 Notes:
 
 - Later API, security, global error handling, real integrations, E2E testing, and deployment requirements remain out of scope for this Phase 1-4 audit and are covered by later specs.
+
+### bo-2tm.2 - Add response DTO records
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-2tm.2@mpcfiff5` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T09:27:10Z |
+| Completed UTC | 2026-05-19T09:35:58Z |
+| Elapsed wall time | 8m 48s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/dto/response/BookingResponse.java`, `src/main/java/com/cargo/booking/dto/response/BookingCreatedResponse.java`, `src/main/java/com/cargo/booking/dto/response/CustomerResponse.java`, `src/main/java/com/cargo/booking/dto/response/CargoResponse.java`, `src/main/java/com/cargo/booking/dto/response/EquipmentResponse.java`, `src/main/java/com/cargo/booking/dto/response/PagedResponse.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `BookingResponse` with nested customer, cargo, equipment response fields and UTC timestamp fields.
+- Added slim `BookingCreatedResponse` for create-booking responses.
+- Added `CustomerResponse`, `CargoResponse`, and `EquipmentResponse` records for nested response data.
+- Added generic `PagedResponse<T>` with page metadata and a static `from(Page<T>)` factory.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- After rebasing onto the latest `origin/master`, `mvn compile` passed and `mvn test` passed with 61 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Mapper and controller behavior remain intentionally out of scope for follow-on API beads.
 
 ## Entry Template
 

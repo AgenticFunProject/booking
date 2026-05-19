@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 112 |
-| Passed | 86 |
+| Checks recorded | 118 |
+| Passed | 91 |
 | Failed | 1 |
-| Blocked/skipped | 25 |
+| Blocked/skipped | 27 |
 
 ## Checks
 
@@ -122,6 +122,12 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done` | `git diff --check` | Request DTO records, tests, and delivery evidence | Passed | No whitespace/diff errors. |
 | 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase request DTO compile gate | Passed | Compile completed successfully after `git fetch origin master && git rebase origin/master`. |
 | 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 61 tests, 0 failures, 0 errors after `git fetch origin master && git rebase origin/master`. |
+| 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done` | `./mvnw compile` | Response DTO compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done` | `mvn compile` | Response DTO compile gate | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after response DTO records | Passed | 58 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done` | `git diff --check` | Response DTO records and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase response DTO compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 61 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
 
 ## Entry Template
 
