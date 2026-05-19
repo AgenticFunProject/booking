@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 130 |
-| Passed | 101 |
+| Checks recorded | 136 |
+| Passed | 107 |
 | Failed | 1 |
-| Blocked/skipped | 29 |
+| Blocked/skipped | 30 |
 
 ## Checks
 
@@ -140,6 +140,12 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-2tm.3` | Pending merge queue submission via `gt done` | `git diff --check` | BookingMapper, tests, and delivery evidence | Passed | No whitespace/diff errors. |
 | 2026-05-19 | `bo-2tm.3` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase compile gate | Passed | Branch rebased onto latest `origin/master`; diff check and compile completed successfully. |
 | 2026-05-19 | `bo-2tm.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 67 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done` | `./mvnw compile` | Global exception handler skeleton compile | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done` | `mvn compile` | Global exception handler skeleton compile | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done` | `mvn test -Dtest="ErrorResponseTest,ErrorResponseBuilderTest,GlobalExceptionHandlerTest"` | Error handling skeleton tests | Passed | 6 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done` | `git diff --check` | Global exception handler skeleton and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase global exception handler compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 67 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
 
 ## Entry Template
 

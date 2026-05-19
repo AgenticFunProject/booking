@@ -47,6 +47,38 @@ Verification:
 - Post-rebase `mvn compile` passed.
 - Post-rebase `mvn test` passed with 67 tests, 0 failures, 0 errors.
 
+### bo-b0p.2 - Implement GlobalExceptionHandler skeleton
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-b0p.2@mpckmi6s` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-19T11:50:24Z |
+| Completed UTC | 2026-05-19T11:56:50Z |
+| Elapsed wall time | 6m 26s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/exception/ErrorResponseBuilder.java`, `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/test/java/com/cargo/booking/exception/ErrorResponseBuilderTest.java`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added a reusable `ErrorResponseBuilder` that constructs standard error and validation-error responses from `HttpStatus` plus `HttpServletRequest`.
+- Added `GlobalExceptionHandler` as `@RestControllerAdvice` with no injected services and a lowest-precedence safe catch-all mapping for unhandled exceptions.
+- Preserved request URI and optional `X-Request-ID` propagation while returning a generic 500 response body that does not expose exception details.
+- Added focused tests for response builder behavior and the generic handler response.
+
+Verification:
+
+- `./mvnw compile` was attempted and blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="ErrorResponseTest,ErrorResponseBuilderTest,GlobalExceptionHandlerTest"` passed with 6 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 67 tests, 0 failures, 0 errors.
+
 ### bo-2tm.1 - Add request DTO records
 
 | Field | Value |
