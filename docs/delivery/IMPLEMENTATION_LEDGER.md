@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 36 |
+| Beads recorded | 37 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 25 |
-| Entries with elapsed time | 36 |
+| Verification blockers recorded | 26 |
+| Entries with elapsed time | 37 |
 
 ## Entries
+
+### bo-2tm.3 - Add BookingMapper
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-2tm.3@mpckmnvl` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-19T11:50:26Z |
+| Completed UTC | 2026-05-19T11:56:06Z |
+| Elapsed wall time | 5m 40s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/mapper/BookingMapper.java`, `src/test/java/com/cargo/booking/mapper/BookingMapperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added explicit `BookingMapper` component for entity-to-response conversion.
+- Mapped nested customer and cargo response records from the flat booking aggregate fields.
+- Mapped equipment lines with external equipment API codes such as `20FT`, `40HC`, and `REEFER`.
+- Added focused mapper unit coverage for full booking responses, created responses, equipment code conversion, and null equipment-line handling.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingMapperTest` passed with 4 tests, 0 failures, 0 errors.
+- `mvn test` passed with 67 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 67 tests, 0 failures, 0 errors.
 
 ### bo-2tm.1 - Add request DTO records
 
