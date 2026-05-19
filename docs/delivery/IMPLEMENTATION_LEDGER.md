@@ -6,13 +6,52 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 37 |
+| Beads recorded | 38 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 26 |
-| Entries with elapsed time | 37 |
+| Verification blockers recorded | 27 |
+| Entries with elapsed time | 38 |
 
 ## Entries
+
+### bo-2tm.4 - Implement create booking endpoint
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2tm.4@mpcl2cea` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-19T12:02:47Z |
+| Completed UTC | 2026-05-19T12:11:47Z |
+| Elapsed wall time | 9m 0s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `BookingController` with `POST /api/v1/bookings`, JSON consume/produce metadata, `@Valid @RequestBody` validation, HTTP 201 response status, and OpenAPI response annotations.
+- Mapped API create DTOs into the service-layer create request record before calling `BookingService.createBooking`.
+- Returned the slim `BookingCreatedResponse` through `BookingMapper.toCreatedResponse`.
+- Added focused standalone MockMvc coverage for the happy-path create endpoint, response JSON, and service request conversion.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- Initial `mvn test -Dtest=BookingControllerTest` with `@WebMvcTest` was blocked by duplicate Spring Boot 3.5 Jackson auto-configuration bean `jsonComponentModule`; the test was converted to standalone MockMvc.
+- Second `mvn test -Dtest=BookingControllerTest` failed because standalone MockMvc used timestamp serialization for `Instant`; the test message converter was configured with JavaTimeModule and timestamp serialization disabled.
+- `mvn test -Dtest=BookingControllerTest` passed with 1 test, 0 failures, 0 errors.
+- Final `mvn compile` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 72 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+
+Notes:
+
+- `BookingAccessAuthorizer` is not wired here because `bo-m7w.7` adds it and `bo-m7w.8` wires ownership checks into controllers after the endpoint set exists.
 
 ### bo-2tm.3 - Add BookingMapper
 

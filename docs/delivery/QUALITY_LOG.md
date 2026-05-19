@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 136 |
-| Passed | 107 |
-| Failed | 1 |
-| Blocked/skipped | 30 |
+| Checks recorded | 145 |
+| Passed | 113 |
+| Failed | 3 |
+| Blocked/skipped | 31 |
 
 ## Checks
 
@@ -146,6 +146,15 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done` | `git diff --check` | Global exception handler skeleton and delivery evidence | Passed | No whitespace/diff errors. |
 | 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase global exception handler compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
 | 2026-05-19 | `bo-b0p.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 67 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done` | `./mvnw compile` | Create booking endpoint compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done` | `mvn compile` | Create booking endpoint compile gate | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Create booking endpoint controller test | Failed | Initial `@WebMvcTest` approach hit duplicate Spring Boot 3.5 Jackson auto-configuration bean `jsonComponentModule`; test was converted to standalone MockMvc. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Create booking endpoint controller test | Failed | Standalone MockMvc initially serialized `Instant` as a timestamp; the test message converter was configured for ISO-8601 Java time serialization. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Create booking endpoint controller test | Passed | 1 test, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done` | `mvn compile` | Final create booking endpoint compile gate | Passed | Compile completed successfully after controller test fixes. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase create booking endpoint compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 72 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-2tm.4` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD` | Post-rebase diff whitespace check | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 
