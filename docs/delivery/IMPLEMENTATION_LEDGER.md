@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 38 |
+| Beads recorded | 39 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 27 |
-| Entries with elapsed time | 38 |
+| Verification blockers recorded | 28 |
+| Entries with elapsed time | 39 |
 
 ## Entries
+
+### bo-b0p.3 - Map business exceptions
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-b0p.3@mpcllvnp` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-19T12:17:50Z |
+| Completed UTC | 2026-05-19T12:24:11Z |
+| Elapsed wall time | 6m 21s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added `GlobalExceptionHandler` mappings for booking not found, booking validation, illegal state transitions, schedule availability, quote validity, and equipment reservation failures.
+- Mapped custom business exceptions to the specified HTTP statuses: 404, 400, 409, 422, and 503.
+- Kept client-side failures at WARN logging and equipment reservation failures at ERROR logging with stack traces.
+- Returned a safe generic 503 message for equipment reservation failures instead of exposing integration details.
+- Added focused unit coverage for each business exception mapping and the equipment safe-message behavior.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=GlobalExceptionHandlerTest` passed with 7 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 78 tests, 0 failures, 0 errors.
 
 ### bo-2tm.4 - Implement create booking endpoint
 

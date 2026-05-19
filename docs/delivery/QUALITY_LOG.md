@@ -6,15 +6,21 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 145 |
-| Passed | 113 |
+| Checks recorded | 151 |
+| Passed | 118 |
 | Failed | 3 |
-| Blocked/skipped | 31 |
+| Blocked/skipped | 32 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done` | `./mvnw compile` | Business exception handler compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done` | `mvn compile` | Business exception handler compile gate | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done` | `mvn test -Dtest=GlobalExceptionHandlerTest` | Business exception handler unit tests | Passed | 7 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD` | Post-rebase diff whitespace check | Passed | No whitespace/diff errors after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase business exception handler compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 78 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
 | 2026-05-18 | `bo-u2r.1` | https://github.com/AgenticFunProject/booking/pull/6 | `git diff --cached --check` | Staged Maven scaffold | Passed | No whitespace/diff errors. |
 | 2026-05-18 | `bo-u2r.1` | https://github.com/AgenticFunProject/booking/pull/6 | `python3 -c 'import xml.etree.ElementTree as ET; ET.parse("pom.xml")'` | `pom.xml` syntax | Passed | XML parsed successfully. |
 | 2026-05-18 | `bo-u2r.1` | https://github.com/AgenticFunProject/booking/pull/6 | `mvn compile` | Baseline Maven compile | Blocked | No Java runtime available; Maven reported `JAVA_HOME` was not defined correctly. |
