@@ -4,9 +4,11 @@ import com.cargo.booking.dto.request.CreateBookingRequest;
 import com.cargo.booking.dto.request.EquipmentRequest;
 import com.cargo.booking.dto.response.BookingCreatedResponse;
 import com.cargo.booking.dto.response.BookingResponse;
+import com.cargo.booking.dto.response.PagedResponse;
 import com.cargo.booking.exception.BookingValidationException;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
+import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +20,9 @@ import jakarta.validation.Valid;
 import java.util.List;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,6 +67,31 @@ public class BookingController {
     public BookingCreatedResponse createBooking(@Valid @RequestBody CreateBookingRequest request) {
         Booking booking = bookingService.createBooking(toServiceRequest(request));
         return bookingMapper.toCreatedResponse(booking);
+    }
+
+    @GetMapping
+    @Operation(
+            summary = "List bookings",
+            description = "Lists bookings with optional customer and status filters."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successful retrieval",
+                    content = @Content(schema = @Schema(implementation = PagedResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Invalid query parameter"),
+            @ApiResponse(responseCode = "401", description = "Authentication required when security is enabled"),
+            @ApiResponse(responseCode = "403", description = "Authenticated caller lacks permission or ownership"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public PagedResponse<BookingResponse> getBookings(
+            @RequestParam(required = false) Long customerId,
+            @RequestParam(required = false) BookingStatus status,
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return PagedResponse.from(bookingService.getBookings(customerId, status, pageable)
+                .map(bookingMapper::toResponse));
     }
 
     @GetMapping("/{id}")

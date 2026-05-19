@@ -1399,6 +1399,46 @@ Notes:
 
 - `BookingAccessAuthorizer` is not present in this branch; ownership wiring is tracked separately by `bo-m7w.7` and `bo-m7w.8`.
 
+### bo-2tm.6 - Implement list bookings endpoint
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-2tm.6@mpcm6do7` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T12:33:50Z |
+| Completed UTC | 2026-05-19T12:48:59Z |
+| Elapsed wall time | 15m 09s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `GET /api/v1/bookings` with optional `customerId` and `status` filters.
+- Applied pageable defaults using `@PageableDefault(size = 20, sort = "createdAt", direction = DESC)`.
+- Mapped the service `Page<Booking>` to `Page<BookingResponse>` through `BookingMapper` and wrapped it in `PagedResponse`.
+- Added controller tests for filtered list responses, page metadata, default sorting, and max page size behavior.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn test -Dtest=BookingControllerTest` initially failed during test-source compilation because the standalone pageable resolver test used an unavailable customizer type; the test setup was corrected.
+- `mvn test -Dtest=BookingControllerTest` then failed because the page fixture expected `last=false` for the final page; the fixture total was corrected.
+- `mvn test -Dtest=BookingControllerTest` passed with 3 tests, 0 failures, 0 errors.
+- `mvn compile` passed.
+- `git diff --check` passed.
+- Rebase onto the latest `origin/master` required resolving overlap with `bo-2tm.5` in controller, controller test, and delivery evidence files.
+- After conflict resolution, `mvn test -Dtest=BookingControllerTest` passed with 6 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` and `mvn compile` passed.
+- Post-rebase `mvn test` passed with 85 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
+
 ## Entry Template
 
 ```md

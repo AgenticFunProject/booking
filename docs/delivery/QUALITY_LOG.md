@@ -172,6 +172,16 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingControllerTest"` | Get booking endpoint controller tests | Passed | 4 tests, 0 failures, 0 errors. |
 | 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase get booking endpoint compile gate | Passed | Branch was already up to date with `origin/master`; diff check and compile completed successfully. |
 | 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 83 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | List bookings controller endpoint tests | Failed | Test-source compilation failed because the standalone pageable resolver setup used an unavailable customizer type; corrected before rerun. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | List bookings controller endpoint tests | Failed | Page fixture expected `last=false` for page 1 of a two-page result; fixture total was corrected. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | List bookings controller endpoint tests | Passed | 3 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done` | `./mvnw compile` | List bookings endpoint compile gate | Blocked | This checkout does not include an executable Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done` | `mvn compile` | List bookings endpoint compile gate | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done` | `git diff --check` | List bookings endpoint and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase list bookings conflict resolution | Passed | Resolved overlap with `bo-2tm.5` in controller, controller tests, and delivery evidence. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn test -Dtest=BookingControllerTest` | Post-rebase combined controller tests | Passed | 6 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD && mvn compile` | Post-rebase list bookings compile gate | Passed | Diff check and compile completed successfully. |
+| 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 85 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 
