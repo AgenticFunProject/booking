@@ -1158,6 +1158,39 @@ Notes:
 
 - Mapper and controller behavior remain intentionally out of scope for follow-on API beads.
 
+### bo-b0p.1 - Add error response DTOs
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/jasper |
+| Branch | `polecat/jasper/bo-b0p.1@mpcfc8dd` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T09:22:22Z |
+| Completed UTC | 2026-05-19T09:26:30Z |
+| Elapsed wall time | 4m 08s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/exception/ErrorResponse.java`, `src/main/java/com/cargo/booking/exception/ValidationErrorResponse.java`, `src/main/java/com/cargo/booking/exception/FieldViolation.java`, `src/test/java/com/cargo/booking/exception/ErrorResponseTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added `ErrorResponse`, `ValidationErrorResponse`, and `FieldViolation` records in `com.cargo.booking.exception`.
+- Modeled the standard error fields: timestamp, status, error, message, path, and optional request ID.
+- Added field-level validation details with immutable violation list storage.
+- Annotated optional request ID components so absent request IDs are omitted from JSON responses.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="ErrorResponseTest"` passed with 2 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `GlobalExceptionHandler` and `ErrorResponseBuilder` remain out of scope for this DTO bead and are covered by later error-handling beads.
+
 ## Entry Template
 
 ```md

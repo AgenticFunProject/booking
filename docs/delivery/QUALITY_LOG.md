@@ -6,10 +6,10 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 118 |
-| Passed | 91 |
+| Checks recorded | 123 |
+| Passed | 95 |
 | Failed | 1 |
-| Blocked/skipped | 27 |
+| Blocked/skipped | 28 |
 
 ## Checks
 
@@ -128,6 +128,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done` | `git diff --check` | Response DTO records and delivery evidence | Passed | No whitespace/diff errors. |
 | 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase response DTO compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`. |
 | 2026-05-19 | `bo-2tm.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 61 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
+| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done` | `./mvnw compile` | Error response DTO compile | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done` | `mvn compile` | Error response DTO compile | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest="ErrorResponseTest"` | Error response DTO serialization tests | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase compile gate | Passed | Branch rebased onto latest `origin/master`; diff check and compile completed successfully. |
+| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 60 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 
