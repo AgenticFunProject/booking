@@ -6,13 +6,43 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 34 |
+| Beads recorded | 35 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 24 |
-| Entries with elapsed time | 34 |
+| Entries with elapsed time | 35 |
 
 ## Entries
+
+### bo-2tm.1 - Add request DTO records
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2tm.1@mpcfd56t` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-19T09:23:04Z |
+| Completed UTC | 2026-05-19T09:27:12Z |
+| Elapsed wall time | 4m 8s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/dto/request/CreateBookingRequest.java`, `src/main/java/com/cargo/booking/dto/request/CustomerRequest.java`, `src/main/java/com/cargo/booking/dto/request/CargoRequest.java`, `src/main/java/com/cargo/booking/dto/request/EquipmentRequest.java`, `src/test/java/com/cargo/booking/dto/request/CreateBookingRequestValidationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added API request DTO records for create booking input with nested customer, cargo, and equipment payloads.
+- Added Jakarta Bean Validation annotations matching the API spec, including nested object and equipment-list validation.
+- Added focused validation tests for valid input, scalar violations, nested violations, and equipment-line violations.
+
+Verification:
+
+- `mvn compile` passed.
+- `mvn test -Dtest=CreateBookingRequestValidationTest` passed with 3 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 61 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
 
 ### bo-u2r.1 - Scaffold Maven Spring Boot project
 

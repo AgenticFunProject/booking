@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 107 |
-| Passed | 81 |
+| Checks recorded | 112 |
+| Passed | 86 |
 | Failed | 1 |
 | Blocked/skipped | 25 |
 
@@ -117,6 +117,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingServiceLifecycleTest,BookingServiceCancelTest"` | Lifecycle logging-adjacent service regression tests | Passed | 11 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after cumulative Phase 1-4 audit fixes | Passed | 58 tests, 0 failures, 0 errors. |
 | 2026-05-18 | `bo-2cu` | Pending merge queue submission via `gt done` | `git diff --check` | Cumulative audit fixes and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done` | `mvn compile` | Request DTO records compile | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest=CreateBookingRequestValidationTest` | Request DTO Bean Validation test | Passed | 3 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done` | `git diff --check` | Request DTO records, tests, and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase request DTO compile gate | Passed | Compile completed successfully after `git fetch origin master && git rebase origin/master`. |
+| 2026-05-19 | `bo-2tm.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 61 tests, 0 failures, 0 errors after `git fetch origin master && git rebase origin/master`. |
 
 ## Entry Template
 
