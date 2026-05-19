@@ -3,6 +3,8 @@ package com.cargo.booking.controller;
 import com.cargo.booking.dto.request.CreateBookingRequest;
 import com.cargo.booking.dto.request.EquipmentRequest;
 import com.cargo.booking.dto.response.BookingCreatedResponse;
+import com.cargo.booking.dto.response.BookingResponse;
+import com.cargo.booking.exception.BookingValidationException;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.service.BookingService;
@@ -14,9 +16,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +33,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Bookings")
 @RequiredArgsConstructor
 public class BookingController {
+
+    private static final Pattern NUMERIC_ID_PATTERN = Pattern.compile("\\d+");
+    private static final Pattern BOOKING_REFERENCE_PATTERN = Pattern.compile("BKG-\\d{4}-\\d{5}");
 
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
@@ -55,6 +63,37 @@ public class BookingController {
         return bookingMapper.toCreatedResponse(booking);
     }
 
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Get booking by ID or reference",
+            description = "Retrieves a booking by numeric ID or BKG-YYYY-NNNNN reference."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successful retrieval",
+                    content = @Content(schema = @Schema(implementation = BookingResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Validation error - invalid booking identifier"),
+            @ApiResponse(responseCode = "401", description = "Authentication required when security is enabled"),
+            @ApiResponse(responseCode = "403", description = "Authenticated caller lacks permission or ownership"),
+            @ApiResponse(responseCode = "404", description = "Booking not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public BookingResponse getBookingById(@PathVariable("id") String id) {
+        Booking booking;
+
+        if (NUMERIC_ID_PATTERN.matcher(id).matches()) {
+            booking = bookingService.getBookingById(parseBookingId(id));
+        } else if (BOOKING_REFERENCE_PATTERN.matcher(id).matches()) {
+            booking = bookingService.getBookingByReference(id);
+        } else {
+            throw invalidBookingIdentifier(id);
+        }
+
+        return bookingMapper.toResponse(booking);
+    }
+
     private com.cargo.booking.service.CreateBookingRequest toServiceRequest(CreateBookingRequest request) {
         return new com.cargo.booking.service.CreateBookingRequest(
                 request.customerId(),
@@ -78,5 +117,25 @@ public class BookingController {
                         line.quantity()
                 ))
                 .toList();
+    }
+
+    private Long parseBookingId(String id) {
+        try {
+            return Long.valueOf(id);
+        } catch (NumberFormatException ex) {
+            throw invalidBookingIdentifier(id, ex);
+        }
+    }
+
+    private BookingValidationException invalidBookingIdentifier(String id) {
+        return invalidBookingIdentifier(id, null);
+    }
+
+    private BookingValidationException invalidBookingIdentifier(String id, Throwable cause) {
+        String message = "Invalid booking identifier: " + id
+                + ". Expected numeric ID or booking reference in format BKG-YYYY-NNNNN";
+        return cause == null
+                ? new BookingValidationException(message)
+                : new BookingValidationException(message, cause);
     }
 }

@@ -2,8 +2,11 @@ package com.cargo.booking.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,6 +16,11 @@ import com.cargo.booking.dto.request.CreateBookingRequest;
 import com.cargo.booking.dto.request.CustomerRequest;
 import com.cargo.booking.dto.request.EquipmentRequest;
 import com.cargo.booking.dto.response.BookingCreatedResponse;
+import com.cargo.booking.dto.response.BookingResponse;
+import com.cargo.booking.dto.response.CargoResponse;
+import com.cargo.booking.dto.response.CustomerResponse;
+import com.cargo.booking.dto.response.EquipmentResponse;
+import com.cargo.booking.exception.GlobalExceptionHandler;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
@@ -53,6 +61,7 @@ class BookingControllerTest {
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mockMvc = MockMvcBuilders.standaloneSetup(new BookingController(bookingService, bookingMapper))
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .build();
     }
@@ -106,6 +115,58 @@ class BookingControllerTest {
                 );
     }
 
+    @Test
+    void shouldGetBookingByNumericId() throws Exception {
+        Booking booking = savedBooking();
+        BookingResponse response = bookingResponse();
+        when(bookingService.getBookingById(42L)).thenReturn(booking);
+        when(bookingMapper.toResponse(booking)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/bookings/42"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"))
+                .andExpect(jsonPath("$.customerId").value(3001))
+                .andExpect(jsonPath("$.status").value("CONFIRMED"))
+                .andExpect(jsonPath("$.scheduleId").value(1001))
+                .andExpect(jsonPath("$.quoteId").value(2001))
+                .andExpect(jsonPath("$.equipment[0].type").value("20FT"))
+                .andExpect(jsonPath("$.equipment[0].quantity").value(2));
+
+        verify(bookingService).getBookingById(42L);
+        verify(bookingService, never()).getBookingByReference(any());
+        verify(bookingMapper).toResponse(booking);
+    }
+
+    @Test
+    void shouldGetBookingByReference() throws Exception {
+        Booking booking = savedBooking();
+        BookingResponse response = bookingResponse();
+        when(bookingService.getBookingByReference("BKG-2026-00042")).thenReturn(booking);
+        when(bookingMapper.toResponse(booking)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/bookings/BKG-2026-00042"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"));
+
+        verify(bookingService).getBookingByReference("BKG-2026-00042");
+        verify(bookingService, never()).getBookingById(any());
+        verify(bookingMapper).toResponse(booking);
+    }
+
+    @Test
+    void shouldRejectInvalidBookingIdentifier() throws Exception {
+        mockMvc.perform(get("/api/v1/bookings/not-a-booking"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(
+                        "Invalid booking identifier: not-a-booking. "
+                                + "Expected numeric ID or booking reference in format BKG-YYYY-NNNNN"
+                ));
+
+        verifyNoMoreInteractions(bookingService, bookingMapper);
+    }
+
     private CreateBookingRequest validRequest() {
         return new CreateBookingRequest(
                 3001L,
@@ -125,8 +186,32 @@ class BookingControllerTest {
                 .id(42L)
                 .bookingReference("BKG-2026-00042")
                 .customerId(3001L)
-                .status(BookingStatus.PENDING)
+                .scheduleId(1001L)
+                .quoteId(2001L)
+                .customerName("Acme Shipping Co.")
+                .customerEmail("logistics@acme.com")
+                .customerPhone("+36-1-234-5678")
+                .cargoDescription("Industrial machinery parts")
+                .cargoWeightKg(new BigDecimal("12000.00"))
+                .status(BookingStatus.CONFIRMED)
                 .createdAt(Instant.parse("2026-05-19T12:00:00Z"))
+                .updatedAt(Instant.parse("2026-05-19T13:00:00Z"))
                 .build();
+    }
+
+    private BookingResponse bookingResponse() {
+        return new BookingResponse(
+                42L,
+                "BKG-2026-00042",
+                3001L,
+                "CONFIRMED",
+                1001L,
+                2001L,
+                new CustomerResponse("Acme Shipping Co.", "logistics@acme.com", "+36-1-234-5678"),
+                new CargoResponse("Industrial machinery parts", new BigDecimal("12000.00")),
+                List.of(new EquipmentResponse("20FT", 2)),
+                Instant.parse("2026-05-19T12:00:00Z"),
+                Instant.parse("2026-05-19T13:00:00Z")
+        );
     }
 }

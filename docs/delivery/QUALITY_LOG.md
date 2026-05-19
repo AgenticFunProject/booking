@@ -167,6 +167,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest=GlobalExceptionHandlerTest` | Framework exception mapping unit tests | Passed | 9 tests, 0 failures, 0 errors. |
 | 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase framework exception mapping compile gate | Passed | Branch was already up to date with `origin/master`; diff check and compile completed successfully. |
 | 2026-05-19 | `bo-b0p.4` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 80 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done` | `./mvnw compile` | Get booking endpoint compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done` | `mvn compile` | Get booking endpoint compile gate | Passed | Compile completed successfully. |
+| 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingControllerTest"` | Get booking endpoint controller tests | Passed | 4 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase get booking endpoint compile gate | Passed | Branch was already up to date with `origin/master`; diff check and compile completed successfully. |
+| 2026-05-19 | `bo-2tm.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 83 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 

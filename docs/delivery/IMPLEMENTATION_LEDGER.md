@@ -1365,6 +1365,40 @@ Notes:
 
 - Full gate output included expected application/test logging from exception handler and repository tests.
 
+### bo-2tm.5 - Implement get booking endpoint
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-2tm.5@mpcm0igo` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T12:29:17Z |
+| Completed UTC | 2026-05-19T12:39:53Z |
+| Elapsed wall time | 10m 36s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `GET /api/v1/bookings/{id}` with numeric ID and `BKG-YYYY-NNNNN` reference dispatch.
+- Invalid identifiers now throw `BookingValidationException` with an explicit expected-format message.
+- Mapped successful reads to `BookingResponse` and documented OpenAPI response statuses.
+- Added focused controller tests for numeric ID lookup, reference lookup, and invalid identifier handling.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="BookingControllerTest"` passed with 4 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD`, `mvn compile`, and `mvn test` passed with 83 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `BookingAccessAuthorizer` is not present in this branch; ownership wiring is tracked separately by `bo-m7w.7` and `bo-m7w.8`.
+
 ## Entry Template
 
 ```md
