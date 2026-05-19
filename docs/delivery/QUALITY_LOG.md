@@ -132,7 +132,7 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done` | `mvn compile` | Error response DTO compile | Passed | Compile completed successfully. |
 | 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest="ErrorResponseTest"` | Error response DTO serialization tests | Passed | 2 tests, 0 failures, 0 errors. |
 | 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile` | Post-rebase compile gate | Passed | Branch rebased onto latest `origin/master`; diff check and compile completed successfully. |
-| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 60 tests, 0 failures, 0 errors. |
+| 2026-05-19 | `bo-b0p.1` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 63 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 

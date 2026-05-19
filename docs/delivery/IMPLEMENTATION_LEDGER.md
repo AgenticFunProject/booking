@@ -1168,8 +1168,8 @@ Notes:
 | PR | Pending merge queue submission via `gt done` |
 | Merge commit | Pending refinery merge |
 | Started UTC | 2026-05-19T09:22:22Z |
-| Completed UTC | 2026-05-19T09:26:30Z |
-| Elapsed wall time | 4m 08s |
+| Completed UTC | 2026-05-19T09:36:26Z |
+| Elapsed wall time | 14m 04s |
 | Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
 | Files changed | `src/main/java/com/cargo/booking/exception/ErrorResponse.java`, `src/main/java/com/cargo/booking/exception/ValidationErrorResponse.java`, `src/main/java/com/cargo/booking/exception/FieldViolation.java`, `src/test/java/com/cargo/booking/exception/ErrorResponseTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `specs/007_error_handling.md` |
@@ -1186,6 +1186,8 @@ Verification:
 - `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
 - `mvn compile` passed.
 - `mvn test -Dtest="ErrorResponseTest"` passed with 2 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 63 tests, 0 failures, 0 errors.
 
 Notes:
 
