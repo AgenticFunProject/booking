@@ -188,6 +188,13 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn test -Dtest=BookingControllerTest` | Post-rebase combined controller tests | Passed | 6 tests, 0 failures, 0 errors. |
 | 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD && mvn compile` | Post-rebase list bookings compile gate | Passed | Diff check and compile completed successfully. |
 | 2026-05-19 | `bo-2tm.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 85 tests, 0 failures, 0 errors. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done` | `./mvnw compile` | Lifecycle endpoints compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done` | `mvn compile` | Lifecycle endpoints compile gate | Passed | Compile completed successfully. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Controller regression tests after lifecycle endpoints | Passed | 6 tests, 0 failures, 0 errors. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase lifecycle endpoints sync | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD` | Post-rebase diff whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase lifecycle endpoints compile gate | Passed | Compile completed successfully. |
+| 2026-05-20 | `bo-2tm.8` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 85 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 

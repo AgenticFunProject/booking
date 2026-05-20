@@ -1472,6 +1472,42 @@ Notes:
 
 - `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
 
+### bo-2tm.8 - Implement lifecycle endpoints
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/jasper |
+| Branch | `polecat/jasper/bo-2tm.8@mpdsqfn9` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-20T08:25:19Z |
+| Completed UTC | 2026-05-20T08:32:16Z |
+| Elapsed wall time | 6m 57s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `PATCH /api/v1/bookings/{id}/confirm`, `PATCH /api/v1/bookings/{id}/start`, and `PATCH /api/v1/bookings/{id}/complete`.
+- Delegated each endpoint to the matching `BookingService` lifecycle method.
+- Mapped lifecycle service results to `BookingResponse` through `BookingMapper`.
+- Added OpenAPI operation descriptions and response metadata for the lifecycle endpoints.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 6 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 85 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
+
 ## Entry Template
 
 ```md

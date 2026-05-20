@@ -152,6 +152,73 @@ public class BookingController {
         return bookingMapper.toResponse(booking);
     }
 
+    @PatchMapping("/{id}/confirm")
+    @Operation(
+            summary = "Confirm a booking",
+            description = "Confirms a pending booking, reserves equipment, and returns the updated booking."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successful update",
+                    content = @Content(schema = @Schema(implementation = BookingResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Validation error - invalid request parameter"),
+            @ApiResponse(responseCode = "401", description = "Authentication required when security is enabled"),
+            @ApiResponse(responseCode = "403", description = "Authenticated caller lacks permission or ownership"),
+            @ApiResponse(responseCode = "404", description = "Booking not found"),
+            @ApiResponse(responseCode = "409", description = "Invalid state transition"),
+            @ApiResponse(responseCode = "503", description = "External equipment reservation unavailable"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public BookingResponse confirmBooking(@PathVariable("id") Long id) {
+        return bookingMapper.toResponse(bookingService.confirmBooking(id));
+    }
+
+    @PatchMapping("/{id}/start")
+    @Operation(
+            summary = "Mark booking as in progress",
+            description = "Marks a confirmed booking as in progress and returns the updated booking."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successful update",
+                    content = @Content(schema = @Schema(implementation = BookingResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Validation error - invalid request parameter"),
+            @ApiResponse(responseCode = "401", description = "Authentication required when security is enabled"),
+            @ApiResponse(responseCode = "403", description = "Authenticated caller lacks permission or ownership"),
+            @ApiResponse(responseCode = "404", description = "Booking not found"),
+            @ApiResponse(responseCode = "409", description = "Invalid state transition"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public BookingResponse startBooking(@PathVariable("id") Long id) {
+        return bookingMapper.toResponse(bookingService.startBooking(id));
+    }
+
+    @PatchMapping("/{id}/complete")
+    @Operation(
+            summary = "Mark booking as completed",
+            description = "Marks an in-progress booking as completed and returns the updated booking."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successful update",
+                    content = @Content(schema = @Schema(implementation = BookingResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Validation error - invalid request parameter"),
+            @ApiResponse(responseCode = "401", description = "Authentication required when security is enabled"),
+            @ApiResponse(responseCode = "403", description = "Authenticated caller lacks permission or ownership"),
+            @ApiResponse(responseCode = "404", description = "Booking not found"),
+            @ApiResponse(responseCode = "409", description = "Invalid state transition"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public BookingResponse completeBooking(@PathVariable("id") Long id) {
+        return bookingMapper.toResponse(bookingService.completeBooking(id));
+    }
+
     private com.cargo.booking.service.CreateBookingRequest toServiceRequest(CreateBookingRequest request) {
         return new com.cargo.booking.service.CreateBookingRequest(
                 request.customerId(),
