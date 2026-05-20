@@ -6,15 +6,23 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 151 |
-| Passed | 118 |
+| Checks recorded | 159 |
+| Passed | 125 |
 | Failed | 3 |
-| Blocked/skipped | 32 |
+| Blocked/skipped | 33 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Pre-merge rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD && mvn compile` | Post-rebase diff and compile gate | Passed | Diff whitespace check and compile completed successfully. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 90 tests, 0 failures, 0 errors. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test -Dtest=ErrorHandlingMockMvcTest` | Refined standalone MockMvc error handling tests | Passed | 5 tests, 0 failures, 0 errors after adding HTTP-level 409 coverage. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,ErrorResponseTest,ErrorResponseBuilderTest"` | Focused error handling tests | Passed | 19 tests, 0 failures, 0 errors. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `./mvnw compile` | Error handling test compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Error handling test compile gate | Passed | Compile completed successfully. |
+| 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Current project test suite after error handling test coverage | Passed | 90 tests, 0 failures, 0 errors. |
 | 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done` | `./mvnw compile` | Business exception handler compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done` | `mvn compile` | Business exception handler compile gate | Passed | Compile completed successfully. |
 | 2026-05-19 | `bo-b0p.3` | Pending merge queue submission via `gt done` | `mvn test -Dtest=GlobalExceptionHandlerTest` | Business exception handler unit tests | Passed | 7 tests, 0 failures, 0 errors. |

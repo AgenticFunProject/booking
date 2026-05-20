@@ -6,13 +6,48 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 39 |
+| Beads recorded | 40 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 28 |
-| Entries with elapsed time | 39 |
+| Verification blockers recorded | 29 |
+| Entries with elapsed time | 40 |
 
 ## Entries
+
+### bo-b0p.5 - Add error handling tests
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-b0p.5@mpdslwg5` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-20T08:21:38Z |
+| Completed UTC | 2026-05-20T08:32:06Z |
+| Elapsed wall time | 10m 28s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/exception/ErrorHandlingMockMvcTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added standalone MockMvc error-handling coverage that exercises `GlobalExceptionHandler` through Spring MVC exception resolution.
+- Verified structured JSON fields, status codes, request path, and optional `X-Request-ID` propagation.
+- Verified sorted validation violation responses for nested create-booking DTO fields.
+- Verified safe response messages for malformed JSON, equipment reservation failures, and unhandled exceptions.
+- Verified representative business, framework, security, method-not-allowed, and unknown API path mappings.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,ErrorResponseTest,ErrorResponseBuilderTest"` passed with 19 tests, 0 failures, 0 errors.
+- `mvn test -Dtest=ErrorHandlingMockMvcTest` passed with 5 tests, 0 failures, 0 errors after adding HTTP-level 409 coverage.
+- `mvn test` passed with 90 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 90 tests, 0 failures, 0 errors.
 
 ### bo-b0p.3 - Map business exceptions
 
