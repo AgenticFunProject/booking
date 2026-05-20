@@ -9,6 +9,7 @@ import com.cargo.booking.exception.BookingValidationException;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
+import com.cargo.booking.security.BookingAccessAuthorizer;
 import com.cargo.booking.service.BookingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +27,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +47,7 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final BookingMapper bookingMapper;
+    private final BookingAccessAuthorizer bookingAccessAuthorizer;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -122,6 +125,30 @@ public class BookingController {
             throw invalidBookingIdentifier(id);
         }
 
+        return bookingMapper.toResponse(booking);
+    }
+
+    @PatchMapping("/{id}/cancel")
+    @Operation(
+            summary = "Cancel a booking",
+            description = "Cancels a booking and returns HTTP 200 with the updated booking."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Successful update",
+                    content = @Content(schema = @Schema(implementation = BookingResponse.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Validation error - invalid request parameter"),
+            @ApiResponse(responseCode = "401", description = "Authentication required when security is enabled"),
+            @ApiResponse(responseCode = "403", description = "Authenticated caller lacks permission or ownership"),
+            @ApiResponse(responseCode = "404", description = "Booking not found"),
+            @ApiResponse(responseCode = "409", description = "Invalid state transition"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public BookingResponse cancelBooking(@PathVariable("id") Long id) {
+        bookingAccessAuthorizer.authorizeBookingAccess(id);
+        Booking booking = bookingService.cancelBooking(id);
         return bookingMapper.toResponse(booking);
     }
 

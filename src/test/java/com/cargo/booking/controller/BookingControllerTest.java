@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,6 +28,7 @@ import com.cargo.booking.exception.GlobalExceptionHandler;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
+import com.cargo.booking.security.BookingAccessAuthorizer;
 import com.cargo.booking.service.BookingService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,6 +36,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import org.mockito.InOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,12 +65,19 @@ class BookingControllerTest {
     @Mock
     private BookingMapper bookingMapper;
 
+    @Mock
+    private BookingAccessAuthorizer bookingAccessAuthorizer;
+
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        mockMvc = MockMvcBuilders.standaloneSetup(new BookingController(bookingService, bookingMapper))
+        mockMvc = MockMvcBuilders.standaloneSetup(new BookingController(
+                        bookingService,
+                        bookingMapper,
+                        bookingAccessAuthorizer
+                ))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
                 .setCustomArgumentResolvers(maxSizePageableResolver())
@@ -236,6 +247,30 @@ class BookingControllerTest {
                 ));
 
         verifyNoMoreInteractions(bookingService, bookingMapper);
+    }
+
+    @Test
+    void shouldCancelBookingAndReturn200() throws Exception {
+        Booking cancelledBooking = bookingBuilder()
+                .status(BookingStatus.CANCELLED)
+                .updatedAt(Instant.parse("2026-05-19T14:00:00Z"))
+                .build();
+        BookingResponse response = bookingResponse("CANCELLED", Instant.parse("2026-05-19T14:00:00Z"));
+        when(bookingService.cancelBooking(42L)).thenReturn(cancelledBooking);
+        when(bookingMapper.toResponse(cancelledBooking)).thenReturn(response);
+
+        mockMvc.perform(patch("/api/v1/bookings/42/cancel"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"))
+                .andExpect(jsonPath("$.customerId").value(3001))
+                .andExpect(jsonPath("$.status").value("CANCELLED"))
+                .andExpect(jsonPath("$.updatedAt").value("2026-05-19T14:00:00Z"));
+
+        InOrder orderedCalls = inOrder(bookingAccessAuthorizer, bookingService, bookingMapper);
+        orderedCalls.verify(bookingAccessAuthorizer).authorizeBookingAccess(42L);
+        orderedCalls.verify(bookingService).cancelBooking(42L);
+        orderedCalls.verify(bookingMapper).toResponse(cancelledBooking);
     }
 
     private CreateBookingRequest validRequest() {

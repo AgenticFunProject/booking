@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 39 |
+| Beads recorded | 40 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 28 |
-| Entries with elapsed time | 39 |
+| Entries with elapsed time | 40 |
 
 ## Entries
+
+### bo-2tm.7 - Implement cancel booking endpoint
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2tm.7@mpdsooa7` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-20T08:23:44Z |
+| Completed UTC | 2026-05-20T08:31:12Z |
+| Elapsed wall time | 7m 28s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/main/java/com/cargo/booking/security/BookingAccessAuthorizer.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `PATCH /api/v1/bookings/{id}/cancel` to `BookingController`.
+- Authorized cancel access through `BookingAccessAuthorizer.authorizeBookingAccess(id)` before calling `BookingService.cancelBooking(id)`.
+- Returned the updated booking through `BookingMapper.toResponse`.
+- Added a minimal `BookingAccessAuthorizer` component so endpoint ownership checks have a concrete controller dependency until the full security phase fills in policy behavior.
+- Added standalone MockMvc coverage for the cancel endpoint response and authorizer-service-mapper call order.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 7 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 86 tests, 0 failures, 0 errors.
 
 ### bo-b0p.3 - Map business exceptions
 
