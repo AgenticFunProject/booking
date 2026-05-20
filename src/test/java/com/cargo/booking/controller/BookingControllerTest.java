@@ -273,6 +273,81 @@ class BookingControllerTest {
         orderedCalls.verify(bookingMapper).toResponse(cancelledBooking);
     }
 
+    @Test
+    void shouldConfirmBookingAndReturn200() throws Exception {
+        Booking confirmedBooking = statusBooking(BookingStatus.CONFIRMED, "2026-05-19T14:30:00Z");
+        BookingResponse response = bookingResponse("CONFIRMED", Instant.parse("2026-05-19T14:30:00Z"));
+        when(bookingService.confirmBooking(42L)).thenReturn(confirmedBooking);
+        when(bookingMapper.toResponse(confirmedBooking)).thenReturn(response);
+
+        mockMvc.perform(patch("/api/v1/bookings/42/confirm"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"))
+                .andExpect(jsonPath("$.customerId").value(3001))
+                .andExpect(jsonPath("$.status").value("CONFIRMED"))
+                .andExpect(jsonPath("$.scheduleId").value(1001))
+                .andExpect(jsonPath("$.quoteId").value(2001))
+                .andExpect(jsonPath("$.customer.name").value("Acme Shipping Co."))
+                .andExpect(jsonPath("$.cargo.description").value("Industrial machinery parts"))
+                .andExpect(jsonPath("$.equipment[0].type").value("20FT"))
+                .andExpect(jsonPath("$.equipment[0].quantity").value(2))
+                .andExpect(jsonPath("$.updatedAt").value("2026-05-19T14:30:00Z"));
+
+        verify(bookingService).confirmBooking(42L);
+        verify(bookingMapper).toResponse(confirmedBooking);
+    }
+
+    @Test
+    void shouldStartBookingAndReturn200() throws Exception {
+        Booking inProgressBooking = statusBooking(BookingStatus.IN_PROGRESS, "2026-05-19T15:00:00Z");
+        BookingResponse response = bookingResponse("IN_PROGRESS", Instant.parse("2026-05-19T15:00:00Z"));
+        when(bookingService.startBooking(42L)).thenReturn(inProgressBooking);
+        when(bookingMapper.toResponse(inProgressBooking)).thenReturn(response);
+
+        mockMvc.perform(patch("/api/v1/bookings/42/start"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"))
+                .andExpect(jsonPath("$.customerId").value(3001))
+                .andExpect(jsonPath("$.status").value("IN_PROGRESS"))
+                .andExpect(jsonPath("$.scheduleId").value(1001))
+                .andExpect(jsonPath("$.quoteId").value(2001))
+                .andExpect(jsonPath("$.customer.name").value("Acme Shipping Co."))
+                .andExpect(jsonPath("$.cargo.description").value("Industrial machinery parts"))
+                .andExpect(jsonPath("$.equipment[0].type").value("20FT"))
+                .andExpect(jsonPath("$.equipment[0].quantity").value(2))
+                .andExpect(jsonPath("$.updatedAt").value("2026-05-19T15:00:00Z"));
+
+        verify(bookingService).startBooking(42L);
+        verify(bookingMapper).toResponse(inProgressBooking);
+    }
+
+    @Test
+    void shouldCompleteBookingAndReturn200() throws Exception {
+        Booking completedBooking = statusBooking(BookingStatus.COMPLETED, "2026-05-19T16:00:00Z");
+        BookingResponse response = bookingResponse("COMPLETED", Instant.parse("2026-05-19T16:00:00Z"));
+        when(bookingService.completeBooking(42L)).thenReturn(completedBooking);
+        when(bookingMapper.toResponse(completedBooking)).thenReturn(response);
+
+        mockMvc.perform(patch("/api/v1/bookings/42/complete"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(42))
+                .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"))
+                .andExpect(jsonPath("$.customerId").value(3001))
+                .andExpect(jsonPath("$.status").value("COMPLETED"))
+                .andExpect(jsonPath("$.scheduleId").value(1001))
+                .andExpect(jsonPath("$.quoteId").value(2001))
+                .andExpect(jsonPath("$.customer.name").value("Acme Shipping Co."))
+                .andExpect(jsonPath("$.cargo.description").value("Industrial machinery parts"))
+                .andExpect(jsonPath("$.equipment[0].type").value("20FT"))
+                .andExpect(jsonPath("$.equipment[0].quantity").value(2))
+                .andExpect(jsonPath("$.updatedAt").value("2026-05-19T16:00:00Z"));
+
+        verify(bookingService).completeBooking(42L);
+        verify(bookingMapper).toResponse(completedBooking);
+    }
+
     private CreateBookingRequest validRequest() {
         return new CreateBookingRequest(
                 3001L,
@@ -302,6 +377,13 @@ class BookingControllerTest {
         return bookingBuilder()
                 .status(BookingStatus.PENDING)
                 .updatedAt(Instant.parse("2026-05-19T12:05:00Z"))
+                .build();
+    }
+
+    private Booking statusBooking(BookingStatus status, String updatedAt) {
+        return bookingBuilder()
+                .status(status)
+                .updatedAt(Instant.parse(updatedAt))
                 .build();
     }
 

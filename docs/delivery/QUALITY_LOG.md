@@ -6,15 +6,20 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 165 |
-| Passed | 130 |
+| Checks recorded | 170 |
+| Passed | 134 |
 | Failed | 3 |
-| Blocked/skipped | 34 |
+| Blocked/skipped | 35 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done` | `./mvnw compile` | Controller happy-path test compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done` | `mvn compile` | Controller happy-path test compile gate | Passed | Compile completed successfully. |
+| 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Controller happy-path tests | Passed | 10 tests, 0 failures, 0 errors. |
+| 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase controller happy-path test sync | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD && mvn compile && mvn test` | Post-rebase full gate | Passed | Diff check and compile completed successfully; full suite passed with 94 tests, 0 failures, 0 errors. |
 | 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Pre-merge rebase | Passed | Branch was already up to date with `origin/master`. |
 | 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD && mvn compile` | Post-rebase diff and compile gate | Passed | Diff whitespace check and compile completed successfully. |
 | 2026-05-20 | `bo-b0p.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 90 tests, 0 failures, 0 errors. |

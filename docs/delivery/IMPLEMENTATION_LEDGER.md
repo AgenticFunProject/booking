@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 41 |
+| Beads recorded | 42 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 29 |
-| Entries with elapsed time | 41 |
+| Verification blockers recorded | 30 |
+| Entries with elapsed time | 42 |
 
 ## Entries
+
+### bo-2tm.9 - Add controller tests for happy paths
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | jasper |
+| Branch | `polecat/jasper/bo-2tm.9@mpdthb72` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-20T08:46:07Z |
+| Completed UTC | 2026-05-20T08:53:02Z |
+| Elapsed wall time | 6m 55s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added standalone MockMvc happy-path coverage for `PATCH /api/v1/bookings/{id}/confirm`.
+- Added standalone MockMvc happy-path coverage for `PATCH /api/v1/bookings/{id}/start`.
+- Added standalone MockMvc happy-path coverage for `PATCH /api/v1/bookings/{id}/complete`.
+- Verified each lifecycle endpoint returns HTTP 200, mapped booking JSON fields, and calls the matching `BookingService` method before mapping the result.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 10 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 94 tests, 0 failures, 0 errors.
 
 ### bo-b0p.5 - Add error handling tests
 
