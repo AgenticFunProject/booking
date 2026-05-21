@@ -1947,6 +1947,40 @@ Notes:
 
 - No broad `@PreAuthorize` replacement was introduced; ownership checks remain explicit controller calls as specified.
 
+### bo-ww4.4 - Add Resilience4j defaults
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge queue submission |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-ww4.4@mpfm7s2d` |
+| PR | https://github.com/AgenticFunProject/booking/pull/48 |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T14:58:13Z |
+| Completed UTC | 2026-05-21T15:03:43Z |
+| Elapsed wall time | 5m 30s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md` |
+
+Delivered:
+
+- Added Resilience4j Spring Boot 3, circuit breaker, retry, and Spring AOP dependencies with a shared Resilience4j version property.
+- Added default circuit breaker and retry configuration in `application.yml`, including comments for future per-client overrides.
+- Added authorized health component/detail settings required by the integration health spec.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test` passed with 154 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Per-client Resilience4j instances remain intentionally empty until external API SLAs and client error contracts are known.
+- GitHub PR #48 was opened before Gas Town completion to satisfy the repository branch/PR rule.
+
 ## Entry Template
 
 ```md
