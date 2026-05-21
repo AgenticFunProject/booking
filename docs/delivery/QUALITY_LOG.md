@@ -6,15 +6,20 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 243 |
-| Passed | 185 |
+| Checks recorded | 248 |
+| Passed | 189 |
 | Failed | 11 |
-| Blocked/skipped | 49 |
+| Blocked/skipped | 50 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-ww4.6` | https://github.com/AgenticFunProject/booking/pull/52 | `./mvnw compile` | Integration infrastructure test compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.6` | https://github.com/AgenticFunProject/booking/pull/52 | `mvn compile` | Integration infrastructure test compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.6` | https://github.com/AgenticFunProject/booking/pull/52 | `mvn test -Dtest=IntegrationInfrastructureTest` | Integration infrastructure regression test | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.6` | https://github.com/AgenticFunProject/booking/pull/52 | `mvn test -Dtest="IntegrationInfrastructureTest,IntegrationPropertiesTest,RestClientConfigTest,RestClientLoggingInterceptorTest,ActuatorHealthConfigurationTest"` | Integration infrastructure and adjacent config/logging/health tests | Passed | 11 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.6` | https://github.com/AgenticFunProject/booking/pull/52 | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` | Post-rebase integration infrastructure full gate | Passed | Branch was already up to date; diff check and compile passed; full suite passed with 163 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `./mvnw compile` | RestClient logging interceptor compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test -Dtest=RestClientLoggingInterceptorTest` | RestClient logging interceptor test | Failed | Test compile failed because the test `HttpRequest` double did not implement `getAttributes()` required by Spring 6.2; corrected before rerun. |
 | 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test -Dtest=RestClientLoggingInterceptorTest` | RestClient logging interceptor test | Failed | Test compile failed because the test `HttpRequest` double used record accessors instead of implementing `getURI()`; corrected before rerun. |

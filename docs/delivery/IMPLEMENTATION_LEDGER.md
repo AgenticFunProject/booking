@@ -6,13 +6,43 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 52 |
+| Beads recorded | 53 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 38 |
-| Entries with elapsed time | 52 |
+| Verification blockers recorded | 39 |
+| Entries with elapsed time | 53 |
 
 ## Entries
+
+### bo-ww4.6 - Add integration infrastructure tests
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ww4.6@mpfnyi32` |
+| PR | https://github.com/AgenticFunProject/booking/pull/52 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T15:47:25Z |
+| Completed UTC | 2026-05-21T15:54:26Z |
+| Elapsed wall time | 7m 01s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/config/IntegrationInfrastructureTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added cumulative integration infrastructure regression coverage for the base `application.yml` integration placeholders, Resilience4j defaults, and health exposure assumptions.
+- Verified all three qualified RestClient beans resolve their configured base URLs, use JSON default headers, apply service-specific connect/read timeouts, and include the actual `RestClientLoggingInterceptor` bean.
+- Kept the scope limited to infrastructure tests; no real external client behavior or external API endpoint assumptions were added.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=IntegrationInfrastructureTest` passed with 2 tests, 0 failures, 0 errors.
+- `mvn test -Dtest="IntegrationInfrastructureTest,IntegrationPropertiesTest,RestClientConfigTest,RestClientLoggingInterceptorTest,ActuatorHealthConfigurationTest"` passed with 11 tests, 0 failures, 0 errors.
+- Post-rebase `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 163 tests, 0 failures, 0 errors.
 
 ### bo-ww4.3 - Add RestClient logging interceptor
 
