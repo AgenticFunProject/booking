@@ -1610,6 +1610,41 @@ Notes:
 
 - `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
 
+### bo-m7w.2 - Implement JwtTokenProvider
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.2@mpfexigu` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T11:34:17Z |
+| Completed UTC | 2026-05-21T11:41:00Z |
+| Elapsed wall time | 6m 43s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/security/JwtTokenProvider.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added JJWT dependencies needed for local HS256 JWT validation.
+- Added `JwtTokenProvider` with issuer, audience, signature, expiration, and non-empty subject validation.
+- Extracted subject, username/name, `customerId`/`customer_id`, normalized `ROLE_*` roles, Users `role=admin`, and scope authorities without logging token contents or calling Users.
+- Added focused unit coverage for valid tokens, wrong issuer/audience, expired tokens, invalid signatures, missing subject, blank tokens, customer ID variants, roles, and scopes.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="JwtTokenProviderTest,SecurityPropertiesTest"` passed with 13 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 107 tests, 0 failures, 0 errors.
+
+Notes:
+
+- The provider creates its signing key lazily so local/security-disabled contexts can instantiate it when no JWT secret is configured; enabled deployments remain guarded by `JwtPropertiesValidator`.
+
 ## Entry Template
 
 ```md
