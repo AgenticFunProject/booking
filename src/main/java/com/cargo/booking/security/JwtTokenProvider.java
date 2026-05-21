@@ -70,23 +70,12 @@ public class JwtTokenProvider {
 
     public Optional<Long> getCustomerIdFromToken(String token) {
         Claims claims = parseClaims(token);
-        return readLongClaim(claims, "customerId")
-                .or(() -> readLongClaim(claims, "customer_id"));
+        return getCustomerIdFromClaims(claims);
     }
 
     public String getUsernameFromToken(String token) {
         Claims claims = parseClaims(token);
-        String username = readStringClaim(claims, "username");
-        if (StringUtils.hasText(username)) {
-            return username;
-        }
-
-        String name = readStringClaim(claims, "name");
-        if (StringUtils.hasText(name)) {
-            return name;
-        }
-
-        return claims.getSubject();
+        return getUsernameFromClaims(claims);
     }
 
     public List<String> getRolesFromToken(String token) {
@@ -98,18 +87,25 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        String subject = getSubjectFromToken(token);
         Claims claims = parseClaims(token);
+        String subject = claims.getSubject();
+        List<String> roles = getRolesFromClaims(claims);
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();
 
-        getRolesFromClaims(claims).stream()
+        roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .forEach(authorities::add);
         getScopesFromClaims(claims).stream()
                 .map(SimpleGrantedAuthority::new)
                 .forEach(authorities::add);
 
-        return new UsernamePasswordAuthenticationToken(subject, null, List.copyOf(authorities));
+        AuthenticatedRequester principal = new AuthenticatedRequester(
+                subject,
+                getCustomerIdFromClaims(claims).orElse(null),
+                getUsernameFromClaims(claims),
+                roles
+        );
+        return new UsernamePasswordAuthenticationToken(principal, null, List.copyOf(authorities));
     }
 
     private Claims parseClaims(String token) {
@@ -138,6 +134,25 @@ public class JwtTokenProvider {
         addRoles(roles, claims.get("roles"));
         addRoles(roles, claims.get("role"));
         return List.copyOf(roles);
+    }
+
+    private Optional<Long> getCustomerIdFromClaims(Claims claims) {
+        return readLongClaim(claims, "customerId")
+                .or(() -> readLongClaim(claims, "customer_id"));
+    }
+
+    private String getUsernameFromClaims(Claims claims) {
+        String username = readStringClaim(claims, "username");
+        if (StringUtils.hasText(username)) {
+            return username;
+        }
+
+        String name = readStringClaim(claims, "name");
+        if (StringUtils.hasText(name)) {
+            return name;
+        }
+
+        return claims.getSubject();
     }
 
     private List<String> getScopesFromClaims(Claims claims) {

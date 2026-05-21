@@ -240,6 +240,13 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase JwtAuthenticationFilter sync | Passed | Branch was already up to date with `origin/master`. |
 | 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase JwtAuthenticationFilter compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 113 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done` | `./mvnw compile` | SecurityContextHelper compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done` | `mvn compile` | SecurityContextHelper compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done` | `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest"` | SecurityContextHelper and JwtTokenProvider tests | Passed | 13 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done` | `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,SecurityConfig*Test"` | Security helper/provider/filter/config regression tests | Passed | 26 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase SecurityContextHelper sync | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase SecurityContextHelper compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 127 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 

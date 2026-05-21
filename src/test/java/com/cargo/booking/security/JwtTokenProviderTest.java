@@ -45,6 +45,13 @@ class JwtTokenProviderTest {
 
         Authentication authentication = tokenProvider.getAuthentication(token);
         assertThat(authentication.getName()).isEqualTo("user-123");
+        assertThat(authentication.getPrincipal())
+                .isEqualTo(new AuthenticatedRequester(
+                        "user-123",
+                        3001L,
+                        "operator.one",
+                        List.of("ROLE_CUSTOMER", "ROLE_SERVICE")
+                ));
         assertThat(authentication.getAuthorities())
                 .extracting("authority")
                 .containsExactly("ROLE_CUSTOMER", "ROLE_SERVICE", "SCOPE_booking:read", "SCOPE_booking:write");
@@ -63,6 +70,13 @@ class JwtTokenProviderTest {
         assertThat(tokenProvider.getUsernameFromToken(token)).isEqualTo("Admin User");
         assertThat(tokenProvider.getCustomerIdFromToken(token)).contains(4002L);
         assertThat(tokenProvider.getRolesFromToken(token)).containsExactly("ROLE_ADMIN");
+        assertThat(tokenProvider.getAuthentication(token).getPrincipal())
+                .isEqualTo(new AuthenticatedRequester(
+                        "admin-user",
+                        4002L,
+                        "Admin User",
+                        List.of("ROLE_ADMIN")
+                ));
         assertThat(tokenProvider.getAuthentication(token).getAuthorities())
                 .extracting("authority")
                 .containsExactly("ROLE_ADMIN");

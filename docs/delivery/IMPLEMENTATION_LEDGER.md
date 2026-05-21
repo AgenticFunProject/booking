@@ -1746,6 +1746,42 @@ Notes:
 
 - Security filter chain registration and enabled/disabled security behavior are intentionally left for `bo-m7w.5`; this bead only adds the filter class and its behavior.
 
+### bo-m7w.6 - Add SecurityContextHelper
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.6@mpfgob4q` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T12:23:09Z |
+| Completed UTC | 2026-05-21T12:32:05Z |
+| Elapsed wall time | 8m 56s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/security/AuthenticatedRequester.java`, `src/main/java/com/cargo/booking/security/JwtTokenProvider.java`, `src/main/java/com/cargo/booking/security/SecurityContextHelper.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `src/test/java/com/cargo/booking/security/SecurityContextHelperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added `SecurityContextHelper` static accessors for the current subject, optional customer ID, username, normalized roles, `hasRole`, and `isOwnerOrPrivileged`.
+- Added `AuthenticatedRequester` as the JWT authentication principal so security/ownership code can read JWT subject, username/name, optional `customerId` or `customer_id`, and normalized roles from `SecurityContext`.
+- Updated `JwtTokenProvider` authentication creation to preserve requester details while keeping Spring authorities for existing endpoint role checks.
+- Added focused coverage for unauthenticated contexts, customer ownership matches/mismatches, privileged service/operator/admin callers, Users `role=admin` normalization, map-backed future token details, and JWT principal population.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest"` passed with 13 tests, 0 failures, 0 errors.
+- `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,SecurityConfig*Test"` passed with 26 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 127 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Existing `BookingAccessAuthorizer` implementation remains intentionally out of scope for dependent bead `bo-m7w.7`.
+
 ## Entry Template
 
 ```md
