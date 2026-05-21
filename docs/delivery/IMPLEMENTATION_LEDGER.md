@@ -1645,6 +1645,41 @@ Notes:
 
 - The provider creates its signing key lazily so local/security-disabled contexts can instantiate it when no JWT secret is configured; enabled deployments remain guarded by `JwtPropertiesValidator`.
 
+### bo-m7w.3 - Implement JWT authentication filter
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.3@mpffbz4k` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T11:45:30Z |
+| Completed UTC | 2026-05-21T11:49:52Z |
+| Elapsed wall time | 4m 22s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/security/JwtAuthenticationFilter.java`, `src/test/java/com/cargo/booking/security/JwtAuthenticationFilterTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added `JwtAuthenticationFilter` as a `OncePerRequestFilter` that extracts `Authorization: Bearer ...`, validates tokens through `JwtTokenProvider`, and sets the Spring `SecurityContext` only for valid tokens.
+- Missing, non-Bearer, invalid, or provider-rejected tokens continue the chain unauthenticated.
+- JWT parsing/authentication extraction failures are caught without logging token contents or throwing raw JWT exceptions from the filter.
+- Added focused unit coverage for missing headers, non-Bearer headers, valid authentication population, invalid tokens, provider parsing failures, and preserving an existing authentication.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="JwtAuthenticationFilterTest,JwtTokenProviderTest,SecurityPropertiesTest"` passed with 19 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 113 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Security filter chain registration and enabled/disabled security behavior are intentionally left for `bo-m7w.5`; this bead only adds the filter class and its behavior.
+
 ## Entry Template
 
 ```md

@@ -222,6 +222,12 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-21 | `bo-m7w.2` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase JwtTokenProvider sync | Passed | Branch was already up to date with `origin/master`. |
 | 2026-05-21 | `bo-m7w.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase JwtTokenProvider compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-m7w.2` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 107 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done` | `./mvnw compile` | JwtAuthenticationFilter compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done` | `mvn compile` | JwtAuthenticationFilter compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done` | `mvn test -Dtest="JwtAuthenticationFilterTest,JwtTokenProviderTest,SecurityPropertiesTest"` | JWT filter/provider/property security tests | Passed | 19 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase JwtAuthenticationFilter sync | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase JwtAuthenticationFilter compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.3` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 113 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 
