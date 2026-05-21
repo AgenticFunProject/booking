@@ -22,7 +22,7 @@ class JwtTokenProviderTest {
             "platform-auth",
             "equipments-service",
             SECRET,
-            Duration.ofHours(1)
+            Duration.ofHours(1).toMillis()
     );
 
     private final JwtTokenProvider tokenProvider = new JwtTokenProvider(jwtProperties);

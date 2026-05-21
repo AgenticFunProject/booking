@@ -154,9 +154,9 @@ class BookingSecurityIntegrationTestSupport {
 })
 @TestPropertySource(properties = {
         "app.security.enabled=true",
-        "app.jwt.issuer=platform-auth",
-        "app.jwt.audience=equipments-service",
-        "app.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
+        "app.security.jwt.issuer=platform-auth",
+        "app.security.jwt.audience=equipments-service",
+        "app.security.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
 })
 class BookingSecurityIntegrationTest {
 
@@ -375,7 +375,7 @@ class BookingSecurityIntegrationTest {
 })
 @TestPropertySource(properties = {
         "app.security.enabled=false",
-        "app.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
+        "app.security.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
 })
 class BookingSecurityDisabledIntegrationTest {
 

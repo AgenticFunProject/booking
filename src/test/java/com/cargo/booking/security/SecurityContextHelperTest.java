@@ -83,6 +83,17 @@ class SecurityContextHelperTest {
     }
 
     @Test
+    void shouldBuildMockJwtAuthenticationWithTestSecurityConfig() {
+        TestSecurityConfig.setAuthentication("customer-subject", 3001L, "Customer One", List.of("customer"));
+
+        assertThat(SecurityContextHelper.getCurrentSubject()).isEqualTo("customer-subject");
+        assertThat(SecurityContextHelper.getCurrentCustomerId()).contains(3001L);
+        assertThat(SecurityContextHelper.getCurrentUsername()).isEqualTo("Customer One");
+        assertThat(SecurityContextHelper.getCurrentRoles()).containsExactly("ROLE_CUSTOMER");
+        assertThat(SecurityContextHelper.isOwnerOrPrivileged(3001L)).isTrue();
+    }
+
+    @Test
     void shouldReadCustomerAndUsernameFromMapDetailsForFutureTokenShapes() {
         TestingAuthenticationToken authentication = new TestingAuthenticationToken(
                 "service-subject",

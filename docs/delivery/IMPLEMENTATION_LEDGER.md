@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 53 |
+| Beads recorded | 54 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 39 |
-| Entries with elapsed time | 53 |
+| Verification blockers recorded | 40 |
+| Entries with elapsed time | 54 |
 
 ## Entries
+
+### bo-u5m - Run cumulative Phase 1-6 audit
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-u5m@mpfoepyi` |
+| PR | https://github.com/AgenticFunProject/booking/pull/53 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T16:00:01Z |
+| Completed UTC | 2026-05-21T16:07:55Z |
+| Elapsed wall time | 7m 54s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/security/JwtProperties.java`, `src/main/java/com/cargo/booking/security/JwtPropertiesValidator.java`, `src/main/resources/application.yml`, `src/test/resources/application-test.yml`, `src/test/java/com/cargo/booking/security/BookingSecurityIntegrationTest.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `src/test/java/com/cargo/booking/security/SecurityContextHelperTest.java`, `src/test/java/com/cargo/booking/security/SecurityPropertiesTest.java`, `src/test/java/com/cargo/booking/security/TestSecurityConfig.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md` |
+
+Delivered:
+
+- Audited Phase 1 foundation, Phase 2 domain model, Phase 3 data access, Phase 4 service layer, Phase 5 API/error handling, and Phase 6 security/integration infrastructure against `IMPLEMENTATION.md` and specs 001-008.
+- Confirmed the expected Maven/Spring Boot baseline, package tree, JPA entities, Flyway migration, repositories, yearly reference counter, service lifecycle flows, DTOs, mapper, controller endpoints, structured error handling, security ownership checks, local client stubs, RestClient infrastructure, Resilience4j defaults, logging interceptor, and actuator health configuration are present.
+- Fixed the concrete Phase 6 security configuration gap by moving JWT binding from `app.jwt` to the spec-required `app.security.jwt.*` namespace and using `expiration-ms` while preserving the existing audience field for deployed token compatibility.
+- Fixed the concrete Phase 6 test-support gap by adding `TestSecurityConfig` with mock JWT-style authentication helpers and the documented security-disable property for integration tests.
+- No follow-up beads were filed because the concrete Phase 1-6 gaps found during this audit were fixed in this branch.
+
+Verification:
+
+- Manual spec audit passed after the two fixes above; no remaining concrete Phase 1-6 gaps were found.
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper; installed `mvn` was used for compile and test gates.
+- `mvn compile` passed.
+- `mvn test -Dtest="SecurityPropertiesTest,JwtTokenProviderTest,SecurityContextHelperTest,BookingSecurityIntegrationTest"` passed with 25 tests, 0 failures, 0 errors.
+- `mvn test` passed with 164 tests, 0 failures, 0 errors.
 
 ### bo-ww4.6 - Add integration infrastructure tests
 
