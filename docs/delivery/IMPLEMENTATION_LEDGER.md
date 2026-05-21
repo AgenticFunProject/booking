@@ -6,13 +6,49 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 51 |
+| Beads recorded | 52 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 37 |
-| Entries with elapsed time | 51 |
+| Verification blockers recorded | 38 |
+| Entries with elapsed time | 52 |
 
 ## Entries
+
+### bo-ww4.3 - Add RestClient logging interceptor
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ww4.3@mpfnjv6z` |
+| PR | https://github.com/AgenticFunProject/booking/pull/51 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T15:36:01Z |
+| Completed UTC | 2026-05-21T15:43:56Z |
+| Elapsed wall time | 7m 55s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/client/RestClientLoggingInterceptor.java`, `src/test/java/com/cargo/booking/client/RestClientLoggingInterceptorTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added a component-scanned `RestClientLoggingInterceptor` that implements `ClientHttpRequestInterceptor`.
+- Logged outbound method/URL, redacted request headers, response status, and elapsed time at DEBUG.
+- Redacted `Authorization` header values and avoided request/response body logging.
+- Kept registration aligned with the existing `RestClientConfig`, which registers all interceptor beans on the schedule, equipment, and quote RestClients.
+- Added focused tests for DEBUG log content, Authorization redaction, body omission, and adjacent RestClient interceptor registration.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- Initial `mvn test -Dtest=RestClientLoggingInterceptorTest` failed because the test `HttpRequest` double was missing Spring 6.2 interface methods; the test double was corrected before rerun.
+- `mvn test -Dtest=RestClientLoggingInterceptorTest` passed with 1 test, 0 failures, 0 errors.
+- `mvn compile` passed.
+- `mvn test -Dtest="RestClientLoggingInterceptorTest,RestClientConfigTest"` passed with 3 tests, 0 failures, 0 errors.
+- Post-rebase `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 161 tests, 0 failures, 0 errors.
 
 ### bo-ww4.2 - Add RestClientConfig
 

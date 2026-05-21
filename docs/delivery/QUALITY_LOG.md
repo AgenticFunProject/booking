@@ -6,15 +6,25 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 233 |
-| Passed | 178 |
-| Failed | 9 |
-| Blocked/skipped | 48 |
+| Checks recorded | 243 |
+| Passed | 185 |
+| Failed | 11 |
+| Blocked/skipped | 49 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `./mvnw compile` | RestClient logging interceptor compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test -Dtest=RestClientLoggingInterceptorTest` | RestClient logging interceptor test | Failed | Test compile failed because the test `HttpRequest` double did not implement `getAttributes()` required by Spring 6.2; corrected before rerun. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test -Dtest=RestClientLoggingInterceptorTest` | RestClient logging interceptor test | Failed | Test compile failed because the test `HttpRequest` double used record accessors instead of implementing `getURI()`; corrected before rerun. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test -Dtest=RestClientLoggingInterceptorTest` | RestClient logging interceptor test | Passed | 1 test, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn compile` | RestClient logging interceptor compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test -Dtest="RestClientLoggingInterceptorTest,RestClientConfigTest"` | RestClient logging interceptor and adjacent config tests | Passed | 3 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `git fetch origin master && git rebase origin/master` | Pre-PR rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `git diff --check origin/master...HEAD` | Post-rebase diff whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn compile` | Post-rebase RestClient logging interceptor compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.3` | https://github.com/AgenticFunProject/booking/pull/51 | `mvn test` | Post-rebase full test gate | Passed | 161 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `./mvnw compile` | RestClient configuration compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn compile` | RestClient configuration compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn test -Dtest=RestClientConfigTest` | RestClient configuration tests | Passed | 2 tests, 0 failures, 0 errors. |
