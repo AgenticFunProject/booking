@@ -73,6 +73,13 @@ corresponding GitHub Pull Request path. Gas Town tracking may still be used for
 coordination, but GitHub Pull Requests are the required merge boundary for
 `master`.
 
+Operationally, implementation agents must stop after the verified branch is
+pushed and the GitHub Pull Request is opened. Do not run `gt done`,
+`gt mq submit`, or any refinery path targeting `master` for Booking repository
+changes. Report the PR URL and verification evidence; the mayor is responsible
+for merging through GitHub, then closing the bead and cleaning up any stale
+internal queue entry.
+
 Before closing an implementation bead, update the delivery evidence files:
 
 - `docs/delivery/IMPLEMENTATION_LEDGER.md` records bead-level delivery, PR, merge commit, changed files, started/completed UTC timestamps, elapsed wall time, and blockers.
