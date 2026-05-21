@@ -6,15 +6,23 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 170 |
-| Passed | 134 |
-| Failed | 3 |
-| Blocked/skipped | 35 |
+| Checks recorded | 178 |
+| Passed | 140 |
+| Failed | 4 |
+| Blocked/skipped | 36 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `./mvnw compile` | Security/JWT properties compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `mvn compile` | Security/JWT properties compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest=SecurityPropertiesTest` | Security/JWT property binding tests | Failed | Startup failure assertions expected a root cause, but `ApplicationContextRunner` exposed the validator exception directly; assertions were corrected before rerun. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest=SecurityPropertiesTest` | Security/JWT property binding tests | Passed | 5 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `git diff --check` | Security/JWT properties and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `mvn test` | Current project test suite after security/JWT properties | Passed | 99 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Pre-merge rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD && mvn compile && mvn test` | Post-rebase full gate | Passed | Diff check and compile completed successfully; full suite passed with 99 tests, 0 failures, 0 errors. |
 | 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done` | `./mvnw compile` | Controller happy-path test compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done` | `mvn compile` | Controller happy-path test compile gate | Passed | Compile completed successfully. |
 | 2026-05-20 | `bo-2tm.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Controller happy-path tests | Passed | 10 tests, 0 failures, 0 errors. |

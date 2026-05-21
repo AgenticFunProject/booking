@@ -19,6 +19,7 @@ app:
   security:
     enabled: true
   jwt:
-    issuer: cargo-platform-test
-    secret: ${JWT_SECRET:test-secret-key-that-is-at-least-256-bits-long}
-    expiration: 3600s
+    issuer: platform-auth
+    audience: equipments-service
+    secret: ${AUTH_JWT_SECRET:test-secret-key-that-is-at-least-256-bits-long}
+    expiration: 1h

@@ -48,3 +48,10 @@ management:
 app:
   api:
     base-path: /api/v1
+  security:
+    enabled: ${SECURITY_ENABLED:true}
+  jwt:
+    issuer: ${AUTH_JWT_ISSUER:platform-auth}
+    audience: ${AUTH_JWT_AUDIENCE:equipments-service}
+    secret: ${AUTH_JWT_SECRET:}
+    expiration: ${AUTH_JWT_EXPIRATION:1h}

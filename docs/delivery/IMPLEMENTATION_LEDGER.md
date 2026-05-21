@@ -6,13 +6,48 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 42 |
+| Beads recorded | 43 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 30 |
-| Entries with elapsed time | 42 |
+| Verification blockers recorded | 31 |
+| Entries with elapsed time | 43 |
 
 ## Entries
+
+### bo-m7w.1 - Add security and JWT properties
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-m7w.1@mpfede5r` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T11:18:38Z |
+| Completed UTC | 2026-05-21T11:26:34Z |
+| Elapsed wall time | 7m 56s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/BookingServiceApplication.java`, `src/main/java/com/cargo/booking/security/JwtProperties.java`, `src/main/java/com/cargo/booking/security/JwtPropertiesValidator.java`, `src/main/java/com/cargo/booking/security/SecurityProperties.java`, `src/main/resources/application.yml`, `src/test/java/com/cargo/booking/security/SecurityPropertiesTest.java`, `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added typed `app.security` and `app.jwt` configuration property records with configuration-property scanning.
+- Added JWT issuer, audience, secret, and expiration defaults compatible with current platform tokens: issuer `platform-auth`, audience `equipments-service`, and secret from `AUTH_JWT_SECRET`.
+- Added startup validation that requires a non-blank 32-character JWT secret only when `app.security.enabled=true`, while allowing unsecured/local mode to run without a secret.
+- Externalized security and JWT values through base and test YAML configuration.
+- Added focused property-binding tests for defaults, overrides, disabled-security behavior, and enabled-security secret validation.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- Initial `mvn test -Dtest=SecurityPropertiesTest` failed because startup failure assertions expected a root cause, while `ApplicationContextRunner` exposed the validator exception directly; assertions were corrected.
+- `mvn test -Dtest=SecurityPropertiesTest` passed with 5 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- `mvn test` passed with 99 tests, 0 failures, 0 errors.
+- Post-rebase `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- Post-rebase `git diff --check origin/master...HEAD && mvn compile && mvn test` passed with 99 tests, 0 failures, 0 errors.
 
 ### bo-2tm.9 - Add controller tests for happy paths
 
