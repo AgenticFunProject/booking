@@ -6,13 +6,47 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 50 |
+| Beads recorded | 51 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 37 |
-| Entries with elapsed time | 50 |
+| Entries with elapsed time | 51 |
 
 ## Entries
+
+### bo-ww4.2 - Add RestClientConfig
+
+| Field | Value |
+| --- | --- |
+| Status | Pending GitHub PR creation |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ww4.2@mpfn45g6` |
+| PR | Pending GitHub PR creation |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T15:23:48Z |
+| Completed UTC | 2026-05-21T15:30:46Z |
+| Elapsed wall time | 6m 58s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/config/RestClientConfig.java`, `src/test/java/com/cargo/booking/config/RestClientConfigTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added `RestClientConfig` with qualified `scheduleRestClient`, `equipmentRestClient`, and `quoteRestClient` beans backed by `IntegrationProperties`.
+- Configured each client with its service base URL, JSON `Content-Type` and `Accept` defaults, and connect/read timeouts through `SimpleClientHttpRequestFactory`.
+- Registered available `ClientHttpRequestInterceptor` beans on every RestClient so the follow-up logging interceptor bead can plug in without changing the client factory.
+- Documented the future real-client implementation pattern in the config class without adding real external client behavior before contracts exist.
+- Added focused tests for base URL resolution, JSON headers, interceptor registration, bean qualifiers, and configured read timeout behavior.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=RestClientConfigTest` passed with 2 tests, 0 failures, 0 errors.
+- Post-rebase `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test -Dtest=RestClientConfigTest` passed with 2 tests, 0 failures, 0 errors.
+- Post-rebase `mvn test` passed with 160 tests, 0 failures, 0 errors.
 
 ### bo-ww4.5 - Add health endpoint configuration
 
