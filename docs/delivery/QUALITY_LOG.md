@@ -6,15 +6,23 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 225 |
-| Passed | 171 |
+| Checks recorded | 233 |
+| Passed | 178 |
 | Failed | 9 |
-| Blocked/skipped | 47 |
+| Blocked/skipped | 48 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `./mvnw compile` | RestClient configuration compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn compile` | RestClient configuration compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn test -Dtest=RestClientConfigTest` | RestClient configuration tests | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `git fetch origin master && git rebase origin/master` | Pre-PR rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn compile` | Post-rebase RestClient configuration compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn test -Dtest=RestClientConfigTest` | Post-rebase RestClient configuration tests | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `mvn test` | Post-rebase full test gate | Passed | 160 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.2` | https://github.com/AgenticFunProject/booking/pull/50 | `git diff --check origin/master...HEAD` | RestClient configuration and delivery evidence | Passed | No whitespace/diff errors. |
 | 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `./mvnw compile` | Actuator health profile configuration compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest=ActuatorHealthConfigurationTest` | Actuator health profile configuration test | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest=ActuatorHealthConfigurationTest` | Actuator health profile configuration test | Passed | 4 tests, 0 failures, 0 errors. |
