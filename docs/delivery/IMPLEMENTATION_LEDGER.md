@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 48 |
+| Beads recorded | 49 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 36 |
-| Entries with elapsed time | 48 |
+| Verification blockers recorded | 37 |
+| Entries with elapsed time | 49 |
 
 ## Entries
+
+### bo-ww4.1 - Add IntegrationProperties
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ww4.1@mpfls19s` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T14:45:59Z |
+| Completed UTC | 2026-05-21T14:52:00Z |
+| Elapsed wall time | 6m 01s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/BookingServiceApplication.java`, `src/main/java/com/cargo/booking/config/IntegrationProperties.java`, `src/main/resources/application.yml`, `src/test/java/com/cargo/booking/config/IntegrationPropertiesTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added typed `IntegrationProperties` for `app.integration` with nested schedule, equipment, and quote API configuration records.
+- Added base URL and timeout defaults for schedule, equipment, and quote APIs, with validation and default values aligned to the integration spec.
+- Enabled the integration properties for application injection from the main Spring Boot application class.
+- Added base `application.yml` placeholders backed by `SCHEDULE_API_URL`, `SCHEDULE_API_TIMEOUT`, `EQUIPMENT_API_URL`, `EQUIPMENT_API_TIMEOUT`, `QUOTE_API_URL`, and `QUOTE_API_TIMEOUT`.
+- Added focused property binding tests for default and externalized integration values.
+
+Verification:
+
+- `./mvnw compile` and `./mvnw test -Dtest="IntegrationPropertiesTest"` were blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="IntegrationPropertiesTest"` passed with 2 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
 
 ### bo-7oj - Run cumulative Phase 1-5 audit
 

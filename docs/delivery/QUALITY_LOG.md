@@ -6,15 +6,20 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 213 |
-| Passed | 163 |
+| Checks recorded | 218 |
+| Passed | 166 |
 | Failed | 9 |
-| Blocked/skipped | 43 |
+| Blocked/skipped | 45 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `./mvnw compile` | Integration properties compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest="IntegrationPropertiesTest"` | Integration property binding tests | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `mvn compile` | Integration properties compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest="IntegrationPropertiesTest"` | Integration property binding tests | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `git diff --check` | Integration properties and delivery evidence | Passed | No whitespace/diff errors before staging. |
 | 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | Manual spec audit | Phase 1 through Phase 5 implementation against `IMPLEMENTATION.md` and specs 001-007 | Passed | Found and fixed global Jackson API serialization/deserialization config and `server.error.*` leak-prevention setting gaps; no remaining concrete Phase 1-5 gaps found. |
 | 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | `./mvnw compile` | Cumulative audit compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | `mvn test -Dtest=JacksonConfigTest` | Jackson API configuration regression test | Passed | 2 tests, 0 failures, 0 errors. |

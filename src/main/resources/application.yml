@@ -63,3 +63,13 @@ app:
     audience: ${AUTH_JWT_AUDIENCE:equipments-service}
     secret: ${AUTH_JWT_SECRET:}
     expiration: ${AUTH_JWT_EXPIRATION:1h}
+  integration:
+    schedule-api:
+      base-url: ${SCHEDULE_API_URL:http://localhost:8082}
+      timeout-ms: ${SCHEDULE_API_TIMEOUT:5000}
+    equipment-api:
+      base-url: ${EQUIPMENT_API_URL:http://localhost:8083}
+      timeout-ms: ${EQUIPMENT_API_TIMEOUT:5000}
+    quote-api:
+      base-url: ${QUOTE_API_URL:http://localhost:8084}
+      timeout-ms: ${QUOTE_API_TIMEOUT:5000}
