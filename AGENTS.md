@@ -61,6 +61,18 @@ This repo is intended to be understandable from GitHub by another person or
 agent using their own Gas Town workspace. Do not rely on local Beads databases,
 local shell history, or machine-specific paths for the final work report.
 
+## Branch And Pull Request Policy
+
+Every agent, mayor, and subagent must do repository work on a branch that is
+not `master`. Changes must be proposed through a GitHub Pull Request before
+they are merged to `master`.
+
+Do not push directly to `master`. Do not merge directly to `master` through a
+local command or an internal Gas Town merge-request bead without the
+corresponding GitHub Pull Request path. Gas Town tracking may still be used for
+coordination, but GitHub Pull Requests are the required merge boundary for
+`master`.
+
 Before closing an implementation bead, update the delivery evidence files:
 
 - `docs/delivery/IMPLEMENTATION_LEDGER.md` records bead-level delivery, PR, merge commit, changed files, started/completed UTC timestamps, elapsed wall time, and blockers.
