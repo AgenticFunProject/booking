@@ -6,15 +6,25 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 195 |
-| Passed | 150 |
-| Failed | 7 |
-| Blocked/skipped | 40 |
+| Checks recorded | 205 |
+| Passed | 156 |
+| Failed | 9 |
+| Blocked/skipped | 42 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest="BookingSecurityIntegrationTest"` | Security and ownership MVC integration tests | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingSecurityIntegrationTest"` | Security and ownership MVC integration tests | Failed | Surefire found no matching tests because the file's context classes did not include a class with that exact pattern; renamed the enabled context class before rerun. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingSecurity*IntegrationTest"` | Security and ownership MVC integration tests | Failed | MVC slice failed to start because Spring Boot 3.5 loaded duplicate old/new Jackson auto-configurations; excluded the new Jackson auto-configuration before rerun. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingSecurity*IntegrationTest"` | Security and ownership MVC integration tests | Passed | 7 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `mvn compile` | Security and ownership test compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `git diff --check` | Security integration tests and delivery evidence | Passed | No whitespace/diff errors before staging delivery evidence. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `./mvnw compile` | Security and ownership test compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn compile` instead. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Pre-merge rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase security test compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 150 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `./mvnw compile` | BookingAccessAuthorizer compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest="BookingAccessAuthorizerTest"` | BookingAccessAuthorizer targeted tests | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingAccessAuthorizerTest"` | BookingAccessAuthorizer targeted tests | Passed | 16 tests, 0 failures, 0 errors. |

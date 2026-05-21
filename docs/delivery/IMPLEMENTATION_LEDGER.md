@@ -6,13 +6,47 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 46 |
+| Beads recorded | 47 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 34 |
-| Entries with elapsed time | 46 |
+| Verification blockers recorded | 35 |
+| Entries with elapsed time | 47 |
 
 ## Entries
+
+### bo-m7w.9 - Add security and ownership tests
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-m7w.9@mpfj4v3f` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T13:31:59Z |
+| Completed UTC | 2026-05-21T13:41:55Z |
+| Elapsed wall time | 9m 56s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/security/BookingSecurityIntegrationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added MVC security integration coverage using real HS256 JWT parsing with issuer `platform-auth`, audience `equipments-service`, and the shared test `AUTH_JWT_SECRET`.
+- Covered missing, malformed, expired, wrong-issuer, and wrong-audience tokens returning 401 before controller/service calls.
+- Covered Users-compatible `role=admin` tokens with a Users-style subject and no Users introspection dependency.
+- Covered endpoint role allow/deny behavior for customer, service, operator, and admin callers.
+- Covered disabled security mode, customer ownership match/mismatch, missing customer claims, customer list `customerId` requirements, and privileged/service ownership bypass behavior.
+
+Verification:
+
+- `./mvnw compile` and `./mvnw test -Dtest="BookingSecurityIntegrationTest"` were blocked because this checkout does not include a Maven wrapper.
+- Initial `mvn test -Dtest="BookingSecurityIntegrationTest"` failed because the test file's context classes did not include a class with that exact Surefire pattern; renaming the enabled context class fixed discovery.
+- Initial `mvn test -Dtest="BookingSecurity*IntegrationTest"` failed because the MVC slice loaded duplicate old/new Spring Boot 3.5 Jackson auto-configurations; excluding the new Jackson auto-configuration fixed context startup.
+- `mvn test -Dtest="BookingSecurity*IntegrationTest"` passed with 7 tests, 0 failures, 0 errors.
+- `mvn compile` passed.
+- `git diff --check` passed.
+- Post-rebase `git fetch origin master && git rebase origin/master && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 150 tests, 0 failures, 0 errors.
 
 ### bo-m7w.7 - Add BookingAccessAuthorizer
 
