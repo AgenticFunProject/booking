@@ -24,11 +24,11 @@ class SecurityPropertiesTest {
             JwtProperties jwtProperties = context.getBean(JwtProperties.class);
 
             assertThat(securityProperties.enabled()).isTrue();
-            assertThat(jwtProperties.issuer()).isEqualTo("platform-auth");
+            assertThat(jwtProperties.issuer()).isEqualTo("cargo-platform");
             assertThat(jwtProperties.audience()).isEqualTo("equipments-service");
-            assertThat(jwtProperties.secret()).isNull();
+            assertThat(jwtProperties.secret()).isEqualTo("default-dev-secret-key-min-256-bits-long-for-hs256");
             assertThat(jwtProperties.expiration()).isEqualTo(Duration.ofHours(1));
-            assertThat(jwtProperties.expirationMs()).isEqualTo(3_600_000);
+            assertThat(jwtProperties.expirationMs()).isEqualTo(3_600_000L);
         });
     }
 
@@ -37,10 +37,10 @@ class SecurityPropertiesTest {
         propertiesRunner
                 .withPropertyValues(
                         "app.security.enabled=false",
-                        "app.jwt.issuer=users-service",
-                        "app.jwt.audience=booking-service",
-                        "app.jwt.secret=external-secret-that-is-long-enough",
-                        "app.jwt.expiration=30m"
+                        "app.security.jwt.issuer=users-service",
+                        "app.security.jwt.audience=booking-service",
+                        "app.security.jwt.secret=external-secret-that-is-long-enough",
+                        "app.security.jwt.expiration-ms=1800000"
                 )
                 .run(context -> {
                     SecurityProperties securityProperties = context.getBean(SecurityProperties.class);
@@ -50,18 +50,21 @@ class SecurityPropertiesTest {
                     assertThat(jwtProperties.issuer()).isEqualTo("users-service");
                     assertThat(jwtProperties.audience()).isEqualTo("booking-service");
                     assertThat(jwtProperties.secret()).isEqualTo("external-secret-that-is-long-enough");
-                    assertThat(jwtProperties.expirationMs()).isEqualTo(1_800_000);
+                    assertThat(jwtProperties.expirationMs()).isEqualTo(1_800_000L);
                 });
     }
 
     @Test
-    void shouldRejectMissingSecretWhenSecurityIsEnabled() {
+    void shouldRejectBlankSecretWhenSecurityIsEnabled() {
         validatingRunner
-                .withPropertyValues("app.security.enabled=true")
+                .withPropertyValues(
+                        "app.security.enabled=true",
+                        "app.security.jwt.secret="
+                )
                 .run(context -> assertThat(context.getStartupFailure())
                         .isInstanceOf(IllegalStateException.class)
                         .hasMessage(
-                                "app.jwt.secret must be configured when app.security.enabled is true"
+                                "app.security.jwt.secret must be configured when app.security.enabled is true"
                         ));
     }
 
@@ -70,20 +73,21 @@ class SecurityPropertiesTest {
         validatingRunner
                 .withPropertyValues(
                         "app.security.enabled=true",
-                        "app.jwt.secret=too-short"
+                        "app.security.jwt.secret=too-short"
                 )
                 .run(context -> assertThat(context.getStartupFailure())
                         .isInstanceOf(IllegalStateException.class)
-                        .hasMessage("app.jwt.secret must be at least 32 characters for HS256"));
+                        .hasMessage("app.security.jwt.secret must be at least 32 characters for HS256"));
     }
 
     @Test
-    void shouldAllowMissingSecretWhenSecurityIsDisabled() {
+    void shouldBindDefaultSecretWhenSecurityIsDisabled() {
         validatingRunner
                 .withPropertyValues("app.security.enabled=false")
                 .run(context -> {
                     assertThat(context).hasNotFailed();
-                    assertThat(context.getBean(JwtProperties.class).secret()).isNull();
+                    assertThat(context.getBean(JwtProperties.class).secret())
+                            .isEqualTo("default-dev-secret-key-min-256-bits-long-for-hs256");
                 });
     }
 

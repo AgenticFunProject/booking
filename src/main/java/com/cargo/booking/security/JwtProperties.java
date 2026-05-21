@@ -1,23 +1,23 @@
 package com.cargo.booking.security;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.Duration;
-import org.hibernate.validator.constraints.time.DurationMin;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties(prefix = "app.jwt")
+@ConfigurationProperties(prefix = "app.security.jwt")
 public record JwtProperties(
-        @NotBlank @DefaultValue("platform-auth") String issuer,
+        @NotBlank @DefaultValue("cargo-platform") String issuer,
         @NotBlank @DefaultValue("equipments-service") String audience,
-        String secret,
-        @NotNull @DurationMin(seconds = 1) @DefaultValue("1h") Duration expiration
+        @DefaultValue("default-dev-secret-key-min-256-bits-long-for-hs256") String secret,
+        @NotNull @Min(1) @DefaultValue("3600000") Long expirationMs
 ) {
 
-    public long expirationMs() {
-        return expiration.toMillis();
+    public Duration expiration() {
+        return Duration.ofMillis(expirationMs);
     }
 }

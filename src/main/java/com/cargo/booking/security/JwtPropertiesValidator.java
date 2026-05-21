@@ -26,10 +26,12 @@ public class JwtPropertiesValidator implements SmartInitializingSingleton {
 
         String secret = jwtProperties.secret();
         if (!StringUtils.hasText(secret)) {
-            throw new IllegalStateException("app.jwt.secret must be configured when app.security.enabled is true");
+            throw new IllegalStateException(
+                    "app.security.jwt.secret must be configured when app.security.enabled is true"
+            );
         }
         if (secret.length() < MIN_HS256_SECRET_LENGTH) {
-            throw new IllegalStateException("app.jwt.secret must be at least 32 characters for HS256");
+            throw new IllegalStateException("app.security.jwt.secret must be at least 32 characters for HS256");
         }
     }
 }
