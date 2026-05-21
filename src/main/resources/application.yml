@@ -1,5 +1,11 @@
 server:
   port: 8081
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    whitelabel:
+      enabled: false
 
 spring:
   application:

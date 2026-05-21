@@ -6,15 +6,23 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 205 |
-| Passed | 156 |
+| Checks recorded | 213 |
+| Passed | 163 |
 | Failed | 9 |
-| Blocked/skipped | 42 |
+| Blocked/skipped | 43 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | Manual spec audit | Phase 1 through Phase 5 implementation against `IMPLEMENTATION.md` and specs 001-007 | Passed | Found and fixed global Jackson API serialization/deserialization config and `server.error.*` leak-prevention setting gaps; no remaining concrete Phase 1-5 gaps found. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | `./mvnw compile` | Cumulative audit compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | `mvn test -Dtest=JacksonConfigTest` | Jackson API configuration regression test | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | `mvn compile` | Cumulative audit fixes compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done` | `git diff --check` | Cumulative audit fixes and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Pre-merge rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase cumulative audit compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-7oj` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 152 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest="BookingSecurityIntegrationTest"` | Security and ownership MVC integration tests | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingSecurityIntegrationTest"` | Security and ownership MVC integration tests | Failed | Surefire found no matching tests because the file's context classes did not include a class with that exact pattern; renamed the enabled context class before rerun. |
 | 2026-05-21 | `bo-m7w.9` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingSecurity*IntegrationTest"` | Security and ownership MVC integration tests | Failed | MVC slice failed to start because Spring Boot 3.5 loaded duplicate old/new Jackson auto-configurations; excluded the new Jackson auto-configuration before rerun. |

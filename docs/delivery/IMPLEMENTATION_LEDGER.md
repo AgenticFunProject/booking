@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 47 |
+| Beads recorded | 48 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 35 |
-| Entries with elapsed time | 47 |
+| Verification blockers recorded | 36 |
+| Entries with elapsed time | 48 |
 
 ## Entries
+
+### bo-7oj - Run cumulative Phase 1-5 audit
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-7oj@mpfku0rk` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T14:19:32Z |
+| Completed UTC | 2026-05-21T14:26:20Z |
+| Elapsed wall time | 6m 48s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/config/JacksonConfig.java`, `src/test/java/com/cargo/booking/config/JacksonConfigTest.java`, `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Audited Phase 1 foundation, Phase 2 domain model, Phase 3 data access, Phase 4 service layer, and Phase 5 API/error handling against `IMPLEMENTATION.md` and specs 001 through 007.
+- Confirmed the expected Maven/Spring Boot baseline, package tree, JPA entities, Flyway migration, repositories, reference counter, service flows, DTOs, mapper, controller endpoints, security ownership hooks, and structured error handlers are present.
+- Fixed the concrete Phase 5/API configuration gap by adding `JacksonConfig` for ISO-8601 date serialization, unknown request field tolerance, Java time support, and global null-field omission.
+- Fixed the concrete error-handling configuration gap by adding the required `server.error.*` leak-prevention and whitelabel-disable settings.
+- No follow-up beads were filed because the concrete gaps found during this audit were fixed in this branch.
+
+Verification:
+
+- Manual spec audit passed after the two fixes above; no remaining concrete Phase 1-5 gaps were found.
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper; installed `mvn` was used for compile and test gates.
+- `mvn test -Dtest=JacksonConfigTest` passed with 2 tests, 0 failures, 0 errors.
+- `mvn compile` passed.
+- `git diff --check` passed.
+- Post-rebase `git fetch origin master && git rebase origin/master && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 152 tests, 0 failures, 0 errors.
 
 ### bo-m7w.9 - Add security and ownership tests
 
