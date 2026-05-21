@@ -18,14 +18,14 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | Pending GitHub PR creation |
+| Status | Open GitHub PR |
 | Agent | obsidian |
 | Branch | `polecat/obsidian/bo-ww4.2@mpfn45g6` |
-| PR | Pending GitHub PR creation |
+| PR | https://github.com/AgenticFunProject/booking/pull/50 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-21T15:23:48Z |
-| Completed UTC | 2026-05-21T15:30:46Z |
-| Elapsed wall time | 6m 58s |
+| Completed UTC | 2026-05-21T15:32:47Z |
+| Elapsed wall time | 8m 59s |
 | Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
 | Files changed | `src/main/java/com/cargo/booking/config/RestClientConfig.java`, `src/test/java/com/cargo/booking/config/RestClientConfigTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `specs/008_integrations.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/007_error_handling.md` |
