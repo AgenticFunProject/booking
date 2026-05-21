@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 49 |
+| Beads recorded | 50 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 37 |
-| Entries with elapsed time | 49 |
+| Entries with elapsed time | 50 |
 
 ## Entries
+
+### bo-ww4.5 - Add health endpoint configuration
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ww4.5@mpfmp5br` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T15:11:44Z |
+| Completed UTC | 2026-05-21T15:17:12Z |
+| Elapsed wall time | 5m 28s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/resources/application-local.yml`, `src/main/resources/application-dev.yml`, `src/main/resources/application-prod.yml`, `src/test/java/com/cargo/booking/config/ActuatorHealthConfigurationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added explicit local, dev, and prod profile resources for actuator health/info/metrics exposure.
+- Configured local health components/details as always visible for unsecured stub development, dev as ADMIN-authorized, and prod as hidden with metrics not exposed.
+- Kept the configuration limited to the booking service actuator endpoints; no assumptions were added about external service actuator endpoints or custom external health indicators.
+- Added a focused YAML resource regression test for base, local, dev, and prod actuator health settings.
+
+Verification:
+
+- `./mvnw compile` and `./mvnw test -Dtest=ActuatorHealthConfigurationTest` were blocked because this checkout does not include a Maven wrapper.
+- `mvn test -Dtest=ActuatorHealthConfigurationTest` passed with 4 tests, 0 failures, 0 errors.
+- `mvn compile` passed.
+- `git diff --check` passed.
+- Post-rebase `git fetch origin master && git rebase origin/master && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 158 tests, 0 failures, 0 errors.
 
 ### bo-ww4.1 - Add IntegrationProperties
 

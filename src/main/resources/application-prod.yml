@@ -1,0 +1,29 @@
+spring:
+  jpa:
+    show-sql: false
+    open-in-view: false
+
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
+
+app:
+  security:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+      show-components: never
+      roles: ADMIN
+
+logging:
+  level:
+    root: WARN
+    com.cargo.booking: INFO

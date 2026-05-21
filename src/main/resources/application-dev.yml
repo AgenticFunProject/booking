@@ -1,0 +1,19 @@
+app:
+  security:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: when_authorized
+      roles: ADMIN
+
+logging:
+  level:
+    root: INFO
+    com.cargo.booking: INFO

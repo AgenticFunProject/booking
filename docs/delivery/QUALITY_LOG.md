@@ -6,15 +6,22 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 218 |
-| Passed | 166 |
+| Checks recorded | 225 |
+| Passed | 171 |
 | Failed | 9 |
-| Blocked/skipped | 45 |
+| Blocked/skipped | 47 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `./mvnw compile` | Actuator health profile configuration compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest=ActuatorHealthConfigurationTest` | Actuator health profile configuration test | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest=ActuatorHealthConfigurationTest` | Actuator health profile configuration test | Passed | 4 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `mvn compile` | Actuator health profile configuration compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done` | `git diff --check` | Actuator health profile configuration and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Pre-merge rebase | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-ww4.5` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile && mvn test` | Post-rebase full gate | Passed | Compile passed; full suite passed with 158 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `./mvnw compile` | Integration properties compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest="IntegrationPropertiesTest"` | Integration property binding tests | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-ww4.1` | Pending merge queue submission via `gt done` | `mvn compile` | Integration properties compile gate | Passed | Compile completed successfully. |
