@@ -50,6 +50,26 @@ management:
   endpoint:
     health:
       show-details: when_authorized
+      show-components: when_authorized
+      roles: ADMIN
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 30s
+        permittedNumberOfCallsInHalfOpenState: 3
+    # Override per instance when external API SLAs are known.
+    instances: {}
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 500ms
+    # Retry exceptions should be configured per instance based on actual client errors.
+    instances: {}
 
 app:
   api:

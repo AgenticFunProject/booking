@@ -283,6 +283,10 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD` | Post-rebase controller ownership whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase controller ownership compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 143 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.4` | https://github.com/AgenticFunProject/booking/pull/48 | `./mvnw compile` | Resilience4j dependency/config compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-ww4.4` | https://github.com/AgenticFunProject/booking/pull/48 | `mvn compile` | Resilience4j dependency/config compile gate | Passed | Compile completed successfully after adding Resilience4j Spring Boot 3, circuit breaker, retry, and AOP dependencies. |
+| 2026-05-21 | `bo-ww4.4` | https://github.com/AgenticFunProject/booking/pull/48 | `mvn test` | Current project test suite after Resilience4j defaults | Passed | 154 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-ww4.4` | https://github.com/AgenticFunProject/booking/pull/48 | `git diff --check` | Resilience4j defaults and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 
