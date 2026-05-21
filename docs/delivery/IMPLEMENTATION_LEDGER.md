@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 45 |
+| Beads recorded | 46 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 33 |
-| Entries with elapsed time | 45 |
+| Verification blockers recorded | 34 |
+| Entries with elapsed time | 46 |
 
 ## Entries
+
+### bo-m7w.7 - Add BookingAccessAuthorizer
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-m7w.7@mpfi61qu` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T13:04:58Z |
+| Completed UTC | 2026-05-21T13:12:37Z |
+| Elapsed wall time | 7m 39s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/security/BookingAccessAuthorizer.java`, `src/test/java/com/cargo/booking/security/BookingAccessAuthorizerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Replaced the placeholder `BookingAccessAuthorizer` with create, list, booking ID, and booking reference ownership checks.
+- Allowed access without customer ownership checks when security is disabled or the caller has `ROLE_SERVICE`, `ROLE_OPERATOR`, or normalized `ROLE_ADMIN`.
+- Enforced missing customer identity claims as HTTP 403 paths via `AccessDeniedException` before comparing request or query customer IDs.
+- Enforced the secured customer list requirement with `BookingValidationException` when a customer token has a customer identity claim but omits the `customerId` query parameter.
+- Loaded existing booking owners through `BookingRepository` and returned without throwing on empty lookups so `BookingService` keeps ownership of final 404 responses.
+- Added focused authorizer unit tests for disabled security, privileged callers, Users `admin` role shape, customer claim checks, owner mismatch rejection, and missing-record deferral.
+
+Verification:
+
+- `./mvnw compile` and `./mvnw test -Dtest="BookingAccessAuthorizerTest"` were blocked because this checkout does not include a Maven wrapper.
+- `mvn test -Dtest="BookingAccessAuthorizerTest"` passed with 16 tests, 0 failures, 0 errors.
+- `mvn compile` passed.
+- Post-rebase `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` passed; branch was already up to date, diff check and compile passed, and the full suite passed with 143 tests, 0 failures, 0 errors.
 
 ### bo-m7w.5 - Implement SecurityConfig
 

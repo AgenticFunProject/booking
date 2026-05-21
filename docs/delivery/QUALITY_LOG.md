@@ -6,15 +6,20 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 190 |
-| Passed | 147 |
+| Checks recorded | 195 |
+| Passed | 150 |
 | Failed | 7 |
-| Blocked/skipped | 38 |
+| Blocked/skipped | 40 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `./mvnw compile` | BookingAccessAuthorizer compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `./mvnw test -Dtest="BookingAccessAuthorizerTest"` | BookingAccessAuthorizer targeted tests | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `mvn test -Dtest="BookingAccessAuthorizerTest"` | BookingAccessAuthorizer targeted tests | Passed | 16 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done` | `mvn compile` | BookingAccessAuthorizer compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.7` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` | Post-rebase full gate | Passed | Branch was already up to date; diff check and compile passed; full suite passed with 143 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `./mvnw compile` | SecurityConfig compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `mvn compile` | SecurityConfig compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest"` | SecurityConfig MVC tests | Failed | MVC slice failed to start because Spring Boot 3.5 loaded duplicate old/new Jackson auto-configurations; excluded the new Jackson auto-configuration before rerun. |
