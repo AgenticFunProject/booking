@@ -6,15 +6,21 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 178 |
-| Passed | 140 |
-| Failed | 4 |
-| Blocked/skipped | 36 |
+| Checks recorded | 184 |
+| Passed | 144 |
+| Failed | 5 |
+| Blocked/skipped | 37 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `./mvnw compile` | Security error handler compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest="JwtAuthenticationEntryPointTest,JwtAccessDeniedHandlerTest"` | Security error handler unit tests | Failed | Compile failed because `spring-security-web` was missing from the dependency graph; replaced `spring-security-core` with `spring-boot-starter-security` per `006_security.md`. |
+| 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest="JwtAuthenticationEntryPointTest,JwtAccessDeniedHandlerTest"` | Security error handler unit tests | Passed | 2 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `mvn compile` | Security error handler compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `git diff --check` | Security error handlers and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` | Post-rebase full gate | Passed | Branch was already up to date; diff check and compile passed; full suite passed with 115 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `./mvnw compile` | Security/JWT properties compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `mvn compile` | Security/JWT properties compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-m7w.1` | Pending merge queue submission via `gt done` | `mvn test -Dtest=SecurityPropertiesTest` | Security/JWT property binding tests | Failed | Startup failure assertions expected a root cause, but `ApplicationContextRunner` exposed the validator exception directly; assertions were corrected before rerun. |

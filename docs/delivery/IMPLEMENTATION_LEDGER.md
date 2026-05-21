@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 43 |
+| Beads recorded | 44 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 31 |
-| Entries with elapsed time | 43 |
+| Verification blockers recorded | 32 |
+| Entries with elapsed time | 44 |
 
 ## Entries
+
+### bo-m7w.4 - Implement security error handlers
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-m7w.4@mpffqj4n` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T11:56:53Z |
+| Completed UTC | 2026-05-21T12:01:14Z |
+| Elapsed wall time | 4m 21s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/security/JwtAuthenticationEntryPoint.java`, `src/main/java/com/cargo/booking/security/JwtAccessDeniedHandler.java`, `src/test/java/com/cargo/booking/security/JwtAuthenticationEntryPointTest.java`, `src/test/java/com/cargo/booking/security/JwtAccessDeniedHandlerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added `JwtAuthenticationEntryPoint` to return structured 401 JSON responses for unauthenticated secured endpoint access.
+- Added `JwtAccessDeniedHandler` to return structured 403 JSON responses for authenticated callers without required permissions.
+- Reused `ErrorResponseBuilder` so security responses include timestamp, status, error, path, and optional `X-Request-ID` consistently with API errors.
+- Replaced the narrow `spring-security-core` dependency with `spring-boot-starter-security` so the security web handler contracts are available and the dependency matches `006_security`.
+- Added focused unit tests for status, content type, safe fixed messages, request path, request ID propagation, and omission of absent request IDs.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- Initial `mvn test -Dtest="JwtAuthenticationEntryPointTest,JwtAccessDeniedHandlerTest"` failed because `spring-security-web` was missing from the dependency graph; replacing `spring-security-core` with `spring-boot-starter-security` fixed the gap.
+- `mvn test -Dtest="JwtAuthenticationEntryPointTest,JwtAccessDeniedHandlerTest"` passed with 2 tests, 0 failures, 0 errors.
+- `mvn compile` passed.
+- `git diff --check` passed.
+- Post-rebase `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` passed with 115 tests, 0 failures, 0 errors.
 
 ### bo-m7w.1 - Add security and JWT properties
 
