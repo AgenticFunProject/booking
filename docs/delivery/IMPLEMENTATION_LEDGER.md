@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 44 |
+| Beads recorded | 45 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 32 |
-| Entries with elapsed time | 44 |
+| Verification blockers recorded | 33 |
+| Entries with elapsed time | 45 |
 
 ## Entries
+
+### bo-m7w.5 - Implement SecurityConfig
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-m7w.5@mpfg59n2` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-21T12:08:18Z |
+| Completed UTC | 2026-05-21T12:18:03Z |
+| Elapsed wall time | 9m 45s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/config/SecurityConfig.java`, `src/main/resources/application.yml`, `src/test/java/com/cargo/booking/config/SecurityConfigTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added stateless `SecurityConfig` with CSRF disabled, STATELESS sessions, JWT entry point/access-denied handlers, and JWT filter registration before `UsernamePasswordAuthenticationFilter`.
+- Added `app.security.enabled=false` permit-all mode that skips JWT filter registration.
+- Configured public docs, API docs, health, and info endpoints; ADMIN-only metrics; and role rules for create, list, get, cancel, confirm, start, and complete booking endpoints.
+- Added CORS configuration with externalized `app.cors.allowed-origins`, allowed methods/headers, exposed Authorization header, credentials, and max age.
+- Added MVC security tests covering enabled and disabled security modes, public endpoints, protected routes, metrics, ADMIN JWT access, and CORS.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- Initial `mvn test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest"` failed because Spring Boot 3.5 loaded duplicate old/new Jackson auto-configurations in the MVC slice; excluding the new Jackson auto-configuration fixed context startup.
+- Second targeted test run failed because nested test controllers were not registered by the MVC slice and secured requests fell through to static-resource 500 responses; moving the test controller to a package-private top-level class fixed routing.
+- `mvn test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest"` passed with 7 tests, 0 failures, 0 errors.
+- Post-rebase `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 122 tests, 0 failures, 0 errors.
 
 ### bo-m7w.4 - Implement security error handlers
 

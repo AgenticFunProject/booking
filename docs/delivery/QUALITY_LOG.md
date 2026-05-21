@@ -6,15 +6,21 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 184 |
-| Passed | 144 |
-| Failed | 5 |
-| Blocked/skipped | 37 |
+| Checks recorded | 190 |
+| Passed | 147 |
+| Failed | 7 |
+| Blocked/skipped | 38 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `./mvnw compile` | SecurityConfig compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `mvn compile` | SecurityConfig compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest"` | SecurityConfig MVC tests | Failed | MVC slice failed to start because Spring Boot 3.5 loaded duplicate old/new Jackson auto-configurations; excluded the new Jackson auto-configuration before rerun. |
+| 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest"` | SecurityConfig MVC tests | Failed | Nested test controllers were not registered by the MVC slice, so requests fell through to static-resource 500 responses; moved the test controller to a package-private top-level class before rerun. |
+| 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done` | `mvn test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest"` | SecurityConfig MVC tests | Passed | 7 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.5` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` | Post-rebase full gate | Passed | Branch was already up to date; diff check and compile passed; full suite passed with 122 tests, 0 failures, 0 errors. |
 | 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `./mvnw compile` | Security error handler compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest="JwtAuthenticationEntryPointTest,JwtAccessDeniedHandlerTest"` | Security error handler unit tests | Failed | Compile failed because `spring-security-web` was missing from the dependency graph; replaced `spring-security-core` with `spring-boot-starter-security` per `006_security.md`. |
 | 2026-05-21 | `bo-m7w.4` | Pending merge queue submission via `gt done` | `mvn test -Dtest="JwtAuthenticationEntryPointTest,JwtAccessDeniedHandlerTest"` | Security error handler unit tests | Passed | 2 tests, 0 failures, 0 errors. |
