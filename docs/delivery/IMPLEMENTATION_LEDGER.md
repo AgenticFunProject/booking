@@ -1814,6 +1814,41 @@ Notes:
 
 - Existing `BookingAccessAuthorizer` implementation remains intentionally out of scope for dependent bead `bo-m7w.7`.
 
+### bo-m7w.8 - Wire ownership checks into controllers
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.8@mpfiqhro` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T13:20:46Z |
+| Completed UTC | 2026-05-21T13:26:07Z |
+| Elapsed wall time | 5m 21s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Wired `BookingAccessAuthorizer` into create, list, and get controller paths before the corresponding `BookingService` calls.
+- Preserved existing cancel authorization and kept lifecycle operator endpoints unchanged.
+- Updated controller tests to verify authorizer calls occur before service calls for create, list, numeric get, reference get, and cancel.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 10 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 143 tests, 0 failures, 0 errors.
+
+Notes:
+
+- No broad `@PreAuthorize` replacement was introduced; ownership checks remain explicit controller calls as specified.
+
 ## Entry Template
 
 ```md

@@ -111,8 +111,10 @@ class BookingControllerTest {
 
         ArgumentCaptor<com.cargo.booking.service.CreateBookingRequest> serviceRequest =
                 ArgumentCaptor.forClass(com.cargo.booking.service.CreateBookingRequest.class);
-        verify(bookingService).createBooking(serviceRequest.capture());
-        verify(bookingMapper).toCreatedResponse(savedBooking);
+        InOrder orderedCalls = inOrder(bookingAccessAuthorizer, bookingService, bookingMapper);
+        orderedCalls.verify(bookingAccessAuthorizer).authorizeCreateCustomer(3001L);
+        orderedCalls.verify(bookingService).createBooking(serviceRequest.capture());
+        orderedCalls.verify(bookingMapper).toCreatedResponse(savedBooking);
 
         assertThat(serviceRequest.getValue().customerId()).isEqualTo(3001L);
         assertThat(serviceRequest.getValue().scheduleId()).isEqualTo(1001L);
@@ -164,8 +166,10 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.last").value(false));
 
         ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
-        verify(bookingService).getBookings(eq(3001L), eq(BookingStatus.PENDING), pageable.capture());
-        verify(bookingMapper).toResponse(booking);
+        InOrder orderedCalls = inOrder(bookingAccessAuthorizer, bookingService, bookingMapper);
+        orderedCalls.verify(bookingAccessAuthorizer).authorizeListCustomer(3001L);
+        orderedCalls.verify(bookingService).getBookings(eq(3001L), eq(BookingStatus.PENDING), pageable.capture());
+        orderedCalls.verify(bookingMapper).toResponse(booking);
 
         assertThat(pageable.getValue().getPageNumber()).isEqualTo(1);
         assertThat(pageable.getValue().getPageSize()).isEqualTo(2);
@@ -189,7 +193,9 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.last").value(true));
 
         ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
-        verify(bookingService).getBookings(isNull(), isNull(), pageable.capture());
+        InOrder orderedCalls = inOrder(bookingAccessAuthorizer, bookingService);
+        orderedCalls.verify(bookingAccessAuthorizer).authorizeListCustomer(null);
+        orderedCalls.verify(bookingService).getBookings(isNull(), isNull(), pageable.capture());
 
         assertThat(pageable.getValue().getPageNumber()).isZero();
         assertThat(pageable.getValue().getPageSize()).isEqualTo(100);
@@ -215,9 +221,11 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.equipment[0].type").value("20FT"))
                 .andExpect(jsonPath("$.equipment[0].quantity").value(2));
 
-        verify(bookingService).getBookingById(42L);
+        InOrder orderedCalls = inOrder(bookingAccessAuthorizer, bookingService, bookingMapper);
+        orderedCalls.verify(bookingAccessAuthorizer).authorizeBookingAccess(42L);
+        orderedCalls.verify(bookingService).getBookingById(42L);
+        orderedCalls.verify(bookingMapper).toResponse(booking);
         verify(bookingService, never()).getBookingByReference(any());
-        verify(bookingMapper).toResponse(booking);
     }
 
     @Test
@@ -232,9 +240,11 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.id").value(42))
                 .andExpect(jsonPath("$.bookingReference").value("BKG-2026-00042"));
 
-        verify(bookingService).getBookingByReference("BKG-2026-00042");
+        InOrder orderedCalls = inOrder(bookingAccessAuthorizer, bookingService, bookingMapper);
+        orderedCalls.verify(bookingAccessAuthorizer).authorizeBookingAccess("BKG-2026-00042");
+        orderedCalls.verify(bookingService).getBookingByReference("BKG-2026-00042");
+        orderedCalls.verify(bookingMapper).toResponse(booking);
         verify(bookingService, never()).getBookingById(any());
-        verify(bookingMapper).toResponse(booking);
     }
 
     @Test
@@ -246,7 +256,7 @@ class BookingControllerTest {
                                 + "Expected numeric ID or booking reference in format BKG-YYYY-NNNNN"
                 ));
 
-        verifyNoMoreInteractions(bookingService, bookingMapper);
+        verifyNoMoreInteractions(bookingAccessAuthorizer, bookingService, bookingMapper);
     }
 
     @Test

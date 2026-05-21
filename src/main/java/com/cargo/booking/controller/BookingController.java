@@ -68,6 +68,7 @@ public class BookingController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public BookingCreatedResponse createBooking(@Valid @RequestBody CreateBookingRequest request) {
+        bookingAccessAuthorizer.authorizeCreateCustomer(request.customerId());
         Booking booking = bookingService.createBooking(toServiceRequest(request));
         return bookingMapper.toCreatedResponse(booking);
     }
@@ -93,6 +94,7 @@ public class BookingController {
             @RequestParam(required = false) BookingStatus status,
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
+        bookingAccessAuthorizer.authorizeListCustomer(customerId);
         return PagedResponse.from(bookingService.getBookings(customerId, status, pageable)
                 .map(bookingMapper::toResponse));
     }
@@ -118,8 +120,11 @@ public class BookingController {
         Booking booking;
 
         if (NUMERIC_ID_PATTERN.matcher(id).matches()) {
-            booking = bookingService.getBookingById(parseBookingId(id));
+            Long bookingId = parseBookingId(id);
+            bookingAccessAuthorizer.authorizeBookingAccess(bookingId);
+            booking = bookingService.getBookingById(bookingId);
         } else if (BOOKING_REFERENCE_PATTERN.matcher(id).matches()) {
+            bookingAccessAuthorizer.authorizeBookingAccess(id);
             booking = bookingService.getBookingByReference(id);
         } else {
             throw invalidBookingIdentifier(id);

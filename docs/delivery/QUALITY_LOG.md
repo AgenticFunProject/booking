@@ -252,6 +252,14 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase SecurityContextHelper sync | Passed | Branch was already up to date with `origin/master`. |
 | 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase SecurityContextHelper compile gate | Passed | Compile completed successfully. |
 | 2026-05-21 | `bo-m7w.6` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 127 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done` | `./mvnw compile` | Controller ownership checks compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done` | `mvn compile` | Controller ownership checks compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done` | `mvn test -Dtest=BookingControllerTest` | Controller ownership check regression tests | Passed | 10 tests, 0 failures, 0 errors. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done` | `git diff --check` | Controller ownership checks and delivery evidence | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `git fetch origin master && git rebase origin/master` | Post-rebase controller ownership sync | Passed | Branch was already up to date with `origin/master`. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `git diff --check origin/master...HEAD` | Post-rebase controller ownership whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `mvn compile` | Post-rebase controller ownership compile gate | Passed | Compile completed successfully. |
+| 2026-05-21 | `bo-m7w.8` | Pending merge queue submission via `gt done --pre-verified` | `mvn test` | Post-rebase full test gate | Passed | 143 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 
