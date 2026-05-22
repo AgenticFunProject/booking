@@ -18,14 +18,14 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | Open GitHub PR |
+| Status | PR #90 merged; PR #91 open for final CI evidence |
 | Agent | obsidian |
-| Branch | `polecat/obsidian/bo-1v4@mph56rj7` |
-| PR | https://github.com/AgenticFunProject/booking/pull/90 |
-| Merge commit | Pending |
+| Branch | `polecat/obsidian/bo-1v4@mph56rj7`; `polecat/obsidian/bo-1v4-ci-evidence` |
+| PR | https://github.com/AgenticFunProject/booking/pull/90; https://github.com/AgenticFunProject/booking/pull/91 |
+| Merge commit | `310987b0035eda8da45bcc336022213a79360707`; PR #91 pending |
 | Started UTC | 2026-05-22T16:37:13Z |
-| Completed UTC | 2026-05-22T16:42:09Z |
-| Elapsed wall time | 4m 56s |
+| Completed UTC | 2026-05-22T16:46:51Z |
+| Elapsed wall time | 9m 38s |
 | Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
 | Files changed | `.github/workflows/ci.yml`, `docs/delivery/FINAL_DELIVERY_REPORT.md`, `docs/delivery/SPEC_COVERAGE_MATRIX.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/010_deployment.md` |
@@ -43,6 +43,8 @@ Delivered:
 - Updated the final delivery report, spec coverage matrix, implementation
   ledger, and quality log to point `bo-1v4` at PR #90 CI as the Docker/Compose
   evidence path.
+- Confirmed PR #90 CI passed, including the Docker-capable job that runs the
+  image build and Compose validation.
 
 Verification:
 
@@ -55,6 +57,8 @@ Verification:
 - Static GitHub Actions workflow review confirmed PR #90's Docker job builds
   `booking-service:${{ github.sha }}` and `booking-service:bo-ot8.10`, then
   runs `docker compose config`.
+- PR #90 GitHub Actions CI passed: `Build and test` passed in 1m21s and
+  `Docker build` passed in 1m6s.
 - `git diff --check` passed after recording the CI verification path.
 
 ### bo-8z3.5 - Generate final delivery report

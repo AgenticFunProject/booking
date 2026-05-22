@@ -47,7 +47,7 @@ hook and the open follow-up bead `bo-1v4`.
 | `007_error_handling` | Implemented | Structured error responses, validation violations, request ID propagation, business/framework/security exception mappings, and error tests. |
 | `008_integrations` | Implemented with deferred external scope | Typed integration properties, RestClient infrastructure, logging, health configuration, Resilience4j defaults, and local stubs. Real external contracts are intentionally deferred. |
 | `009_testing` | Implemented with deferred external scope | Unit, repository, MockMvc, security, integration, and E2E coverage with JUnit tag selectors wired through Maven Surefire. WireMock contract tests for real clients are deferred. |
-| `010_deployment` | Implemented with CI Docker verification pending | Dockerfile, Docker Compose, local/dev/prod/test profiles, logging, request tracing, `.env.example`, Makefile, CI workflow, and README/runbook. PR #90 / `bo-1v4` moves Docker image and Compose validation to GitHub Actions. |
+| `010_deployment` | Implemented with CI Docker verification | Dockerfile, Docker Compose, local/dev/prod/test profiles, logging, request tracing, `.env.example`, Makefile, CI workflow, and README/runbook. PR #90 / `bo-1v4` verifies Docker image and Compose validation through GitHub Actions. |
 
 ## PR And Commit Evidence
 
@@ -87,8 +87,9 @@ The final quality gate in `bo-ot8.10` / PR #85 recorded:
 
 Follow-up `bo-1v4` / PR #90 updates the GitHub Actions Docker job to run the
 Docker image build on a Docker-capable `ubuntu-latest` runner and then run
-`docker compose config`. After PR #90 CI passes, Mayor will use that CI result
-as the final Docker/Compose verification evidence.
+`docker compose config`. PR #90 CI passed: `Build and test` passed in 1m21s
+and `Docker build` passed in 1m6s. PR #91 records that final CI result in the
+delivery evidence.
 
 The cumulative Phase 1-8 audit in `bo-ot8.12` / PR #87 added fixes and reran:
 
@@ -137,8 +138,7 @@ invalid lifecycle behavior.
   contract dependency.
 - Docker image build and Docker Compose validation cannot be executed locally in
   this workspace because the Docker CLI is not installed. PR #90 resolves that
-  evidence gap by running both checks in GitHub Actions on a Docker-capable
-  runner.
+  evidence gap with passing GitHub Actions checks on a Docker-capable runner.
 - Historical pre-policy beads have ledger and commit evidence but not always a
   GitHub PR URL.
 
@@ -146,7 +146,7 @@ invalid lifecycle behavior.
 
 | Bead | Scope | Status |
 | --- | --- | --- |
-| `bo-1v4` | Run Docker image build and `docker compose config` through PR #90's GitHub Actions Docker job, then use passing CI as final evidence. | Open PR |
+| `bo-1v4` | Run Docker image build and `docker compose config` through PR #90's GitHub Actions Docker job, then use passing CI as final evidence. | PR #90 merged with CI passed; PR #91 evidence update open |
 
 Additional external API contract work should be filed once the schedule,
 equipment, and quote teams publish stable contracts.
@@ -154,6 +154,6 @@ equipment, and quote teams publish stable contracts.
 ## Delivery Conclusion
 
 All in-repository v1 scope has implementation, verification, and GitHub-readable
-delivery evidence. The remaining work is explicitly bounded to PR #90 CI
-completion for Docker/Compose verification and future external-client contract
-implementation after upstream APIs exist.
+delivery evidence. The remaining work is explicitly bounded to merging PR #91's
+CI-result evidence update plus future external-client contract implementation
+after upstream APIs exist.
