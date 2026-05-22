@@ -389,6 +389,8 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` | Post-rebase JWT helper/provider compatibility regression | Passed | 14 tests, 0 failures, 0 errors. |
 | 2026-05-22 | `bo-8wz.3` | https://github.com/AgenticFunProject/booking/pull/67 | `./mvnw compile` | Domain model test compile gate | Passed | Compile completed successfully. |
 | 2026-05-22 | `bo-8wz.3` | https://github.com/AgenticFunProject/booking/pull/67 | `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` | Focused domain model unit tests | Passed | 20 tests, 0 failures, 0 errors. |
+| 2026-05-22 | `bo-8wz.3` | https://github.com/AgenticFunProject/booking/pull/67 | `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD` | Post-rebase domain model test diff check | Passed | Branch was already up to date with `origin/master`; no whitespace/diff errors. |
+| 2026-05-22 | `bo-8wz.3` | https://github.com/AgenticFunProject/booking/pull/67 | `./mvnw test` | Full test gate after domain model tests | Passed | 192 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 
