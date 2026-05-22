@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 70 |
+| Beads recorded | 71 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 42 |
-| Entries with elapsed time | 69 |
+| Entries with elapsed time | 70 |
 
 ## Entries
 
@@ -43,6 +43,39 @@ Verification:
 - `git fetch origin master && git switch -c polecat/quartz/bo-ot8.2 origin/master` passed after Dockerfile PR #76 had merged.
 - Static compose content check with `python3` passed for expected PostgreSQL and booking-service entries, local profile, DB env/defaults, health dependency, named volume, and no Kafka service.
 - `docker compose config` was blocked because Docker is not installed in this environment (`docker: command not found`), so local Compose CLI validation could not run.
+- `git diff --check` passed.
+
+### bo-ot8.4 - Add logback-spring configuration
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.4` |
+| PR | https://github.com/AgenticFunProject/booking/pull/79 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T14:29:02Z |
+| Completed UTC | 2026-05-22T14:33:27Z |
+| Elapsed wall time | 4m 25s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/resources/logback-spring.xml`, `src/test/java/com/cargo/booking/config/LogbackSpringConfigurationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/010_deployment.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added the `logstash-logback-encoder` dependency for structured JSON logging.
+- Added `logback-spring.xml` with profile-specific local, dev, and prod logging.
+- Configured the local profile with readable console output, INFO root logging, and DEBUG `com.cargo.booking` logging.
+- Configured dev/prod JSON console logging with explicit `timestamp`, `level`, `logger`, `message`, `thread`, and nested `mdc` fields.
+- Set dev root logging to INFO, prod root logging to WARN, and `com.cargo.booking` to INFO for JSON profiles.
+- Added focused XML regression tests for the profile appenders, JSON encoder/provider fields, MDC provider, root levels, and app logger levels.
+
+Verification:
+
+- `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- Initial `./mvnw test -Dtest=LogbackSpringConfigurationTest` failed because the new test helper inspected the local pattern at the wrong XML level; corrected before rerun.
+- `./mvnw test -Dtest=LogbackSpringConfigurationTest` passed with 3 tests, 0 failures, 0 errors.
+- `./mvnw compile` passed.
 - `git diff --check` passed.
 
 ### bo-ot8.1 - Add Dockerfile

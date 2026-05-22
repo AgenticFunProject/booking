@@ -6,9 +6,9 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 356 |
-| Passed | 286 |
-| Failed | 19 |
+| Checks recorded | 361 |
+| Passed | 290 |
+| Failed | 20 |
 | Blocked/skipped | 53 |
 
 ## Checks
@@ -19,6 +19,11 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `python3 - <<'PY' ...` | Static docker-compose content check | Passed | Verified expected PostgreSQL and booking-service entries, local profile, DB env/defaults, health dependency, named volume, and no Kafka entry. |
 | 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `docker compose config` | Docker Compose syntax/config validation | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Compose CLI validation could not run locally. |
 | 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `git diff --check` | Docker Compose whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-22 | `bo-ot8.4` | https://github.com/AgenticFunProject/booking/pull/79 | `git fetch origin master && git rebase origin/master` | Logback configuration branch sync | Passed | Branch was already up to date with `origin/master` before final verification. |
+| 2026-05-22 | `bo-ot8.4` | https://github.com/AgenticFunProject/booking/pull/79 | `./mvnw test -Dtest=LogbackSpringConfigurationTest` | Initial Logback Spring XML regression test | Failed | The new test helper looked for the local pattern as a direct profile child instead of under the appender encoder; corrected the test before rerun. |
+| 2026-05-22 | `bo-ot8.4` | https://github.com/AgenticFunProject/booking/pull/79 | `./mvnw test -Dtest=LogbackSpringConfigurationTest` | Logback Spring XML regression test | Passed | 3 tests, 0 failures, 0 errors. Covered local readable console logging, dev/prod JSON encoder fields, MDC provider, and profile-specific root/app logger levels. |
+| 2026-05-22 | `bo-ot8.4` | https://github.com/AgenticFunProject/booking/pull/79 | `./mvnw compile` | Logback configuration compile gate | Passed | Main compilation succeeded after adding the Logstash Logback encoder dependency and `logback-spring.xml`. |
+| 2026-05-22 | `bo-ot8.4` | https://github.com/AgenticFunProject/booking/pull/79 | `git diff --check` | Logback configuration and delivery evidence whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.1 origin/master` | Dockerfile branch setup | Passed | Created a fresh quartz branch from current `origin/master` after the hook was empty but the user explicitly assigned `bo-ot8.1`. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `./mvnw package -DskipTests` | Maven package step used by the Docker build stage | Passed | Built `target/booking-service-0.0.1-SNAPSHOT.jar`; tests intentionally skipped to match the Dockerfile build command. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `docker version --format '{{.Server.Version}}'` | Docker image build feasibility check | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Docker build verification could not run locally. |
