@@ -6,15 +6,27 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 332 |
-| Passed | 266 |
-| Failed | 17 |
+| Checks recorded | 344 |
+| Passed | 276 |
+| Failed | 19 |
 | Blocked/skipped | 51 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `git fetch origin master && git rebase origin/master` | Phase 1-7 audit branch setup | Passed | Branch was already up to date with `origin/master` before edits. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | Manual spec audit | Cumulative Phase 1-7 implementation against `IMPLEMENTATION.md`, `AGENTS.md`, and specs 001-009 | Passed | Confirmed the implementation covers foundation, domain, data access, service lifecycle, API/error handling, integration infrastructure, security, and Phase 7 testing. The audit found one concrete grouped-test selector gap, fixed in this bead; no remaining concrete Phase 1-7 gaps found. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw compile` | Initial cumulative audit compile gate | Passed | Main compilation succeeded with the Maven wrapper before audit fixes. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test -Dgroups="!integration,!e2e"` | Initial unit-group selector audit | Failed | Command exited 0 but did not meet the documented unit-only expectation: it ran 229 tests, including integration-tagged tests. Fixed Surefire group wiring before rerun. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,BookingLifecycleE2ETest"` | Initial integration selector audit | Failed | Command exited 0 but ran both `BookingControllerTest` and `BookingLifecycleE2ETest`; the E2E inherited `integration` through abstract `BaseIntegrationTest`. Moved the inherited tag to concrete integration tests before rerun. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw compile` | Compile gate after Surefire/JUnit tag fix | Passed | Main compilation succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,BookingLifecycleE2ETest"` | Post-fix integration selector audit | Passed | 19 tests, 0 failures, 0 errors, 0 skipped. Only `BookingControllerTest` ran, proving the integration selector no longer includes the E2E class. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test -Dgroups="!integration,!e2e"` | Unit group selector | Passed | 164 tests, 0 failures, 0 errors, 0 skipped. Verified the documented unit-only command excludes `integration` and `e2e` tags. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test -Dgroups="integration"` | Full integration group selector | Passed | 65 tests, 0 failures, 0 errors, 0 skipped. Covered repository, MockMvc/error/security, and shared WireMock/embedded PostgreSQL integration tests. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test -Dgroups="e2e"` | Full E2E group selector | Passed | 1 test, 0 failures, 0 errors, 0 skipped. Verified only the full lifecycle E2E is selected by the `e2e` group. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw test` | Full cumulative Phase 1-7 test gate | Passed | 230 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `git diff --check origin/master...HEAD` | Phase 1-7 audit branch whitespace check | Passed | No whitespace/diff errors after delivery evidence and test selector edits. |
 | 2026-05-22 | `bo-8wz.8` | https://github.com/AgenticFunProject/booking/pull/72 | `git fetch origin master && git rebase origin/master` | Full lifecycle E2E branch setup | Passed | Branch was already up to date with `origin/master` before edits. |
 | 2026-05-22 | `bo-8wz.8` | https://github.com/AgenticFunProject/booking/pull/72 | `./mvnw compile` | Final compile gate after lifecycle service and test edits | Passed | Main compilation succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-8wz.8` | https://github.com/AgenticFunProject/booking/pull/72 | `./mvnw test -Dtest=BookingLifecycleE2ETest` | Initial full lifecycle E2E run | Failed | The new E2E exposed an existing lifecycle API response failure. The first run attempted to deserialize an error response as `BookingResponse`; after making the test assert status first, the failure was a 500 from `PATCH /api/v1/bookings/{id}/start`, caused by response mapping after the transaction with lazy equipment lines. |

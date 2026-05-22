@@ -6,13 +6,52 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 66 |
+| Beads recorded | 67 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 65 |
+| Entries with elapsed time | 66 |
 
 ## Entries
+
+### bo-8wz.11 - Run cumulative Phase 1-7 audit
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8wz.11@mpgy185d` |
+| PR | https://github.com/AgenticFunProject/booking/pull/73 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T13:16:57Z |
+| Completed UTC | 2026-05-22T13:28:29Z |
+| Elapsed wall time | 11m 32s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/test/java/com/cargo/booking/BaseIntegrationTest.java`, `src/test/java/com/cargo/booking/client/BaseWireMockTestTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Audited Phases 1 through 7 against `IMPLEMENTATION.md`, `AGENTS.md`, and specs 001-009 after Phase 7 landed on `master`.
+- Confirmed the current implementation covers the required project foundation, domain model and Flyway schema, repositories/specifications, service lifecycle rules, REST DTO/controller/mapping behavior, structured error handling, integration infrastructure, optional JWT security/ownership checks, and Phase 7 test suite breadth.
+- Found and fixed one concrete Phase 7 testing gap: the documented Maven `-Dgroups` commands did not isolate JUnit 5 tags correctly, and the E2E inherited the `integration` tag through `BaseIntegrationTest`.
+- Added Surefire profile wiring so `-Dgroups="!integration,!e2e"` maps to `excludedGroups=integration,e2e`, while `-Dgroups="integration"` and `-Dgroups="e2e"` run the corresponding tags.
+- Moved the `integration` tag from abstract `BaseIntegrationTest` to concrete `BaseWireMockTestTest`, leaving `BookingLifecycleE2ETest` tagged only as `e2e`.
+- Kept Phase 8 deployment/CI work out of scope.
+
+Verification:
+
+- `git fetch origin master && git rebase origin/master` passed; branch was already up to date before edits.
+- Manual spec audit passed after the grouped-test selector gap was fixed; no remaining concrete Phase 1-7 gaps found.
+- Initial `./mvnw test -Dgroups="!integration,!e2e"` exited successfully but failed the audit expectation because it ran 229 tests including integration-tagged tests.
+- Initial `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,BookingLifecycleE2ETest"` exited successfully but failed the audit expectation because it ran the E2E class under the `integration` selector.
+- `./mvnw compile` passed after the Maven/test tag fix.
+- `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,BookingLifecycleE2ETest"` passed after the fix with 19 tests, proving the integration selector excludes the E2E class.
+- `./mvnw test -Dgroups="!integration,!e2e"` passed with 164 tests, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test -Dgroups="integration"` passed with 65 tests, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test -Dgroups="e2e"` passed with 1 test, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test` passed with 230 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-8wz.8 - Add full lifecycle E2E test
 
