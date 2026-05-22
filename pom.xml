@@ -28,6 +28,7 @@
         <resilience4j.version>2.3.0</resilience4j.version>
         <embedded-database-spring-test.version>2.8.0</embedded-database-spring-test.version>
         <embedded-postgres.version>2.2.2</embedded-postgres.version>
+        <surefire.argLine>-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar -Xshare:off</surefire.argLine>
     </properties>
 
     <dependencies>
@@ -155,6 +156,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>${surefire.argLine}</argLine>
+                </configuration>
             </plugin>
         </plugins>
     </build>

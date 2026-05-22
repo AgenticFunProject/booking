@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 254 |
-| Passed | 194 |
+| Checks recorded | 258 |
+| Passed | 198 |
 | Failed | 11 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,10 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-k7u.8` | Pending | `./mvnw test` | Baseline full test suite before Mockito Java agent configuration | Passed | 164 tests, 0 failures, 0 errors. Reproduced Mockito self-attach and JDK dynamic-agent warnings. |
+| 2026-05-22 | `bo-k7u.8` | Pending | `./mvnw compile` | Mockito Java agent Maven configuration compile gate | Passed | Compile completed successfully with Maven wrapper. |
+| 2026-05-22 | `bo-k7u.8` | Pending | `./mvnw test -Dtest=BookingReferenceGeneratorTest` | Focused Mockito-based unit test after explicit Java agent configuration | Passed | 1 test, 0 failures, 0 errors. The Mockito self-attach and JDK dynamic-agent warning block did not appear. |
+| 2026-05-22 | `bo-k7u.8` | Pending | `./mvnw test` | Full test suite with explicit Mockito Java agent configured through Surefire | Passed | 164 tests, 0 failures, 0 errors. Baseline emitted Mockito self-attach and JDK dynamic-agent warnings; post-change run did not emit that warning block. |
 | 2026-05-21 | `bo-u5m` | https://github.com/AgenticFunProject/booking/pull/53 | Manual spec audit | Phase 1 through Phase 6 implementation against `IMPLEMENTATION.md` and specs 001-008 | Passed | Found and fixed JWT configuration namespace/`expiration-ms` alignment with spec 006 and missing `TestSecurityConfig` test-support gap; no remaining concrete Phase 1-6 gaps found. |
 | 2026-05-21 | `bo-u5m` | https://github.com/AgenticFunProject/booking/pull/53 | `./mvnw compile` | Cumulative Phase 1-6 audit compile gate | Blocked | This checkout does not include a Maven wrapper; used installed `mvn` instead. |
 | 2026-05-21 | `bo-u5m` | https://github.com/AgenticFunProject/booking/pull/53 | `mvn compile` | Cumulative Phase 1-6 audit compile gate | Passed | Compile completed successfully. |
