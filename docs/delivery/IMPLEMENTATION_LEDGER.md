@@ -18,10 +18,10 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | Pending GitHub PR |
+| Status | Open GitHub PR |
 | Agent | obsidian |
 | Branch | `polecat/obsidian/bo-8wz.4@mpgvpsuv` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/68 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-22T12:12:12Z |
 | Completed UTC | 2026-05-22T12:20:37Z |
