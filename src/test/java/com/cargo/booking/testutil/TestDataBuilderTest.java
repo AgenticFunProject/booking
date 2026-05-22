@@ -19,6 +19,7 @@ class TestDataBuilderTest {
     void shouldCreateValidBookingBuilderWithReusableDefaults() {
         Booking booking = TestDataBuilder.aBooking().build();
 
+        assertThat(booking.getId()).isNull();
         assertThat(booking.getBookingReference()).isEqualTo("BKG-2026-00001");
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.PENDING);
         assertThat(booking.getScheduleId()).isEqualTo(1001L);
@@ -28,7 +29,18 @@ class TestDataBuilderTest {
         assertThat(booking.getCustomerEmail()).isEqualTo("test@example.com");
         assertThat(booking.getCargoDescription()).isEqualTo("Test cargo");
         assertThat(booking.getCargoWeightKg()).isEqualByComparingTo(BigDecimal.valueOf(1000));
+        assertThat(booking.getCreatedAt()).isNull();
+        assertThat(booking.getUpdatedAt()).isNull();
         assertThat(booking.getEquipmentLines()).isEmpty();
+    }
+
+    @Test
+    void shouldCreatePersistedLookingBookingWhenExplicitlyRequested() {
+        Booking booking = TestDataBuilder.aPersistedBooking().build();
+
+        assertThat(booking.getId()).isEqualTo(42L);
+        assertThat(booking.getCreatedAt()).isEqualTo(TestDataBuilder.DEFAULT_CREATED_AT);
+        assertThat(booking.getUpdatedAt()).isEqualTo(TestDataBuilder.DEFAULT_UPDATED_AT);
     }
 
     @Test

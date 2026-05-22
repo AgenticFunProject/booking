@@ -38,7 +38,6 @@ public final class TestDataBuilder {
 
     public static Booking.BookingBuilder aBooking() {
         return Booking.builder()
-                .id(DEFAULT_BOOKING_ID)
                 .bookingReference(DEFAULT_BOOKING_REFERENCE)
                 .status(DEFAULT_STATUS)
                 .scheduleId(DEFAULT_SCHEDULE_ID)
@@ -48,7 +47,12 @@ public final class TestDataBuilder {
                 .customerEmail(DEFAULT_CUSTOMER_EMAIL)
                 .customerPhone(DEFAULT_CUSTOMER_PHONE)
                 .cargoDescription(DEFAULT_CARGO_DESCRIPTION)
-                .cargoWeightKg(DEFAULT_CARGO_WEIGHT_KG)
+                .cargoWeightKg(DEFAULT_CARGO_WEIGHT_KG);
+    }
+
+    public static Booking.BookingBuilder aPersistedBooking() {
+        return aBooking()
+                .id(DEFAULT_BOOKING_ID)
                 .createdAt(DEFAULT_CREATED_AT)
                 .updatedAt(DEFAULT_UPDATED_AT);
     }
@@ -59,6 +63,10 @@ public final class TestDataBuilder {
 
     public static Booking aBookingEntity() {
         return aBooking().build();
+    }
+
+    public static Booking aPersistedBookingEntity() {
+        return aPersistedBooking().build();
     }
 
     public static Booking aBookingEntityWithStatus(BookingStatus status) {
