@@ -18,8 +18,10 @@ Agents should update these files as they complete beads:
   environment blockers.
 - `DEMO_API_RUNBOOK.md` records the coworker-facing local startup, Swagger, curl,
   and lifecycle demo workflow.
-- Future files owned by reporting beads, such as a spec coverage matrix or final
-  delivery report, should be linked here when they are added.
+- `SPEC_COVERAGE_MATRIX.md` maps specs 001 through 010 to implementation beads,
+  PR links, verification evidence, status, and deferred scope.
+- Future files owned by reporting beads, such as a final delivery report, should
+  be linked here when they are added.
 
 When a phase is completed, record a cumulative phase audit. The audit should
 cover Phase 1 through the phase that just completed, compare implementation
