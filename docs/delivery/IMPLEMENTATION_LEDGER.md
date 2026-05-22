@@ -2144,6 +2144,40 @@ Notes:
 - Per-client Resilience4j instances remain intentionally empty until external API SLAs and client error contracts are known.
 - GitHub PR #48 was opened before Gas Town completion to satisfy the repository branch/PR rule.
 
+### bo-k7u.5 - Add Maven wrapper
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.5@mpgn8usw` |
+| PR | https://github.com/AgenticFunProject/booking/pull/54 |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-22T08:15:15Z |
+| Completed UTC | 2026-05-22T08:23:27Z |
+| Elapsed wall time | 8m 12s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `.mvn/wrapper/maven-wrapper.properties`, `mvnw`, `mvnw.cmd`, `MAVEN.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Generated the Maven wrapper with Maven Wrapper Plugin 3.3.4.
+- Configured the wrapper to download Apache Maven 3.9.16 from Maven Central.
+- Updated Maven usage docs to prefer `./mvnw`.
+- Resolved the prior delivery blocker where `./mvnw compile` could not run because wrapper files were missing.
+
+Verification:
+
+- `mvn -N wrapper:wrapper` passed and generated `mvnw`, `mvnw.cmd`, and `.mvn/wrapper/maven-wrapper.properties`.
+- `./mvnw -version` passed using Apache Maven 3.9.16 from the wrapper cache.
+- Post-rebase `./mvnw compile` passed.
+- Post-rebase `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Wrapper generation used the default `only-script` distribution type from Maven Wrapper Plugin 3.3.4; no wrapper JAR is required.
+
 ## Entry Template
 
 ```md
