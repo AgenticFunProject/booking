@@ -103,30 +103,36 @@ class BookingServiceReadTest {
     @Test
     void shouldListBookingsByCustomerOnly() {
         Pageable pageable = PageRequest.of(0, 20);
+        Page<Booking> bookings = new PageImpl<>(List.of(Booking.builder().id(1L).build()));
         BookingService bookingService = bookingService();
 
-        bookingService.getBookings(7L, null, pageable);
+        when(bookingRepository.findByCustomerId(7L, pageable)).thenReturn(bookings);
 
+        assertThat(bookingService.getBookings(7L, null, pageable)).isSameAs(bookings);
         verify(bookingRepository).findByCustomerId(7L, pageable);
     }
 
     @Test
     void shouldListBookingsByStatusOnly() {
         Pageable pageable = PageRequest.of(0, 20);
+        Page<Booking> bookings = new PageImpl<>(List.of(Booking.builder().id(1L).build()));
         BookingService bookingService = bookingService();
 
-        bookingService.getBookings(null, BookingStatus.CONFIRMED, pageable);
+        when(bookingRepository.findByStatus(BookingStatus.CONFIRMED, pageable)).thenReturn(bookings);
 
+        assertThat(bookingService.getBookings(null, BookingStatus.CONFIRMED, pageable)).isSameAs(bookings);
         verify(bookingRepository).findByStatus(BookingStatus.CONFIRMED, pageable);
     }
 
     @Test
     void shouldListAllBookingsWithoutFilters() {
         Pageable pageable = PageRequest.of(0, 20);
+        Page<Booking> bookings = new PageImpl<>(List.of(Booking.builder().id(1L).build()));
         BookingService bookingService = bookingService();
 
-        bookingService.getBookings(null, null, pageable);
+        when(bookingRepository.findAll(pageable)).thenReturn(bookings);
 
+        assertThat(bookingService.getBookings(null, null, pageable)).isSameAs(bookings);
         verify(bookingRepository).findAll(pageable);
     }
 

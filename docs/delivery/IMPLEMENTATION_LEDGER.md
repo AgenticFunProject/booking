@@ -6,13 +6,49 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 65 |
+| Beads recorded | 66 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 64 |
+| Entries with elapsed time | 65 |
 
 ## Entries
+
+### bo-8wz.8 - Add full lifecycle E2E test
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8wz.8@mpgxf2a3` |
+| PR | https://github.com/AgenticFunProject/booking/pull/72 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T12:59:43Z |
+| Completed UTC | 2026-05-22T13:10:49Z |
+| Elapsed wall time | 11m 06s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/BookingLifecycleE2ETest.java`, `src/test/java/com/cargo/booking/service/BookingServiceLifecycleTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `BookingLifecycleE2ETest` using `BaseIntegrationTest`, `@ActiveProfiles({"test", "local"})`, `@TestPropertySource(app.security.enabled=false)`, `TestRestTemplate`, local client stubs, and embedded PostgreSQL.
+- Covered the full happy path through public HTTP endpoints: create PENDING booking, fetch it, confirm it, start it, complete it, list by customer, and verify the completed booking appears in the page.
+- Tagged the class with `@Tag("e2e")` so Maven `-Dgroups="e2e"` selects it.
+- The E2E exposed an existing lifecycle response bug where `start`/`complete` and list responses could be mapped after transactions closed while equipment lines were still lazy. Fixed that narrowly by reusing the eager fetch for lifecycle updates and initializing listed booking equipment lines inside the read-only transaction.
+- Updated affected service unit tests to match the eager lifecycle fetch and explicit list page-return contracts.
+- Kept cancellation E2E, Phase 1-7 audit, deployment, CI, and unrelated documentation cleanup out of scope.
+
+Verification:
+
+- `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- `./mvnw compile` passed.
+- Initial `./mvnw test -Dtest=BookingLifecycleE2ETest` failed and exposed the lifecycle response bug; the failure is recorded in `QUALITY_LOG.md`.
+- `./mvnw test -Dtest=BookingLifecycleE2ETest` passed with 1 test, 0 failures, 0 errors, and 0 skipped after the eager lifecycle/list response fix.
+- `./mvnw test -Dgroups="e2e" -Dtest=BookingLifecycleE2ETest` passed with 1 test, 0 failures, 0 errors, and 0 skipped.
+- Initial `./mvnw test -Dtest="BookingServiceLifecycleTest,BookingServiceReadTest"` failed because existing unit mocks needed alignment with the eager fetch/list initialization change; the failure is recorded in `QUALITY_LOG.md`.
+- `./mvnw test -Dtest="BookingServiceLifecycleTest,BookingServiceReadTest"` passed with 14 tests, 0 failures, 0 errors, and 0 skipped after unit-test alignment.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-8wz.7 - Add security integration tests
 
