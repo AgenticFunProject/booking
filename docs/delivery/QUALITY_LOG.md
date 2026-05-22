@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 275 |
-| Passed | 215 |
+| Checks recorded | 280 |
+| Passed | 220 |
 | Failed | 11 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,11 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `./mvnw compile` | Final cleanup compile verification | Passed | Build succeeded. Captured log scan found 0 `WARN`/`WARNING`/`ERROR` log-level matches. |
+| 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `./mvnw test` | Final cleanup full test verification | Passed | 164 tests, 0 failures, 0 errors. Captured log scan found 0 `WARN`/`WARNING`/`ERROR` log-level matches. |
+| 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `git diff --check` | Final cleanup whitespace verification | Passed | No whitespace/diff errors. |
+| 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `bd doctor` | Final Beads hygiene verification | Passed | Reported 71 passed, 4 warnings, 0 errors. Compared with the cleanup baseline of 67 passed, 8 warnings, 0 errors. Remaining warnings: redirected Dolt remote consistency, generated/local Beads git working tree state in the redirected mayor clone, transient Dolt local metadata, and current attached molecule orphan dependency `bo-k7u.12->bo-wisp-lsol`. |
+| 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `gt doctor --rig booking` | Final Gas Town hygiene verification | Passed | Reported 100 passed, 4 warnings, 0 failed. Compared with the cleanup baseline of 99 passed, 5 warnings, 0 failed. Remaining warnings: user-local shell integration, town-root `.runtime/` ignore coverage, incomplete witness structure, and missing canonical `internal/testutil/`. |
 | 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd doctor` | Baseline Beads hygiene snapshot | Passed | Reported 67 passed, 8 warnings, 0 errors before cleanup. Warnings covered missing repo fingerprint/project identity, remote consistency, hooks, `.beads/.gitignore`, project gitignore exclusions, Beads working tree state, and 50 orphan dependency references. |
 | 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `gt doctor --rig booking` | Baseline Gas Town hygiene snapshot | Passed | Reported 99 passed, 5 warnings, 0 failed before cleanup. Warnings covered user-local shell integration, one stuck patrol wisp, missing `.runtime/` gitignore coverage, incomplete witness structure, and missing canonical `internal/testutil/`. |
 | 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd doctor --fix --yes` | Beads metadata and dependency hygiene repair | Passed | Fixed 6 categories: Beads gitignore, project gitignore, project identity, hook shims, repo fingerprint metadata, and 50 orphan dependency references. Git working tree cleanup remained manual by design. |
