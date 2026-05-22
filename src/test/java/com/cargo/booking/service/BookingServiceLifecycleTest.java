@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.cargo.booking.client.EquipmentClient;
 import com.cargo.booking.client.QuoteClient;
 import com.cargo.booking.client.ScheduleClient;
+import com.cargo.booking.config.RequestTracingMdc;
 import com.cargo.booking.exception.BookingNotFoundException;
 import com.cargo.booking.exception.IllegalStateTransitionException;
 import com.cargo.booking.model.entity.Booking;
@@ -19,11 +20,13 @@ import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.repository.BookingRepository;
 import com.cargo.booking.testutil.TestDataBuilder;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.MDC;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceLifecycleTest {
@@ -46,13 +49,22 @@ class BookingServiceLifecycleTest {
     @Mock
     private BookingStateMachine bookingStateMachine;
 
+    @AfterEach
+    void tearDown() {
+        MDC.clear();
+    }
+
     @Test
     void shouldStartConfirmedBooking() {
         Booking booking = bookingWithStatus(BookingStatus.CONFIRMED);
         BookingService bookingService = bookingService();
 
         when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
-        when(bookingRepository.save(booking)).thenReturn(booking);
+        when(bookingRepository.save(booking)).thenAnswer(invocation -> {
+            assertThat(MDC.get(RequestTracingMdc.BOOKING_REF))
+                    .isEqualTo(TestDataBuilder.DEFAULT_BOOKING_REFERENCE);
+            return booking;
+        });
 
         Booking result = bookingService.startBooking(42L);
 
@@ -61,6 +73,7 @@ class BookingServiceLifecycleTest {
         InOrder startOrder = inOrder(bookingStateMachine, bookingRepository);
         startOrder.verify(bookingStateMachine).validateTransition(BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS);
         startOrder.verify(bookingRepository).save(booking);
+        assertThat(MDC.get(RequestTracingMdc.BOOKING_REF)).isNull();
     }
 
     @Test

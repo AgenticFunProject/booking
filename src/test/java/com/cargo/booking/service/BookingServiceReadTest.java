@@ -8,16 +8,19 @@ import static org.mockito.Mockito.when;
 import com.cargo.booking.client.EquipmentClient;
 import com.cargo.booking.client.QuoteClient;
 import com.cargo.booking.client.ScheduleClient;
+import com.cargo.booking.config.RequestTracingMdc;
 import com.cargo.booking.exception.BookingNotFoundException;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.repository.BookingRepository;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.MDC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +46,11 @@ class BookingServiceReadTest {
 
     @Mock
     private BookingStateMachine bookingStateMachine;
+
+    @AfterEach
+    void tearDown() {
+        MDC.clear();
+    }
 
     @Test
     void shouldGetBookingByIdWithEquipmentLines() {
@@ -71,9 +79,13 @@ class BookingServiceReadTest {
         BookingService bookingService = bookingService();
 
         when(bookingRepository.findWithEquipmentLinesByBookingReference("BKG-2026-00042"))
-                .thenReturn(Optional.of(booking));
+                .thenAnswer(invocation -> {
+                    assertThat(MDC.get(RequestTracingMdc.BOOKING_REF)).isEqualTo("BKG-2026-00042");
+                    return Optional.of(booking);
+                });
 
         assertThat(bookingService.getBookingByReference("BKG-2026-00042")).isSameAs(booking);
+        assertThat(MDC.get(RequestTracingMdc.BOOKING_REF)).isNull();
     }
 
     @Test

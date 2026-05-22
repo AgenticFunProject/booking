@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.cargo.booking.client.EquipmentClient;
 import com.cargo.booking.client.QuoteClient;
 import com.cargo.booking.client.ScheduleClient;
+import com.cargo.booking.config.RequestTracingMdc;
 import com.cargo.booking.exception.BookingValidationException;
 import com.cargo.booking.exception.QuoteNotValidException;
 import com.cargo.booking.exception.ScheduleNotAvailableException;
@@ -23,12 +24,14 @@ import com.cargo.booking.testutil.TestDataBuilder;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.MDC;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceCreateTest {
@@ -51,6 +54,11 @@ class BookingServiceCreateTest {
     @Mock
     private BookingStateMachine bookingStateMachine;
 
+    @AfterEach
+    void tearDown() {
+        MDC.clear();
+    }
+
     @Test
     void shouldCreateBookingWithPendingStatusAndEquipmentLines() {
         BookingService bookingService = bookingService();
@@ -64,7 +72,10 @@ class BookingServiceCreateTest {
                 TestDataBuilder.DEFAULT_CARGO_WEIGHT_KG
         )).thenReturn(true);
         when(bookingReferenceGenerator.generateReference()).thenReturn("BKG-2026-00042");
-        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(bookingRepository.save(any(Booking.class))).thenAnswer(invocation -> {
+            assertThat(MDC.get(RequestTracingMdc.BOOKING_REF)).isEqualTo("BKG-2026-00042");
+            return invocation.getArgument(0);
+        });
 
         Booking booking = bookingService.createBooking(request);
 
@@ -90,6 +101,7 @@ class BookingServiceCreateTest {
         );
         createOrder.verify(bookingReferenceGenerator).generateReference();
         createOrder.verify(bookingRepository).save(any(Booking.class));
+        assertThat(MDC.get(RequestTracingMdc.BOOKING_REF)).isNull();
     }
 
     @Test
