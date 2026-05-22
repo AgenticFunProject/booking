@@ -6,9 +6,9 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 290 |
-| Passed | 230 |
-| Failed | 11 |
+| Checks recorded | 296 |
+| Passed | 234 |
+| Failed | 13 |
 | Blocked/skipped | 51 |
 
 ## Checks
@@ -19,6 +19,12 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test -Dtest=TestDataBuilderTest` | Focused test data builder utility tests | Passed | 6 tests, 0 failures, 0 errors, 0 skipped after review fix for transient booking defaults. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test` | Full suite after adding test data builders | Passed | 170 tests, 0 failures, 0 errors, 0 skipped after review fix for transient booking defaults. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `git diff --check origin/master...HEAD` | Test data builder branch whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-22 | `bo-8wz.10` | https://github.com/AgenticFunProject/booking/pull/65 | `./mvnw compile` | Shared integration test infrastructure compile gate after adding WireMock and base test classes | Passed | Main compilation succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.10` | https://github.com/AgenticFunProject/booking/pull/65 | `./mvnw test -Dtest=BaseWireMockTestTest` | Initial full-context infrastructure smoke test | Failed | Full `@SpringBootTest` startup exposed an existing incompatible Springdoc 3.0.3 dependency path that pulled Spring Boot 4 modules into the Spring Boot 3.5 app. Springdoc was aligned to the Boot 3-compatible 2.8.x line before rerun. |
+| 2026-05-22 | `bo-8wz.10` | https://github.com/AgenticFunProject/booking/pull/65 | `./mvnw test -Dtest=BaseWireMockTestTest` | Full-context infrastructure smoke test after Springdoc alignment | Failed | Startup then exposed existing `BookingReferenceGenerator` constructor ambiguity; its public constructor was marked for Spring injection before rerun. |
+| 2026-05-22 | `bo-8wz.10` | https://github.com/AgenticFunProject/booking/pull/65 | `./mvnw test -Dtest=BaseWireMockTestTest` | Embedded PostgreSQL and WireMock dynamic property smoke test | Passed | 2 tests, 0 failures, 0 errors. Verified embedded PostgreSQL connectivity and schedule/equipment/quote WireMock base-url binding. |
+| 2026-05-22 | `bo-8wz.10` | https://github.com/AgenticFunProject/booking/pull/65 | `./mvnw test -Dtest="BookingReferenceGeneratorTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Affected generator and security MVC tests after Springdoc/Jackson cleanup | Passed | 15 tests, 0 failures, 0 errors. Removed obsolete Boot 4 Jackson auto-config exclusions from the MVC slice tests. |
+| 2026-05-22 | `bo-8wz.10` | https://github.com/AgenticFunProject/booking/pull/65 | `./mvnw test -Dtest=BaseWireMockTestTest` | Final focused infrastructure smoke test after import cleanup | Passed | 2 tests, 0 failures, 0 errors. |
 | 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | Manual spec audit | Post-cleanup cumulative audit of Phases 1-6 plus Cleanup Wave `bo-k7u` | Passed | Compared `IMPLEMENTATION.md`, `AGENTS.md`, specs 001-008, delivery evidence, and implementation files. No concrete implementation gaps found. Phase 7 and Phase 8 remain unstarted. |
 | 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `./mvnw compile` | Post-cleanup cumulative audit compile gate | Passed | Build succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `./mvnw test` | Post-cleanup cumulative audit full test gate | Passed | 164 tests, 0 failures, 0 errors, 0 skipped. |

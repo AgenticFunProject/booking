@@ -18,7 +18,6 @@ import com.cargo.booking.security.JwtTokenProvider;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @WebMvcTest(controllers = SecurityConfigTestController.class)
-@ImportAutoConfiguration(exclude = org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration.class)
 @Import({
         SecurityConfig.class,
         JwtAuthenticationFilter.class,
@@ -132,7 +130,6 @@ class SecurityConfigEnabledTest {
 }
 
 @WebMvcTest(controllers = SecurityConfigTestController.class)
-@ImportAutoConfiguration(exclude = org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration.class)
 @Import({
         SecurityConfig.class,
         JwtAuthenticationFilter.class,
