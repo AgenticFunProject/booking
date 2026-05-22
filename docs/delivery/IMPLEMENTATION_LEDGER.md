@@ -2239,6 +2239,40 @@ Notes:
 - The worktree initially sat on a stale `bo-k7u.7` branch with no commits; it was reconciled to the existing `bo-k7u.6` branch from current `origin/master` before editing.
 - Existing Mockito dynamic-agent warnings remain out of scope for this bead and are tracked by follow-up `bo-k7u.8`.
 
+### bo-k7u.7 - Fix deprecated test API usage
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission via `gt done` |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.7@mpgq0wqh` |
+| PR | Pending merge queue |
+| Merge commit | Pending merge |
+| Started UTC | 2026-05-22T09:32:37Z |
+| Completed UTC | 2026-05-22T09:42:26Z |
+| Elapsed wall time | 9m 49s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/test/java/com/cargo/booking/exception/ErrorHandlingMockMvcTest.java`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/009_testing.md`, `specs/007_error_handling.md`, `specs/003_data_access.md` |
+
+Delivered:
+
+- Replaced deprecated no-handler testing through `DispatcherServlet#setThrowExceptionIfNoHandlerFound(boolean)` and `NoHandlerFoundException` with current `NoResourceFoundException` handling.
+- Removed deprecated `Specification.where(...)` usage from repository tests.
+- Replaced deprecated `HttpMessageNotReadableException` test construction with the current `HttpInputMessage` constructor.
+- Replaced deprecated embedded database provider enum usage from `ZONKY` to `EMBEDDED` in repository slice tests.
+
+Verification:
+
+- Baseline `./mvnw test` passed with 164 tests and showed the deprecated API warnings targeted by this bead.
+- `./mvnw compile` passed.
+- Focused `./mvnw test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,BookingRepositoryTest,BookingReferenceCounterRepositoryTest" -Dmaven.compiler.showDeprecation=true -Dmaven.compiler.showWarnings=true` passed with 31 tests and no compiler deprecation warnings.
+- Final `./mvnw test` passed with 164 tests, 0 failures, 0 errors; prior Java compiler deprecated API warnings were absent.
+
+Notes:
+
+- Full test output still includes existing runtime log noise such as Hibernate dialect deprecation logging; this bead removed Java compiler deprecated API warnings from the affected test paths.
+
 ## Entry Template
 
 ```md

@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY)
+@AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.EMBEDDED)
 class BookingRepositoryTest {
 
     @Autowired
@@ -171,8 +171,7 @@ class BookingRepositoryTest {
         bookingRepository.save(aBooking("BKG-2026-00017", BookingStatus.CONFIRMED, 3002L, 1002L));
         bookingRepository.flush();
 
-        Specification<Booking> specification = Specification
-                .where(BookingSpecification.hasCustomerId(3001L))
+        Specification<Booking> specification = BookingSpecification.hasCustomerId(3001L)
                 .and(BookingSpecification.hasStatus(BookingStatus.CONFIRMED))
                 .and(BookingSpecification.hasScheduleId(1002L));
 

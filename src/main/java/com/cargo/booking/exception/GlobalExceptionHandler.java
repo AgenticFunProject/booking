@@ -22,7 +22,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE)
@@ -167,9 +167,9 @@ public class GlobalExceptionHandler {
         return warn(exception, HttpStatus.UNSUPPORTED_MEDIA_TYPE, message, request);
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoHandlerFound(
-            NoHandlerFoundException exception,
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(
+            NoResourceFoundException exception,
             HttpServletRequest request) {
         String message = "No endpoint found for " + request.getMethod() + " " + request.getRequestURI();
         return warn(exception, HttpStatus.NOT_FOUND, message, request);
