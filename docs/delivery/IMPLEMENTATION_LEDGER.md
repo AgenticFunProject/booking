@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 78 |
+| Beads recorded | 79 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 44 |
-| Entries with elapsed time | 77 |
+| Entries with elapsed time | 78 |
 
 ## Entries
+
+### bo-ot8.12 - Run cumulative Phase 1-8 audit
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.12@mph3j467` |
+| PR | https://github.com/AgenticFunProject/booking/pull/87 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T15:50:47Z |
+| Completed UTC | 2026-05-22T15:57:39Z |
+| Elapsed wall time | 6m 52s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `.env.example`, `src/main/resources/application.yml`, `src/test/resources/application-test.yml`, `src/test/java/com/cargo/booking/BookingLifecycleE2ETest.java`, `src/test/java/com/cargo/booking/config/ActuatorHealthConfigurationTest.java`, `src/test/java/com/cargo/booking/security/BookingSecurityIntegrationTest.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `src/test/java/com/cargo/booking/testutil/JwtTestHelper.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Audited Phases 1-8 against current `origin/master`, `IMPLEMENTATION.md`, specs 001-010, and delivery evidence.
+- Fixed concrete audit gaps: base graceful shutdown settings from `specs/010_deployment.md`, exact `.env.example` copy guidance, test JWT issuer alignment with `specs/009_testing.md`, and the missing E2E cancellation flow.
+- Confirmed deployment/runtime assets are present: Dockerfile, `.dockerignore`, Docker Compose, local/dev/prod/test profile config, Logback JSON/local logging, request tracing MDC, `.env.example`, CI workflow, Makefile, README, Maven wrapper, and delivery evidence.
+- Confirmed final quality gate evidence exists in `bo-ot8.10` / PR #85. The only infrastructure blocker remains filed as `bo-1v4` for Docker image/Compose verification in a Docker-capable environment.
+- Confirmed reporting/demo work remains intentionally outside this bead: `bo-8z3.3` spec coverage matrix is blocked on this audit, `bo-8z3.4` demo/API runbook is assigned to quartz, and `bo-8z3.5` final delivery report waits for the matrix, runbook, final gate, and this audit.
+
+Verification:
+
+- Manual cumulative audit passed after fixes; no new unfiled Phase 1-8 gaps remain.
+- `./mvnw compile` passed.
+- Initial `./mvnw test -Dtest="ActuatorHealthConfigurationTest,JwtTokenProviderTest,BookingSecurityIntegrationTest,BookingLifecycleE2ETest"` failed because the new cancellation E2E asserted older message wording; assertion was corrected.
+- Rerun `./mvnw test -Dtest="ActuatorHealthConfigurationTest,JwtTokenProviderTest,BookingSecurityIntegrationTest,BookingLifecycleE2ETest"` passed with 24 tests, 0 failures, 0 errors, 0 skipped.
+- `./mvnw test -Dgroups="e2e"` passed with 2 tests, 0 failures, 0 errors, 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-8z3.4 - Add demo and API runbook
 

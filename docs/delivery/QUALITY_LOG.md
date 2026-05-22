@@ -6,15 +6,21 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 395 |
-| Passed | 321 |
-| Failed | 20 |
+| Checks recorded | 401 |
+| Passed | 326 |
+| Failed | 21 |
 | Blocked/skipped | 56 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | Manual spec audit | Cumulative Phase 1-8 implementation against `IMPLEMENTATION.md`, `AGENTS.md`, delivery evidence, and specs 001-010 | Passed | Reviewed current `origin/master` coverage for foundation, domain, data access, services, API/error handling, security/integration, testing, and deployment/runtime/docs evidence. Fixed graceful shutdown config, `.env.example` copy guidance, test JWT issuer alignment, and missing E2E cancellation coverage. Confirmed `bo-1v4` tracks Docker-only verification, `bo-8z3.3` is the pending spec coverage matrix, `bo-8z3.4` is the hooked demo/API runbook, and `bo-8z3.5` is the final delivery report. |
+| 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | `./mvnw compile` | Cumulative audit compile gate | Passed | Main compilation succeeded after configuration and test-source edits. |
+| 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | `./mvnw test -Dtest="ActuatorHealthConfigurationTest,JwtTokenProviderTest,BookingSecurityIntegrationTest,BookingLifecycleE2ETest"` | Initial focused audit regression tests | Failed | 24 tests ran with 1 failure in the new cancellation E2E; the API returned the expected 409 but the test asserted older message wording. Corrected the assertion to check the transition content. |
+| 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | `./mvnw test -Dtest="ActuatorHealthConfigurationTest,JwtTokenProviderTest,BookingSecurityIntegrationTest,BookingLifecycleE2ETest"` | Focused audit regression tests | Passed | 24 tests, 0 failures, 0 errors, 0 skipped. Covered profile YAML, JWT issuer/token validation, security integration, full lifecycle E2E, and cancellation E2E. |
+| 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | `./mvnw test -Dgroups="e2e"` | E2E group selector after audit fixes | Passed | 2 tests, 0 failures, 0 errors, 0 skipped. Verified the grouped E2E command now covers both completion and cancellation lifecycle flows. |
+| 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | `git diff --check origin/master...HEAD` | Cumulative audit whitespace check | Passed | No whitespace/diff errors after audit fixes and delivery evidence updates. |
 | 2026-05-22 | `bo-8z3.4` | https://github.com/AgenticFunProject/booking/pull/86 | `python3 - <<'PY' ...` | Static demo/API runbook coverage check | Passed | Verified the runbook covers local startup, Swagger URL, health check, create/list/get/confirm/start/complete/cancel curl examples, expected lifecycle statuses, Makefile commands, and Docker Compose/local-stub notes. |
 | 2026-05-22 | `bo-8z3.4` | https://github.com/AgenticFunProject/booking/pull/86 | `git diff --check HEAD` | Demo/API runbook and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the runbook and evidence updates. |
 | 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `git fetch origin master && git rebase origin/master` | Final quality gate branch sync | Passed | Branch `polecat/obsidian/bo-ot8.10-final-quality-gate` was already up to date with current `origin/master`. |

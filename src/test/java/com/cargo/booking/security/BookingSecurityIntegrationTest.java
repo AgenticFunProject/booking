@@ -125,7 +125,7 @@ class BookingSecurityIntegrationTestSupport {
 })
 @TestPropertySource(properties = {
         "app.security.enabled=true",
-        "app.security.jwt.issuer=platform-auth",
+        "app.security.jwt.issuer=test-issuer",
         "app.security.jwt.audience=equipments-service",
         "app.security.jwt.secret=test-secret-key-that-is-at-least-256-bits-long"
 })

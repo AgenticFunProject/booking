@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 
 public final class JwtTestHelper {
 
-    public static final String DEFAULT_ISSUER = "platform-auth";
+    public static final String DEFAULT_ISSUER = "test-issuer";
     public static final String DEFAULT_AUDIENCE = "equipments-service";
     public static final String DEFAULT_SECRET = "test-secret-key-that-is-at-least-256-bits-long";
     public static final String WRONG_SECRET = "different-secret-key-that-is-at-least-256-bits";

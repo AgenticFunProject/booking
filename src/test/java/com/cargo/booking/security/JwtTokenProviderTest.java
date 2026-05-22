@@ -19,7 +19,7 @@ class JwtTokenProviderTest {
     private static final String SECRET = "test-secret-key-that-is-at-least-256-bits-long";
 
     private final JwtProperties jwtProperties = new JwtProperties(
-            "platform-auth",
+            "test-issuer",
             "equipments-service",
             SECRET,
             Duration.ofHours(1).toMillis()
@@ -91,14 +91,14 @@ class JwtTokenProviderTest {
 
     @Test
     void shouldRejectTokenWithWrongAudience() {
-        String token = token("platform-auth", "other-service", Instant.now().plus(Duration.ofHours(1)));
+        String token = token("test-issuer", "other-service", Instant.now().plus(Duration.ofHours(1)));
 
         assertThat(tokenProvider.validateToken(token)).isFalse();
     }
 
     @Test
     void shouldRejectExpiredToken() {
-        String token = token("platform-auth", "equipments-service", Instant.now().minus(Duration.ofMinutes(1)));
+        String token = token("test-issuer", "equipments-service", Instant.now().minus(Duration.ofMinutes(1)));
 
         assertThat(tokenProvider.validateToken(token)).isFalse();
     }
@@ -108,7 +108,7 @@ class JwtTokenProviderTest {
         SecretKey wrongKey = Keys.hmacShaKeyFor("different-secret-key-that-is-at-least-256-bits".getBytes(StandardCharsets.UTF_8));
         String token = Jwts.builder()
                 .subject("user-123")
-                .issuer("platform-auth")
+                .issuer("test-issuer")
                 .audience().add("equipments-service").and()
                 .expiration(Date.from(Instant.now().plus(Duration.ofHours(1))))
                 .signWith(wrongKey)
@@ -120,7 +120,7 @@ class JwtTokenProviderTest {
     @Test
     void shouldRejectMissingSubject() {
         String token = Jwts.builder()
-                .issuer("platform-auth")
+                .issuer("test-issuer")
                 .audience().add("equipments-service").and()
                 .expiration(Date.from(Instant.now().plus(Duration.ofHours(1))))
                 .signWith(signingKey())
@@ -137,7 +137,7 @@ class JwtTokenProviderTest {
     private String token(Map<String, Object> claims) {
         return Jwts.builder()
                 .claims(claims)
-                .issuer("platform-auth")
+                .issuer("test-issuer")
                 .audience().add("equipments-service").and()
                 .expiration(Date.from(Instant.now().plus(Duration.ofHours(1))))
                 .signWith(signingKey())
