@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 264 |
-| Passed | 204 |
+| Checks recorded | 275 |
+| Passed | 215 |
 | Failed | 11 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,17 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd doctor` | Baseline Beads hygiene snapshot | Passed | Reported 67 passed, 8 warnings, 0 errors before cleanup. Warnings covered missing repo fingerprint/project identity, remote consistency, hooks, `.beads/.gitignore`, project gitignore exclusions, Beads working tree state, and 50 orphan dependency references. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `gt doctor --rig booking` | Baseline Gas Town hygiene snapshot | Passed | Reported 99 passed, 5 warnings, 0 failed before cleanup. Warnings covered user-local shell integration, one stuck patrol wisp, missing `.runtime/` gitignore coverage, incomplete witness structure, and missing canonical `internal/testutil/`. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd doctor --fix --yes` | Beads metadata and dependency hygiene repair | Passed | Fixed 6 categories: Beads gitignore, project gitignore, project identity, hook shims, repo fingerprint metadata, and 50 orphan dependency references. Git working tree cleanup remained manual by design. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd vc commit -m "Repair booking Beads hygiene metadata"` | Persist Beads metadata repair | Passed | Created Beads VC commit `9ooq54i5` for the metadata/project identity/orphan dependency repair. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd hooks install && bd hooks list` | Beads hook installation verification | Passed | `bd hooks list` showed pre-commit, post-merge, pre-push, post-checkout, and prepare-commit-msg installed with shim 1.0.4. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd doctor` | Post-fix Beads hygiene snapshot before repo commit | Passed | Reported 71 passed, 4 warnings, 0 errors. Remaining warnings were remote consistency, git working tree, transient Dolt local metadata, and a hook warning that was corrected with explicit `bd hooks install`. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `gt doctor --rig booking` | Post-fix Gas Town hygiene snapshot before repo commit | Passed | Reported 99 passed, 5 warnings, 0 failed. The stuck patrol warning cleared; remaining warnings were local/town-structure or branch-cleanliness items documented in the ledger. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `git diff --check` | Hygiene docs and ignore-rule whitespace check | Passed | No whitespace/diff errors after `.gitignore` and delivery evidence edits. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `git fetch origin master && git rebase origin/master` | Pre-PR rebase | Passed | Branch was already up to date with `origin/master` before final commit. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `bd doctor` | Final Beads hygiene snapshot after repo commit | Passed | Reported 72 passed, 3 warnings, 0 errors. Remaining warnings were remote consistency for redirected Dolt path, generated Beads/gitignore files in the redirected mayor clone outside this PR branch, and transient Dolt local metadata. |
+| 2026-05-22 | `bo-k7u.11` | https://github.com/AgenticFunProject/booking/pull/60 | `gt doctor --rig booking` | Final Gas Town hygiene snapshot after repo commit | Passed | Reported 100 passed, 4 warnings, 0 failed. Stuck patrol and polecat uncommitted-change warnings cleared; remaining warnings were user-local shell integration, town-root `.runtime/` ignore, witness clone structure, and canonical `internal/testutil/` setup. |
 | 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,ClientStubTest,BookingServiceCancelTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest"` | Expected negative-path, JWT, local stub, cancellation warning, and MVC security log-noise regression tests | Passed | 50 tests, 0 failures, 0 errors. Test-only Logback suppression removed expected WARN/ERROR patterns from the relevant Surefire XML reports. |
 | 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest"` | MVC security slices after test banner suppression | Passed | 13 tests, 0 failures, 0 errors. Spring Boot banner and generated security password warning did not appear. |
 | 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw compile` | Test log-noise cleanup compile gate | Passed | Compile completed successfully. |
