@@ -6,15 +6,20 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 361 |
-| Passed | 290 |
+| Checks recorded | 366 |
+| Passed | 294 |
 | Failed | 20 |
-| Blocked/skipped | 53 |
+| Blocked/skipped | 54 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.7 origin/master` | CI workflow branch setup | Passed | Created the CI workflow branch from current `origin/master`. |
+| 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `python3 - <<'PY' ...` | Static GitHub Actions workflow content check | Passed | Verified CI workflow triggers on master/develop push and PR, has build-and-test and docker-build jobs, Java 21 setup, Maven cache, unit/integration/e2e group commands, artifact upload, Docker Buildx, Docker build, latest tag on master, and no CI services. |
+| 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `./mvnw test -Dgroups="!integration,!e2e"` | Workflow unit-test selector smoke check | Passed | 168 tests, 0 failures, 0 errors, 0 skipped. Verified the workflow's unit selector command works locally. |
+| 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `docker build -t booking-service:ci-smoke .` | Local Docker build feasibility check | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. The workflow still defines the required Docker build job for GitHub-hosted runners. |
+| 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `git diff --check` | CI workflow whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.2 origin/master` | Docker Compose branch setup | Passed | Created the compose branch from current `origin/master` after Dockerfile PR #76 had merged. |
 | 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `python3 - <<'PY' ...` | Static docker-compose content check | Passed | Verified expected PostgreSQL and booking-service entries, local profile, DB env/defaults, health dependency, named volume, and no Kafka entry. |
 | 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `docker compose config` | Docker Compose syntax/config validation | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Compose CLI validation could not run locally. |

@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 71 |
+| Beads recorded | 72 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 42 |
-| Entries with elapsed time | 70 |
+| Verification blockers recorded | 43 |
+| Entries with elapsed time | 71 |
 
 ## Entries
+
+### bo-ot8.7 - Add GitHub Actions CI workflow
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-ot8.7` |
+| PR | https://github.com/AgenticFunProject/booking/pull/80 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T14:42:49Z |
+| Completed UTC | 2026-05-22T14:47:33Z |
+| Elapsed wall time | 4m 44s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `.github/workflows/ci.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added `.github/workflows/ci.yml` with workflow name `CI` for pushes and pull requests targeting `master` and `develop`.
+- Added a `build-and-test` job on `ubuntu-latest` with checkout, Java 21 Temurin setup, Maven dependency cache, Phase 7 Maven group selectors for unit, integration, and E2E tests, test-result artifact upload, jar packaging, and jar artifact upload.
+- Added a dependent `docker-build` job with checkout, Docker Buildx setup, Docker image build tagged with `${{ github.sha }}`, and a `latest` tag only on the `master` branch.
+- Kept PostgreSQL services out of CI because integration tests use embedded PostgreSQL.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/quartz/bo-ot8.7 origin/master` passed.
+- Static GitHub Actions workflow content check with `python3` passed for required triggers, jobs, Java/Maven setup, group selectors, artifact upload, Docker Buildx/build/latest-tag steps, and absence of CI services.
+- `./mvnw test -Dgroups="!integration,!e2e"` passed with 168 tests, 0 failures, 0 errors, and 0 skipped.
+- `docker build -t booking-service:ci-smoke .` was blocked because Docker is not installed in this environment (`docker: command not found`), so local Docker build verification could not run.
+- `git diff --check` passed.
 
 ### bo-ot8.2 - Add docker-compose local stack
 
