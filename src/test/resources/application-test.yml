@@ -24,3 +24,13 @@ app:
       audience: equipments-service
       secret: ${AUTH_JWT_SECRET:test-secret-key-that-is-at-least-256-bits-long}
       expiration-ms: 3600000
+  integration:
+    schedule-api:
+      base-url: ${SCHEDULE_API_URL:http://localhost:8082}
+      timeout-ms: ${SCHEDULE_API_TIMEOUT:1000}
+    equipment-api:
+      base-url: ${EQUIPMENT_API_URL:http://localhost:8083}
+      timeout-ms: ${EQUIPMENT_API_TIMEOUT:1000}
+    quote-api:
+      base-url: ${QUOTE_API_URL:http://localhost:8084}
+      timeout-ms: ${QUOTE_API_TIMEOUT:1000}

@@ -1,6 +1,22 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/booking_db}
+    username: ${DB_USERNAME:booking_user}
+    password: ${DB_PASSWORD:booking_pass}
+
 app:
   security:
     enabled: false
+  integration:
+    schedule-api:
+      base-url: ${SCHEDULE_API_URL:http://localhost:8082}
+      timeout-ms: ${SCHEDULE_API_TIMEOUT:5000}
+    equipment-api:
+      base-url: ${EQUIPMENT_API_URL:http://localhost:8083}
+      timeout-ms: ${EQUIPMENT_API_TIMEOUT:5000}
+    quote-api:
+      base-url: ${QUOTE_API_URL:http://localhost:8084}
+      timeout-ms: ${QUOTE_API_TIMEOUT:5000}
 
 management:
   endpoints:
