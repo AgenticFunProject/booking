@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 380 |
-| Passed | 308 |
+| Checks recorded | 383 |
+| Passed | 311 |
 | Failed | 20 |
 | Blocked/skipped | 54 |
 
@@ -15,6 +15,9 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.9` | https://github.com/AgenticFunProject/booking/pull/84 | `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.9 origin/master` | Final README branch setup | Passed | Created a fresh obsidian branch from current `origin/master` after the Makefile, env example, and tracing/logging work had landed. |
+| 2026-05-22 | `bo-ot8.9` | https://github.com/AgenticFunProject/booking/pull/84 | `python3 - <<'PY' ...` | Static README topic coverage check | Passed | Verified README coverage for prerequisites, quick start, local development, API docs, environment variables, `.env.example`, tests, Makefile, CI, project structure, architecture, Swagger, and contributing topics. |
+| 2026-05-22 | `bo-ot8.9` | https://github.com/AgenticFunProject/booking/pull/84 | `git diff --check` | Final README whitespace check | Passed | No whitespace/diff errors after README and delivery evidence edits. |
 | 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.8 origin/master` | Makefile developer commands branch setup | Passed | Created a fresh quartz branch from current `origin/master` for the hooked bead. |
 | 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `git fetch origin master && git rebase origin/master` | Makefile developer commands branch sync | Passed | Rebased onto current `origin/master` after PR #82/`bo-ot8.6` merged; resolved delivery evidence conflicts by preserving both `bo-ot8.6` and `bo-ot8.8` entries and combined counts. |
 | 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `make -n build test test-unit test-integration test-e2e run docker-build docker-up docker-down docker-logs clean swagger` | Makefile developer command dry-run | Passed | Printed the expected Maven build/test/group/run commands, Docker build/Compose commands, clean commands, and Swagger URL opener fallback without executing Docker or opening a browser. |
