@@ -27,11 +27,14 @@ class RestClientLoggingInterceptorTest {
     private final Logger logger = (Logger) LoggerFactory.getLogger(RestClientLoggingInterceptor.class);
     private final ListAppender<ILoggingEvent> appender = new ListAppender<>();
     private Level originalLevel;
+    private boolean originalAdditive;
 
     @BeforeEach
     void setUp() {
         originalLevel = logger.getLevel();
+        originalAdditive = logger.isAdditive();
         logger.setLevel(Level.DEBUG);
+        logger.setAdditive(false);
         appender.start();
         logger.addAppender(appender);
     }
@@ -40,6 +43,7 @@ class RestClientLoggingInterceptorTest {
     void tearDown() {
         logger.detachAppender(appender);
         logger.setLevel(originalLevel);
+        logger.setAdditive(originalAdditive);
     }
 
     @Test

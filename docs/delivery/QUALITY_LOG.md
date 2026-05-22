@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 258 |
-| Passed | 198 |
+| Checks recorded | 264 |
+| Passed | 204 |
 | Failed | 11 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,12 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,ClientStubTest,BookingServiceCancelTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest"` | Expected negative-path, JWT, local stub, cancellation warning, and MVC security log-noise regression tests | Passed | 50 tests, 0 failures, 0 errors. Test-only Logback suppression removed expected WARN/ERROR patterns from the relevant Surefire XML reports. |
+| 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest"` | MVC security slices after test banner suppression | Passed | 13 tests, 0 failures, 0 errors. Spring Boot banner and generated security password warning did not appear. |
+| 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw compile` | Test log-noise cleanup compile gate | Passed | Compile completed successfully. |
+| 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw test -Dtest="BookingRepositoryTest,BookingReferenceCounterRepositoryTest,RestClientLoggingInterceptorTest"` | Repository SQL echo and RestClient debug log regression tests | Passed | 18 tests, 0 failures, 0 errors. `@DataJpaTest(showSql = false)` suppressed SQL echoing; the interceptor test still captures DEBUG logs without sending them to the console. |
+| 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `./mvnw test` | Full suite after final log-noise cleanup | Passed | 164 tests, 0 failures, 0 errors. Remaining console output is Maven/Surefire progress plus the environment-injected `JAVA_TOOL_OPTIONS` line. |
+| 2026-05-22 | `bo-k7u.10` | https://github.com/AgenticFunProject/booking/pull/59 | `rg -n "WARN\|ERROR\|Using generated security password\|Using local stub\|JWT validation failed\|JWT authentication failed\|Handled exception\|Equipment release failed\|BeanPostProcessorChecker\|HHH000\|Hibernate:" target/surefire-reports` | Surefire report scan for original noisy patterns | Passed | No matches after the final full suite. |
 | 2026-05-22 | `bo-k7u.8` | https://github.com/AgenticFunProject/booking/pull/56 | `./mvnw test` | Baseline full test suite before Mockito Java agent configuration | Passed | 164 tests, 0 failures, 0 errors. Reproduced Mockito self-attach and JDK dynamic-agent warnings. |
 | 2026-05-22 | `bo-k7u.8` | https://github.com/AgenticFunProject/booking/pull/56 | `./mvnw compile` | Mockito Java agent Maven configuration compile gate | Passed | Compile completed successfully with Maven wrapper. |
 | 2026-05-22 | `bo-k7u.8` | https://github.com/AgenticFunProject/booking/pull/56 | `./mvnw test -Dtest=BookingReferenceGeneratorTest` | Focused Mockito-based unit test after explicit Java agent configuration | Passed | 1 test, 0 failures, 0 errors. The Mockito self-attach and JDK dynamic-agent warning block did not appear. |

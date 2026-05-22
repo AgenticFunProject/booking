@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 55 |
+| Beads recorded | 56 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 54 |
+| Entries with elapsed time | 55 |
 
 ## Entries
+
+### bo-k7u.10 - Review and reduce test log noise
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-k7u.10@mpgqxpdc` |
+| PR | https://github.com/AgenticFunProject/booking/pull/59 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T09:58:06Z |
+| Completed UTC | 2026-05-22T10:05:25Z |
+| Elapsed wall time | 7m 19s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/resources/logback-test.xml`, `src/test/resources/application.properties`, `src/test/resources/application-test.yml`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `src/test/java/com/cargo/booking/client/RestClientLoggingInterceptorTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md` |
+
+Delivered:
+
+- Added test-only Logback configuration that keeps general WARN/ERROR output visible while silencing categories deliberately exercised by negative-path tests: global exception handling, invalid JWT validation/authentication, local client stub startup warnings, cancellation release-failure warnings, generated Spring Security passwords, expected context-startup failures, and embedded database startup chatter.
+- Disabled the Spring Boot banner for tests through test resources.
+- Disabled `@DataJpaTest` SQL echoing in repository tests.
+- Kept `RestClientLoggingInterceptorTest` assertions intact while preventing captured DEBUG events from bubbling to the console.
+- Remaining expected output is Maven/Surefire progress plus the host-injected `JAVA_TOOL_OPTIONS` line, which is outside the repository's logging configuration.
+
+Verification:
+
+- `./mvnw test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,ClientStubTest,BookingServiceCancelTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest"` passed with 50 tests, 0 failures, 0 errors.
+- `./mvnw test -Dtest="SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest"` passed with 13 tests, 0 failures, 0 errors.
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="BookingRepositoryTest,BookingReferenceCounterRepositoryTest,RestClientLoggingInterceptorTest"` passed with 18 tests, 0 failures, 0 errors.
+- `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+- Final Surefire report scan for the original noisy WARN/ERROR, generated-password, stub-warning, JWT-warning, handler-log, Hibernate SQL, and BeanPostProcessor patterns returned no matches.
 
 ### bo-k7u.8 - Configure Mockito Java agent for tests
 
