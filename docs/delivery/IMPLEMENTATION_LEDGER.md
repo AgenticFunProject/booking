@@ -2532,6 +2532,42 @@ Notes:
 
 - Scope was kept to test utilities and focused helper coverage; security integration expansion remains out of scope for `bo-8wz.7`.
 
+### bo-8wz.3 - Add domain model tests
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending review/merge |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-8wz.3@mpgup7x6` |
+| PR | https://github.com/AgenticFunProject/booking/pull/67 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T11:43:38Z |
+| Completed UTC | 2026-05-22T12:08:16Z |
+| Elapsed wall time | 24m 38s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC PR evidence timestamp |
+| Files changed | `src/test/java/com/cargo/booking/model/entity/BookingEntityTest.java`, `src/test/java/com/cargo/booking/model/entity/BookingEquipmentLineEntityTest.java`, `src/test/java/com/cargo/booking/model/enums/BookingStatusTest.java`, `src/test/java/com/cargo/booking/model/enums/EquipmentTypeTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added focused EquipmentType tests for external API-code JSON values, parsing, trimming/case handling, and invalid-code rejection.
+- Added BookingStatus tests that pin lifecycle vocabulary and terminal status expectations without exercising the service state machine.
+- Added Booking and BookingEquipmentLine entity tests for Jakarta validation constraints, relationship setup, id-based equality, and toString circular-reference safeguards.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` passed with 20 tests, 0 failures, 0 errors.
+- `git fetch origin master && git rebase origin/master` completed after resolving delivery evidence conflicts from PR #66 by preserving both `bo-8wz.2` and `bo-8wz.3` entries.
+- `git diff --check origin/master...HEAD` passed after conflict resolution.
+- Post-rebase `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` passed with 20 tests, 0 failures, 0 errors.
+- Post-rebase `./mvnw test` passed with 198 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Scope stayed limited to domain model tests and delivery evidence; no production code or specs were changed.
+- Rebase follow-up preserved the merged `bo-8wz.2` delivery evidence and updated the full-suite count after PR #66 added `JwtTestHelperTest`.
+
 ## Entry Template
 
 ```md
