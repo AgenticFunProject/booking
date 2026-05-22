@@ -2,17 +2,17 @@
 
 This project is a Maven-based Spring Boot service.
 
-Use Maven from the local toolchain:
+Use the committed Maven wrapper:
 
 ```bash
-mvn compile
-mvn test
-mvn package
+./mvnw compile
+./mvnw test
+./mvnw package
 ```
 
-The Maven wrapper has not been generated yet because this checkout may be used
-in environments without a Java/Maven bootstrap toolchain. If a wrapper is needed,
-generate it from a machine with Java 21 and Maven available:
+The Maven wrapper is committed so verification does not depend on a
+machine-installed Maven. If the wrapper ever needs to be regenerated, use a
+machine with Java 21 and Maven available:
 
 ```bash
 mvn -N wrapper:wrapper
