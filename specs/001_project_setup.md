@@ -100,7 +100,7 @@ Feature: Project Setup and Configuration
       | spring.datasource.username                  | ${DB_USERNAME:booking_user}                |
       | spring.datasource.password                  | ${DB_PASSWORD:booking_pass}                |
       | spring.jpa.hibernate.ddl-auto               | validate                                   |
-      | spring.jpa.properties.hibernate.dialect      | org.hibernate.dialect.PostgreSQLDialect    |
+      | spring.jpa.properties.hibernate.jdbc.time_zone | UTC                                      |
       | spring.jpa.open-in-view                     | false                                      |
       | spring.flyway.enabled                       | true                                       |
       | spring.flyway.locations                     | classpath:db/migration                     |

@@ -2273,6 +2273,39 @@ Notes:
 
 - Full test output still includes existing runtime log noise such as Hibernate dialect deprecation logging; this bead removed Java compiler deprecated API warnings from the affected test paths.
 
+### bo-k7u.9 - Remove explicit Hibernate dialect warning
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.9@mpgqnpxh` |
+| PR | https://github.com/AgenticFunProject/booking/pull/58 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T09:50:23Z |
+| Completed UTC | 2026-05-22T09:55:49Z |
+| Elapsed wall time | 5m 26s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC PR evidence timestamp |
+| Files changed | `src/main/resources/application.yml`, `src/test/resources/application-test.yml`, `specs/001_project_setup.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md`, `specs/003_data_access.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Removed explicit `hibernate.dialect` configuration from base and test YAML so Hibernate infers PostgreSQL from JDBC metadata.
+- Kept the existing Hibernate JDBC UTC time-zone configuration.
+- Updated the setup spec to require the UTC Hibernate JDBC setting instead of the explicit PostgreSQL dialect.
+
+Verification:
+
+- Baseline `./mvnw test -Dtest="BookingRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 17 tests and captured 2 `HHH90000025` warnings before the cleanup.
+- `./mvnw compile` passed.
+- Focused repository tests passed with 17 tests and captured 0 `HHH90000025` warnings after the cleanup.
+- Full `./mvnw test` passed with 164 tests, 0 failures, 0 errors, and captured 0 `HHH90000025` warnings.
+
+Notes:
+
+- Remaining repository-test logging, such as embedded PostgreSQL and SQL statement output, is outside this bead and remains available for follow-up log-noise cleanup.
+
 ## Entry Template
 
 ```md
