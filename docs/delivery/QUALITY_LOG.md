@@ -6,15 +6,25 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 383 |
-| Passed | 311 |
+| Checks recorded | 393 |
+| Passed | 319 |
 | Failed | 20 |
-| Blocked/skipped | 54 |
+| Blocked/skipped | 56 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `git fetch origin master && git rebase origin/master` | Final quality gate branch sync | Passed | Branch `polecat/obsidian/bo-ot8.10-final-quality-gate` was already up to date with current `origin/master`. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `git diff --check origin/master...HEAD` | Final quality gate formatting/whitespace check | Passed | No whitespace/diff errors before delivery evidence edits. No formatter plugin is configured in `pom.xml` or `Makefile`, so this is the available formatting gate. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw compile` | Final quality gate compile | Passed | Main compilation succeeded with Java 21 and Spring Boot 3.5.14. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw test -Dgroups="!integration,!e2e"` | Unit group selector | Passed | 172 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw test -Dgroups="integration"` | Integration group selector | Passed | 65 tests, 0 failures, 0 errors, 0 skipped. Covered repository, MockMvc/error/security, WireMock, and embedded PostgreSQL integration paths. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw test -Dgroups="e2e"` | E2E group selector | Passed | 1 test, 0 failures, 0 errors, 0 skipped. Covered the full booking lifecycle E2E path. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw test` | Full test suite | Passed | 238 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw clean package -DskipTests` | Package gate | Passed | Built and repackaged `target/booking-service-0.0.1-SNAPSHOT.jar`; tests intentionally skipped for the package-only gate after full tests passed. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `docker build -t booking-service:bo-ot8.10 .` | Docker image build | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Follow-up bead `bo-1v4` filed to rerun on a Docker-capable runner. |
+| 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `docker compose config` | Docker Compose validation | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Follow-up bead `bo-1v4` filed to rerun on a Docker-capable runner. |
 | 2026-05-22 | `bo-ot8.9` | https://github.com/AgenticFunProject/booking/pull/84 | `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.9 origin/master` | Final README branch setup | Passed | Created a fresh obsidian branch from current `origin/master` after the Makefile, env example, and tracing/logging work had landed. |
 | 2026-05-22 | `bo-ot8.9` | https://github.com/AgenticFunProject/booking/pull/84 | `python3 - <<'PY' ...` | Static README topic coverage check | Passed | Verified README coverage for prerequisites, quick start, local development, API docs, environment variables, `.env.example`, tests, Makefile, CI, project structure, architecture, Swagger, and contributing topics. |
 | 2026-05-22 | `bo-ot8.9` | https://github.com/AgenticFunProject/booking/pull/84 | `git diff --check` | Final README whitespace check | Passed | No whitespace/diff errors after README and delivery evidence edits. |
