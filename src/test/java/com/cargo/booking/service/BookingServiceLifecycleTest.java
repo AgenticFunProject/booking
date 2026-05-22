@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,9 +17,11 @@ import com.cargo.booking.exception.IllegalStateTransitionException;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.repository.BookingRepository;
+import com.cargo.booking.testutil.TestDataBuilder;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -55,8 +58,9 @@ class BookingServiceLifecycleTest {
 
         assertThat(result).isSameAs(booking);
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.IN_PROGRESS);
-        verify(bookingStateMachine).validateTransition(BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS);
-        verify(bookingRepository).save(booking);
+        InOrder startOrder = inOrder(bookingStateMachine, bookingRepository);
+        startOrder.verify(bookingStateMachine).validateTransition(BookingStatus.CONFIRMED, BookingStatus.IN_PROGRESS);
+        startOrder.verify(bookingRepository).save(booking);
     }
 
     @Test
@@ -101,8 +105,9 @@ class BookingServiceLifecycleTest {
 
         assertThat(result).isSameAs(booking);
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.COMPLETED);
-        verify(bookingStateMachine).validateTransition(BookingStatus.IN_PROGRESS, BookingStatus.COMPLETED);
-        verify(bookingRepository).save(booking);
+        InOrder completeOrder = inOrder(bookingStateMachine, bookingRepository);
+        completeOrder.verify(bookingStateMachine).validateTransition(BookingStatus.IN_PROGRESS, BookingStatus.COMPLETED);
+        completeOrder.verify(bookingRepository).save(booking);
     }
 
     @Test
@@ -148,8 +153,8 @@ class BookingServiceLifecycleTest {
 
     private Booking bookingWithStatus(BookingStatus status) {
         return Booking.builder()
-                .id(42L)
-                .bookingReference("BKG-2026-00042")
+                .id(TestDataBuilder.DEFAULT_BOOKING_ID)
+                .bookingReference(TestDataBuilder.DEFAULT_BOOKING_REFERENCE)
                 .status(status)
                 .build();
     }

@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 62 |
+| Beads recorded | 63 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 61 |
+| Entries with elapsed time | 62 |
 
 ## Entries
 
@@ -44,6 +44,40 @@ Verification:
 - `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped after fixing two test-only setup issues recorded in `QUALITY_LOG.md`.
 - `./mvnw test -Dgroups="integration" -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped.
 - `git diff --check origin/master...HEAD` passed.
+
+### bo-8wz.5 - Add service behavior tests
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-8wz.5@mpgvszbl` |
+| PR | https://github.com/AgenticFunProject/booking/pull/69 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T12:14:35Z |
+| Completed UTC | 2026-05-22T12:24:42Z |
+| Elapsed wall time | 10m 07s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceConfirmTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceLifecycleTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceCancelTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Expanded `BookingServiceCreateTest` with TestDataBuilder-backed defaults plus additional validation and external-client failure cases that verify no repository save or reference generation occurs on failure.
+- Strengthened lifecycle behavior tests to assert state-machine validation happens before reservation, release, or save interactions.
+- Added cancellation coverage for completed-booking rejection and no-change expectations, and tightened reservation/release failure assertions around status preservation or allowed cancellation.
+- Kept repository, controller, security, integration, E2E, and production service changes out of scope.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="BookingServiceCreateTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest"` passed with 31 tests, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test -Dtest="BookingService*Test"` passed with 39 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
+- Post-rebase after PR #68 merged, `git fetch origin master && git rebase origin/master` passed after resolving delivery evidence conflicts and preserving both `bo-8wz.4` and `bo-8wz.5` entries.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `./mvnw test -Dtest="BookingServiceCreateTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest"` passed with 31 tests, 0 failures, 0 errors, and 0 skipped.
+- Post-rebase `./mvnw test -Dtest="BookingService*Test"` passed with 39 tests, 0 failures, 0 errors, and 0 skipped.
 
 ### bo-8wz.1 - Add test data builder utilities
 

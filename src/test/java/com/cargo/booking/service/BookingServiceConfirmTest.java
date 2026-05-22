@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -21,11 +22,13 @@ import com.cargo.booking.model.entity.BookingEquipmentLine;
 import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.model.enums.EquipmentType;
 import com.cargo.booking.repository.BookingRepository;
+import com.cargo.booking.testutil.TestDataBuilder;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -62,9 +65,10 @@ class BookingServiceConfirmTest {
 
         Booking confirmedBooking = bookingService.confirmBooking(42L);
 
-        verify(bookingStateMachine).validateTransition(BookingStatus.PENDING, BookingStatus.CONFIRMED);
-        verify(equipmentClient).reserveEquipment(eq(42L), equipmentCaptor.capture());
-        verify(bookingRepository).save(booking);
+        InOrder confirmOrder = inOrder(bookingStateMachine, equipmentClient, bookingRepository);
+        confirmOrder.verify(bookingStateMachine).validateTransition(BookingStatus.PENDING, BookingStatus.CONFIRMED);
+        confirmOrder.verify(equipmentClient).reserveEquipment(eq(42L), equipmentCaptor.capture());
+        confirmOrder.verify(bookingRepository).save(booking);
 
         assertThat(confirmedBooking).isSameAs(booking);
         assertThat(confirmedBooking.getStatus()).isEqualTo(BookingStatus.CONFIRMED);
@@ -124,6 +128,7 @@ class BookingServiceConfirmTest {
                 .hasMessage("Equipment unavailable");
 
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.PENDING);
+        verify(bookingStateMachine).validateTransition(BookingStatus.PENDING, BookingStatus.CONFIRMED);
         verify(bookingRepository, never()).save(any());
     }
 
@@ -140,8 +145,8 @@ class BookingServiceConfirmTest {
 
     private Booking pendingBooking() {
         Booking booking = Booking.builder()
-                .id(42L)
-                .bookingReference("BKG-2026-00042")
+                .id(TestDataBuilder.DEFAULT_BOOKING_ID)
+                .bookingReference(TestDataBuilder.DEFAULT_BOOKING_REFERENCE)
                 .status(BookingStatus.PENDING)
                 .build();
 

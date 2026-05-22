@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,9 +18,11 @@ import com.cargo.booking.exception.IllegalStateTransitionException;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.repository.BookingRepository;
+import com.cargo.booking.testutil.TestDataBuilder;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -73,9 +76,10 @@ class BookingServiceCancelTest {
 
         assertThat(result).isSameAs(booking);
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.CANCELLED);
-        verify(bookingStateMachine).validateTransition(BookingStatus.CONFIRMED, BookingStatus.CANCELLED);
-        verify(equipmentClient).releaseEquipment(42L);
-        verify(bookingRepository).save(booking);
+        InOrder cancelOrder = inOrder(bookingStateMachine, equipmentClient, bookingRepository);
+        cancelOrder.verify(bookingStateMachine).validateTransition(BookingStatus.CONFIRMED, BookingStatus.CANCELLED);
+        cancelOrder.verify(equipmentClient).releaseEquipment(42L);
+        cancelOrder.verify(bookingRepository).save(booking);
     }
 
     @Test
@@ -93,6 +97,7 @@ class BookingServiceCancelTest {
 
         assertThat(result).isSameAs(booking);
         assertThat(booking.getStatus()).isEqualTo(BookingStatus.CANCELLED);
+        verify(equipmentClient).releaseEquipment(42L);
         verify(bookingRepository).save(booking);
     }
 
@@ -129,6 +134,24 @@ class BookingServiceCancelTest {
         verify(bookingRepository, never()).save(any());
     }
 
+    @Test
+    void shouldThrowWhenCancellingCompletedBookingWithoutChangingStatus() {
+        Booking booking = bookingWithStatus(BookingStatus.COMPLETED);
+        BookingService bookingService = bookingService();
+
+        when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
+        doThrow(new IllegalStateTransitionException("Invalid booking state transition from COMPLETED to CANCELLED"))
+                .when(bookingStateMachine)
+                .validateTransition(BookingStatus.COMPLETED, BookingStatus.CANCELLED);
+
+        assertThatThrownBy(() -> bookingService.cancelBooking(42L))
+                .isInstanceOf(IllegalStateTransitionException.class);
+
+        assertThat(booking.getStatus()).isEqualTo(BookingStatus.COMPLETED);
+        verify(equipmentClient, never()).releaseEquipment(any());
+        verify(bookingRepository, never()).save(any());
+    }
+
     private BookingService bookingService() {
         return new BookingService(
                 bookingRepository,
@@ -142,8 +165,8 @@ class BookingServiceCancelTest {
 
     private Booking bookingWithStatus(BookingStatus status) {
         return Booking.builder()
-                .id(42L)
-                .bookingReference("BKG-2026-00042")
+                .id(TestDataBuilder.DEFAULT_BOOKING_ID)
+                .bookingReference(TestDataBuilder.DEFAULT_BOOKING_REFERENCE)
                 .status(status)
                 .build();
     }
