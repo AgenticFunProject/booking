@@ -6,13 +6,48 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 76 |
+| Beads recorded | 77 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 43 |
-| Entries with elapsed time | 75 |
+| Verification blockers recorded | 44 |
+| Entries with elapsed time | 76 |
 
 ## Entries
+
+### bo-ot8.10 - Run final quality gate
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.10-final-quality-gate` |
+| PR | https://github.com/AgenticFunProject/booking/pull/85 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T15:28:05Z |
+| Completed UTC | 2026-05-22T15:33:32Z |
+| Elapsed wall time | 5m 27s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Ran the final PR-only quality gate against current `origin/master` for the deployment/tooling phase.
+- Recorded formatting/check, compile, grouped unit/integration/E2E tests, full tests, package, Docker image build, and Docker Compose validation evidence.
+- Filed follow-up bead `bo-1v4` for the Docker-only blocker: this environment does not have the `docker` CLI, so image build and Compose validation need rerun on a Docker-capable runner.
+
+Verification:
+
+- `git fetch origin master && git rebase origin/master` passed; branch was already up to date with current `origin/master`.
+- `git diff --check origin/master...HEAD` passed.
+- `./mvnw compile` passed.
+- `./mvnw test -Dgroups="!integration,!e2e"` passed with 172 tests, 0 failures, 0 errors, 0 skipped.
+- `./mvnw test -Dgroups="integration"` passed with 65 tests, 0 failures, 0 errors, 0 skipped.
+- `./mvnw test -Dgroups="e2e"` passed with 1 test, 0 failures, 0 errors, 0 skipped.
+- `./mvnw test` passed with 238 tests, 0 failures, 0 errors, 0 skipped.
+- `./mvnw clean package -DskipTests` passed and produced `target/booking-service-0.0.1-SNAPSHOT.jar`.
+- `docker build -t booking-service:bo-ot8.10 .` was blocked because Docker is not installed in this environment (`docker: command not found`).
+- `docker compose config` was blocked because Docker is not installed in this environment (`docker: command not found`).
 
 ### bo-ot8.9 - Final generated README pass
 
