@@ -6,13 +6,42 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 54 |
+| Beads recorded | 55 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
 | Entries with elapsed time | 54 |
 
 ## Entries
+
+### bo-k7u.8 - Configure Mockito Java agent for tests
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-k7u.8@mpgplaz8` |
+| PR | https://github.com/AgenticFunProject/booking/pull/56 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T09:20:30Z |
+| Completed UTC | 2026-05-22T09:29:34Z |
+| Elapsed wall time | 9m 04s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added explicit Maven Surefire `argLine` configuration that starts the Spring Boot managed Mockito core jar as a Java agent for test JVMs.
+- Added `-Xshare:off` alongside the Mockito agent to avoid the class-data-sharing warning that appears when Mockito appends to the bootstrap classpath.
+- Kept the change scoped to Maven test execution; no production runtime behavior changed.
+
+Verification:
+
+- Baseline `./mvnw test` passed with 164 tests and reproduced the Mockito self-attach warning plus JDK dynamic-agent warnings.
+- `./mvnw compile` passed after the Surefire configuration change.
+- `./mvnw test -Dtest=BookingReferenceGeneratorTest` passed with 1 test, 0 failures, 0 errors, and the Mockito self-attach / dynamic-agent warning block did not appear.
+- `./mvnw test` passed with 164 tests, 0 failures, 0 errors, and the Mockito self-attach / dynamic-agent warning block no longer appeared.
 
 ### bo-u5m - Run cumulative Phase 1-6 audit
 
