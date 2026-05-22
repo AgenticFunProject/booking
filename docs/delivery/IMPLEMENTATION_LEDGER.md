@@ -6,13 +6,41 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 73 |
+| Beads recorded | 74 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 43 |
-| Entries with elapsed time | 72 |
+| Entries with elapsed time | 73 |
 
 ## Entries
+
+### bo-ot8.6 - Add environment example
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.6` |
+| PR | https://github.com/AgenticFunProject/booking/pull/82 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T15:03:05Z |
+| Completed UTC | 2026-05-22T15:05:02Z |
+| Elapsed wall time | 1m 57s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `.env.example`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added `.env.example` with safe placeholders for Spring profile selection, application port, PostgreSQL URL/user/password, security enablement, JWT issuer/audience/secret/expiration, backward-compatible JWT aliases, CORS origins, and schedule/equipment/quote integration URLs and timeouts.
+- Documented that local uses stub clients and can disable security, while dev/prod integration values remain placeholders until external API contracts are finalized.
+- Verified `.gitignore` keeps real `.env` and `.env.*` files ignored while explicitly allowing `.env.example`.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.6 origin/master` passed.
+- Static `.env.example` and `.gitignore` coverage check with `python3` passed for required DB, security, JWT, integration, CORS, and profile variables.
+- `git diff --check` passed.
 
 ### bo-ot8.5 - Add request tracing MDC support
 
