@@ -4,6 +4,7 @@ import com.cargo.booking.client.EquipmentClient;
 import com.cargo.booking.client.dto.EquipmentLineDTO;
 import com.cargo.booking.client.QuoteClient;
 import com.cargo.booking.client.ScheduleClient;
+import com.cargo.booking.config.RequestTracingMdc;
 import com.cargo.booking.exception.BookingNotFoundException;
 import com.cargo.booking.exception.BookingValidationException;
 import com.cargo.booking.exception.EquipmentReservationException;
@@ -17,6 +18,7 @@ import com.cargo.booking.repository.BookingRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -79,8 +81,9 @@ public class BookingService {
             );
         }
 
+        String bookingReference = bookingReferenceGenerator.generateReference();
         Booking booking = Booking.builder()
-                .bookingReference(bookingReferenceGenerator.generateReference())
+                .bookingReference(bookingReference)
                 .status(BookingStatus.PENDING)
                 .scheduleId(request.scheduleId())
                 .quoteId(request.quoteId())
@@ -95,24 +98,29 @@ public class BookingService {
         equipmentLines.forEach(line -> line.setBooking(booking));
         booking.getEquipmentLines().addAll(equipmentLines);
 
-        Booking savedBooking = bookingRepository.save(booking);
-        log.info("Created booking {}", savedBooking.getBookingReference());
+        return withBookingReferenceMdc(bookingReference, () -> {
+            Booking savedBooking = bookingRepository.save(booking);
+            log.info("Created booking {}", savedBooking.getBookingReference());
 
-        return savedBooking;
+            return savedBooking;
+        });
     }
 
     @Transactional(readOnly = true)
     public Booking getBookingById(Long id) {
-        return bookingRepository.findWithEquipmentLinesById(id)
+        Booking booking = bookingRepository.findWithEquipmentLinesById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
+        return withBookingReferenceMdc(booking.getBookingReference(), () -> booking);
     }
 
     @Transactional(readOnly = true)
     public Booking getBookingByReference(String bookingReference) {
-        return bookingRepository.findWithEquipmentLinesByBookingReference(bookingReference)
-                .orElseThrow(() -> new BookingNotFoundException(
-                        "Booking not found for reference: " + bookingReference
-                ));
+        return withBookingReferenceMdc(bookingReference, () ->
+                bookingRepository.findWithEquipmentLinesByBookingReference(bookingReference)
+                        .orElseThrow(() -> new BookingNotFoundException(
+                                "Booking not found for reference: " + bookingReference
+                        ))
+        );
     }
 
     @Transactional(readOnly = true)
@@ -139,66 +147,74 @@ public class BookingService {
     public Booking confirmBooking(Long id) {
         Booking booking = bookingRepository.findWithEquipmentLinesById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
-        BookingStatus currentStatus = booking.getStatus();
+        return withBookingReferenceMdc(booking.getBookingReference(), () -> {
+            BookingStatus currentStatus = booking.getStatus();
 
-        bookingStateMachine.validateTransition(currentStatus, BookingStatus.CONFIRMED);
-        equipmentClient.reserveEquipment(booking.getId(), toEquipmentLineDtos(booking.getEquipmentLines()));
+            bookingStateMachine.validateTransition(currentStatus, BookingStatus.CONFIRMED);
+            equipmentClient.reserveEquipment(booking.getId(), toEquipmentLineDtos(booking.getEquipmentLines()));
 
-        booking.setStatus(BookingStatus.CONFIRMED);
-        Booking savedBooking = bookingRepository.save(booking);
-        log.info("Booking {} transitioned from {} to {}",
-                savedBooking.getBookingReference(),
-                currentStatus,
-                BookingStatus.CONFIRMED
-        );
+            booking.setStatus(BookingStatus.CONFIRMED);
+            Booking savedBooking = bookingRepository.save(booking);
+            log.info("Booking {} transitioned from {} to {}",
+                    savedBooking.getBookingReference(),
+                    currentStatus,
+                    BookingStatus.CONFIRMED
+            );
 
-        return savedBooking;
+            return savedBooking;
+        });
     }
 
     @Transactional
     public Booking startBooking(Long id) {
         Booking booking = getBookingForLifecycleChange(id);
-        BookingStatus currentStatus = booking.getStatus();
+        return withBookingReferenceMdc(booking.getBookingReference(), () -> {
+            BookingStatus currentStatus = booking.getStatus();
 
-        bookingStateMachine.validateTransition(currentStatus, BookingStatus.IN_PROGRESS);
-        booking.setStatus(BookingStatus.IN_PROGRESS);
+            bookingStateMachine.validateTransition(currentStatus, BookingStatus.IN_PROGRESS);
+            booking.setStatus(BookingStatus.IN_PROGRESS);
 
-        Booking savedBooking = bookingRepository.save(booking);
-        logStateTransition(savedBooking, currentStatus, BookingStatus.IN_PROGRESS);
+            Booking savedBooking = bookingRepository.save(booking);
+            logStateTransition(savedBooking, currentStatus, BookingStatus.IN_PROGRESS);
 
-        return savedBooking;
+            return savedBooking;
+        });
     }
 
     @Transactional
     public Booking completeBooking(Long id) {
         Booking booking = getBookingForLifecycleChange(id);
-        BookingStatus currentStatus = booking.getStatus();
+        return withBookingReferenceMdc(booking.getBookingReference(), () -> {
+            BookingStatus currentStatus = booking.getStatus();
 
-        bookingStateMachine.validateTransition(currentStatus, BookingStatus.COMPLETED);
-        booking.setStatus(BookingStatus.COMPLETED);
+            bookingStateMachine.validateTransition(currentStatus, BookingStatus.COMPLETED);
+            booking.setStatus(BookingStatus.COMPLETED);
 
-        Booking savedBooking = bookingRepository.save(booking);
-        logStateTransition(savedBooking, currentStatus, BookingStatus.COMPLETED);
+            Booking savedBooking = bookingRepository.save(booking);
+            logStateTransition(savedBooking, currentStatus, BookingStatus.COMPLETED);
 
-        return savedBooking;
+            return savedBooking;
+        });
     }
 
     @Transactional
     public Booking cancelBooking(Long id) {
         Booking booking = bookingRepository.findWithEquipmentLinesById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
-        BookingStatus currentStatus = booking.getStatus();
+        return withBookingReferenceMdc(booking.getBookingReference(), () -> {
+            BookingStatus currentStatus = booking.getStatus();
 
-        bookingStateMachine.validateTransition(currentStatus, BookingStatus.CANCELLED);
-        if (currentStatus == BookingStatus.CONFIRMED) {
-            releaseReservedEquipment(booking);
-        }
+            bookingStateMachine.validateTransition(currentStatus, BookingStatus.CANCELLED);
+            if (currentStatus == BookingStatus.CONFIRMED) {
+                releaseReservedEquipment(booking);
+            }
 
-        booking.setStatus(BookingStatus.CANCELLED);
-        Booking savedBooking = bookingRepository.save(booking);
-        logStateTransition(savedBooking, currentStatus, BookingStatus.CANCELLED);
+            booking.setStatus(BookingStatus.CANCELLED);
+            Booking savedBooking = bookingRepository.save(booking);
+            logStateTransition(savedBooking, currentStatus, BookingStatus.CANCELLED);
 
-        return savedBooking;
+            return savedBooking;
+        });
     }
 
     private Booking getBookingForLifecycleChange(Long id) {
@@ -228,6 +244,15 @@ public class BookingService {
                 from,
                 to
         );
+    }
+
+    private <T> T withBookingReferenceMdc(String bookingReference, Supplier<T> action) {
+        RequestTracingMdc.putBookingReference(bookingReference);
+        try {
+            return action.get();
+        } finally {
+            RequestTracingMdc.clearBookingReference();
+        }
     }
 
     private void validateCreateRequest(CreateBookingRequest request) {

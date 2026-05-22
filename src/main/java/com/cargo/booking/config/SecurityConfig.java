@@ -31,6 +31,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final AuthenticatedRequesterMdcFilter authenticatedRequesterMdcFilter;
     private final List<String> allowedOrigins;
 
     public SecurityConfig(
@@ -44,6 +45,7 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        this.authenticatedRequesterMdcFilter = new AuthenticatedRequesterMdcFilter();
         this.allowedOrigins = List.copyOf(allowedOrigins);
     }
 
@@ -89,6 +91,7 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(authenticatedRequesterMdcFilter, JwtAuthenticationFilter.class)
                 .build();
     }
 
@@ -97,8 +100,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-        configuration.setExposedHeaders(List.of("Authorization"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Request-ID"));
+        configuration.setExposedHeaders(List.of("Authorization", "X-Request-ID"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 

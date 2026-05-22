@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 72 |
+| Beads recorded | 73 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 43 |
-| Entries with elapsed time | 71 |
+| Entries with elapsed time | 72 |
 
 ## Entries
+
+### bo-ot8.5 - Add request tracing MDC support
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.5` |
+| PR | https://github.com/AgenticFunProject/booking/pull/81 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T14:42:49Z |
+| Completed UTC | 2026-05-22T14:55:43Z |
+| Elapsed wall time | 12m 54s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/config/RequestTracingMdc.java`, `src/main/java/com/cargo/booking/config/RequestTracingMdcFilter.java`, `src/main/java/com/cargo/booking/config/AuthenticatedRequesterMdcFilter.java`, `src/main/java/com/cargo/booking/config/SecurityConfig.java`, `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/config/RequestTracingMdcFilterTest.java`, `src/test/java/com/cargo/booking/config/AuthenticatedRequesterMdcFilterTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceLifecycleTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added an early request tracing filter that puts `requestId` into MDC from `X-Request-ID` or a generated UUID and clears request tracing MDC at request completion.
+- Added a post-JWT authenticated requester MDC filter that populates `principal` and `customerId` from the Spring Security context for downstream request handling.
+- Wired the authenticated requester MDC filter after `JwtAuthenticationFilter` without changing authentication or authorization semantics.
+- Exposed and allowed `X-Request-ID` in CORS configuration so callers can send and receive the correlation header.
+- Added service-layer `bookingRef` MDC scope around create, read-by-reference, and lifecycle operations once a booking reference is available.
+- Added focused tests covering request-id generation/header use, authenticated requester MDC population/cleanup, `bookingRef` MDC scope, and security filter-chain/CORS behavior.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.5 origin/master` passed.
+- `git fetch origin master && git rebase origin/master` passed after resolving delivery evidence conflicts with `bo-ot8.7`, preserving both entries and combined counts.
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="RequestTracingMdcFilterTest,AuthenticatedRequesterMdcFilterTest,BookingServiceCreateTest,BookingServiceReadTest,BookingServiceLifecycleTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest"` passed with 40 tests, 0 failures, 0 errors.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-ot8.7 - Add GitHub Actions CI workflow
 
