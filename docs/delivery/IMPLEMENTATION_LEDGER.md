@@ -6,13 +6,56 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 81 |
+| Beads recorded | 82 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
-| Verification blockers recorded | 44 |
-| Entries with elapsed time | 80 |
+| Verification blockers recorded | 46 |
+| Entries with elapsed time | 81 |
 
 ## Entries
+
+### bo-1v4 - Verify bo-ot8.10 Docker build and Compose config in Docker-capable environment
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-1v4@mph56rj7` |
+| PR | https://github.com/AgenticFunProject/booking/pull/90 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T16:37:13Z |
+| Completed UTC | 2026-05-22T16:42:09Z |
+| Elapsed wall time | 4m 56s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `.github/workflows/ci.yml`, `docs/delivery/FINAL_DELIVERY_REPORT.md`, `docs/delivery/SPEC_COVERAGE_MATRIX.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Retried the final Docker verification commands requested by follow-up bead
+  `bo-1v4` against current `origin/master` at `6301051`.
+- Confirmed this workspace still does not have a Docker CLI or local
+  Docker-compatible fallback, so local Docker image build and Compose
+  validation remain environment-blocked rather than product-code failures.
+- Updated the GitHub Actions Docker job to run on a Docker-capable
+  `ubuntu-latest` runner and validate both the image build and
+  `docker compose config`.
+- Updated the final delivery report, spec coverage matrix, implementation
+  ledger, and quality log to point `bo-1v4` at PR #90 CI as the Docker/Compose
+  evidence path.
+
+Verification:
+
+- `git fetch origin master` passed; the branch was already at current
+  `origin/master`.
+- `docker build -t booking-service:bo-ot8.10 .` was blocked because Docker is
+  not installed in this environment (`docker: command not found`).
+- `docker compose config` was blocked because Docker is not installed in this
+  environment (`docker: command not found`).
+- Static GitHub Actions workflow review confirmed PR #90's Docker job builds
+  `booking-service:${{ github.sha }}` and `booking-service:bo-ot8.10`, then
+  runs `docker compose config`.
+- `git diff --check` passed after recording the CI verification path.
 
 ### bo-8z3.5 - Generate final delivery report
 

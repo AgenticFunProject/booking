@@ -6,15 +6,20 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 405 |
-| Passed | 330 |
+| Checks recorded | 410 |
+| Passed | 333 |
 | Failed | 21 |
-| Blocked/skipped | 56 |
+| Blocked/skipped | 58 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `git fetch origin master` | Docker verification branch sync | Passed | Local branch `polecat/obsidian/bo-1v4@mph56rj7` was already at current `origin/master` commit `6301051`. |
+| 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `docker build -t booking-service:bo-ot8.10 .` | Local Docker image build retry from current `master` | Blocked | Local Docker remains unavailable in this workspace: `/bin/bash: line 1: docker: command not found`. No local Docker-compatible fallback (`podman`) is installed. PR #90 updates the GitHub Actions Docker job to run Docker image build on `ubuntu-latest`. |
+| 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `docker compose config` | Local Docker Compose validation retry from current `master` | Blocked | Local Docker remains unavailable in this workspace: `/bin/bash: line 1: docker: command not found`. PR #90 updates the GitHub Actions Docker job to run `docker compose config`; after PR CI passes, Mayor will use that CI result as final Docker/Compose evidence. |
+| 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | Static GitHub Actions workflow review | Docker-capable CI verification path | Passed | Confirmed `.github/workflows/ci.yml` Docker job builds the image with `docker build -t booking-service:${{ github.sha }} -t booking-service:bo-ot8.10 .` and validates Compose with `docker compose config` on GitHub-hosted `ubuntu-latest`. |
+| 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `git diff --check` | Docker verification evidence whitespace check | Passed | No whitespace/diff errors after recording the CI Docker/Compose verification path. |
 | 2026-05-22 | `bo-8z3.5` | https://github.com/AgenticFunProject/booking/pull/89 | Final report source review | Final delivery report against current `origin/master` at `1a5daa810567`, implementation ledger, quality log, spec coverage matrix, demo/API runbook, PR/commit history, known limitations, and follow-up bead `bo-1v4` | Passed | Verified the report summarizes completed specs, beads, PRs, commits, tests, quality gates, demo instructions, known limitations, and follow-up beads. |
 | 2026-05-22 | `bo-8z3.5` | https://github.com/AgenticFunProject/booking/pull/89 | `git diff --check` | Final report and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the final report and evidence updates. |
 | 2026-05-22 | `bo-8z3.3` | https://github.com/AgenticFunProject/booking/pull/88 | Matrix source review | Spec coverage matrix against current `master` after PR #87, delivery ledger, quality log, and demo/API runbook | Passed | Verified the matrix covers specs 001 through 010 with implementation beads, PR links where recorded, quality evidence, status, and gaps/deferred scope. |
