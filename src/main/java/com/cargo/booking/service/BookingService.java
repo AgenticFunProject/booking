@@ -123,16 +123,16 @@ public class BookingService {
         );
 
         if (customerId != null && status != null) {
-            return bookingRepository.findByCustomerIdAndStatus(customerId, status, pageable);
+            return initializeEquipmentLines(bookingRepository.findByCustomerIdAndStatus(customerId, status, pageable));
         }
         if (customerId != null) {
-            return bookingRepository.findByCustomerId(customerId, pageable);
+            return initializeEquipmentLines(bookingRepository.findByCustomerId(customerId, pageable));
         }
         if (status != null) {
-            return bookingRepository.findByStatus(status, pageable);
+            return initializeEquipmentLines(bookingRepository.findByStatus(status, pageable));
         }
 
-        return bookingRepository.findAll(pageable);
+        return initializeEquipmentLines(bookingRepository.findAll(pageable));
     }
 
     @Transactional
@@ -202,8 +202,13 @@ public class BookingService {
     }
 
     private Booking getBookingForLifecycleChange(Long id) {
-        return bookingRepository.findById(id)
+        return bookingRepository.findWithEquipmentLinesById(id)
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found for id: " + id));
+    }
+
+    private Page<Booking> initializeEquipmentLines(Page<Booking> bookings) {
+        bookings.forEach(booking -> booking.getEquipmentLines().size());
+        return bookings;
     }
 
     private void releaseReservedEquipment(Booking booking) {

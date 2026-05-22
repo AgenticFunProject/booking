@@ -51,7 +51,7 @@ class BookingServiceLifecycleTest {
         Booking booking = bookingWithStatus(BookingStatus.CONFIRMED);
         BookingService bookingService = bookingService();
 
-        when(bookingRepository.findById(42L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking)).thenReturn(booking);
 
         Booking result = bookingService.startBooking(42L);
@@ -67,7 +67,7 @@ class BookingServiceLifecycleTest {
     void shouldThrowWhenStartingMissingBooking() {
         BookingService bookingService = bookingService();
 
-        when(bookingRepository.findById(404L)).thenReturn(Optional.empty());
+        when(bookingRepository.findWithEquipmentLinesById(404L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> bookingService.startBooking(404L))
                 .isInstanceOf(BookingNotFoundException.class)
@@ -81,7 +81,7 @@ class BookingServiceLifecycleTest {
         Booking booking = bookingWithStatus(BookingStatus.PENDING);
         BookingService bookingService = bookingService();
 
-        when(bookingRepository.findById(42L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
         doThrow(new IllegalStateTransitionException("Invalid booking state transition from PENDING to IN_PROGRESS"))
                 .when(bookingStateMachine)
                 .validateTransition(BookingStatus.PENDING, BookingStatus.IN_PROGRESS);
@@ -98,7 +98,7 @@ class BookingServiceLifecycleTest {
         Booking booking = bookingWithStatus(BookingStatus.IN_PROGRESS);
         BookingService bookingService = bookingService();
 
-        when(bookingRepository.findById(42L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
         when(bookingRepository.save(booking)).thenReturn(booking);
 
         Booking result = bookingService.completeBooking(42L);
@@ -114,7 +114,7 @@ class BookingServiceLifecycleTest {
     void shouldThrowWhenCompletingMissingBooking() {
         BookingService bookingService = bookingService();
 
-        when(bookingRepository.findById(404L)).thenReturn(Optional.empty());
+        when(bookingRepository.findWithEquipmentLinesById(404L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> bookingService.completeBooking(404L))
                 .isInstanceOf(BookingNotFoundException.class)
@@ -128,7 +128,7 @@ class BookingServiceLifecycleTest {
         Booking booking = bookingWithStatus(BookingStatus.CONFIRMED);
         BookingService bookingService = bookingService();
 
-        when(bookingRepository.findById(42L)).thenReturn(Optional.of(booking));
+        when(bookingRepository.findWithEquipmentLinesById(42L)).thenReturn(Optional.of(booking));
         doThrow(new IllegalStateTransitionException("Invalid booking state transition from CONFIRMED to COMPLETED"))
                 .when(bookingStateMachine)
                 .validateTransition(BookingStatus.CONFIRMED, BookingStatus.COMPLETED);
