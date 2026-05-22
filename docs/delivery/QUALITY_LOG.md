@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 393 |
-| Passed | 319 |
+| Checks recorded | 395 |
+| Passed | 321 |
 | Failed | 20 |
 | Blocked/skipped | 56 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8z3.4` | https://github.com/AgenticFunProject/booking/pull/86 | `python3 - <<'PY' ...` | Static demo/API runbook coverage check | Passed | Verified the runbook covers local startup, Swagger URL, health check, create/list/get/confirm/start/complete/cancel curl examples, expected lifecycle statuses, Makefile commands, and Docker Compose/local-stub notes. |
+| 2026-05-22 | `bo-8z3.4` | https://github.com/AgenticFunProject/booking/pull/86 | `git diff --check HEAD` | Demo/API runbook and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the runbook and evidence updates. |
 | 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `git fetch origin master && git rebase origin/master` | Final quality gate branch sync | Passed | Branch `polecat/obsidian/bo-ot8.10-final-quality-gate` was already up to date with current `origin/master`. |
 | 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `git diff --check origin/master...HEAD` | Final quality gate formatting/whitespace check | Passed | No whitespace/diff errors before delivery evidence edits. No formatter plugin is configured in `pom.xml` or `Makefile`, so this is the available formatting gate. |
 | 2026-05-22 | `bo-ot8.10` | https://github.com/AgenticFunProject/booking/pull/85 | `./mvnw compile` | Final quality gate compile | Passed | Main compilation succeeded with Java 21 and Spring Boot 3.5.14. |

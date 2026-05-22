@@ -6,13 +6,41 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 77 |
+| Beads recorded | 78 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 44 |
-| Entries with elapsed time | 76 |
+| Entries with elapsed time | 77 |
 
 ## Entries
+
+### bo-8z3.4 - Add demo and API runbook
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-8z3.4@mph3lftj` |
+| PR | https://github.com/AgenticFunProject/booking/pull/86 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T15:52:39Z |
+| Completed UTC | 2026-05-22T15:58:45Z |
+| Elapsed wall time | 6m 06s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `docs/delivery/DEMO_API_RUNBOOK.md`, `docs/delivery/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added a coworker-facing demo/API runbook with local startup, Swagger/OpenAPI URLs, health check, Makefile and Docker Compose commands, and notes about local stub clients and disabled local security.
+- Documented sample `curl` commands for create, list, get-by-ID, get-by-reference, confirm, start, complete, and cancel flows.
+- Split cancellation into separate pending and confirmed examples because `COMPLETED` bookings are terminal and cannot be cancelled.
+- Linked the runbook from the delivery evidence README.
+
+Verification:
+
+- Static runbook content check passed for local startup, Swagger URL, health check, create/list/get/confirm/start/complete/cancel curl examples, expected statuses, Makefile commands, and Docker Compose/local-stub notes.
+- `git diff --check HEAD` passed.
 
 ### bo-ot8.10 - Run final quality gate
 
