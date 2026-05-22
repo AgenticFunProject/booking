@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 56 |
+| Beads recorded | 57 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 55 |
+| Entries with elapsed time | 56 |
 
 ## Entries
+
+### bo-k7u.11 - Repair Beads and Gas Town hygiene warnings
+
+| Field | Value |
+| --- | --- |
+| Status | Pending GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-k7u.11@mpgrea5j` |
+| PR | https://github.com/AgenticFunProject/booking/pull/60 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T10:10:59Z |
+| Completed UTC | 2026-05-22T10:17:00Z |
+| Elapsed wall time | 6m 01s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `.gitignore`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md` |
+
+Delivered:
+
+- Ran `bd doctor --fix --yes`, which backfilled Beads `project_id`, repaired repo fingerprint metadata, created `.beads/.gitignore`, installed Beads hook shims, and removed 50 orphan dependency references.
+- Committed Beads metadata repair with `bd vc commit -m "Repair booking Beads hygiene metadata"`.
+- Added repository ignore coverage for `.runtime/`, local Beads state, Dolt state, Beads credential keys, proxied DB files, and local `*.db` files.
+- Left non-repo Gas Town warnings documented instead of making unreviewed local town/witness structural changes: shell integration is user-local, town-root `.runtime/` ignore is outside this repository, witness clone/testutil structure is outside this repository, and the redirected mayor clone has local generated Beads files outside this branch.
+
+Verification:
+
+- Baseline `bd doctor` reported 67 passed, 8 warnings, 0 errors.
+- Baseline `gt doctor --rig booking` reported 99 passed, 5 warnings, 0 failed.
+- `bd doctor --fix --yes` fixed 6 categories and reduced Beads warnings from 8 to 4 before repo-file commit.
+- `bd hooks list` passed after explicit hook installation, showing pre-commit, post-merge, pre-push, post-checkout, and prepare-commit-msg installed with shim 1.0.4.
+- Final `bd doctor` reported 72 passed, 3 warnings, 0 errors after this branch was committed. Remaining warnings were remote consistency for the redirected Dolt path, redirected mayor clone generated Beads/gitignore files outside this PR branch, and transient Dolt local metadata.
+- Final `gt doctor --rig booking` reported 100 passed, 4 warnings, 0 failed after this branch was committed. The original stuck patrol and polecat uncommitted-change warnings cleared; remaining warnings were user-local shell integration, town-root `.runtime/` ignore, witness clone structure, and canonical `internal/testutil/` setup outside this repository change scope.
 
 ### bo-k7u.10 - Review and reduce test log noise
 

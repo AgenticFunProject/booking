@@ -25,6 +25,14 @@ docker-compose.override.yml
 logs/
 tmp/
 *.pid
+.runtime/
+
+# Beads / Dolt local state
+.beads/
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
 
 # OS files
 .DS_Store
