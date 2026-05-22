@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 69 |
+| Beads recorded | 70 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 41 |
-| Entries with elapsed time | 68 |
+| Verification blockers recorded | 42 |
+| Entries with elapsed time | 69 |
 
 ## Entries
+
+### bo-ot8.2 - Add docker-compose local stack
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-ot8.2` |
+| PR | https://github.com/AgenticFunProject/booking/pull/78 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T14:29:02Z |
+| Completed UTC | 2026-05-22T14:34:04Z |
+| Elapsed wall time | 5m 02s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `docker-compose.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added `docker-compose.yml` with a local PostgreSQL 16 Alpine service and booking-service application service.
+- Configured PostgreSQL container name, port `5432`, `booking_db`, `booking_user`, `booking_pass`, a named `postgres_data` volume, `pg_isready` healthcheck, and `unless-stopped` restart policy.
+- Configured booking-service to build from the repository Dockerfile, expose port `8081`, wait for PostgreSQL `service_healthy`, and run with `SPRING_PROFILES_ACTIVE=local`.
+- Wired local application environment defaults for `SPRING_DATASOURCE_URL`, `DB_USERNAME`, `DB_PASSWORD`, `SECURITY_ENABLED=false`, and overridable `JWT_SECRET`.
+- Kept Kafka, asynchronous messaging, and unrelated deployment files out of scope.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/quartz/bo-ot8.2 origin/master` passed after Dockerfile PR #76 had merged.
+- Static compose content check with `python3` passed for expected PostgreSQL and booking-service entries, local profile, DB env/defaults, health dependency, named volume, and no Kafka service.
+- `docker compose config` was blocked because Docker is not installed in this environment (`docker: command not found`), so local Compose CLI validation could not run.
+- `git diff --check` passed.
 
 ### bo-ot8.1 - Add Dockerfile
 
