@@ -23,24 +23,19 @@ import com.cargo.booking.dto.response.BookingResponse;
 import com.cargo.booking.dto.response.CargoResponse;
 import com.cargo.booking.dto.response.CustomerResponse;
 import com.cargo.booking.dto.response.EquipmentResponse;
+import com.cargo.booking.exception.BookingNotFoundException;
 import com.cargo.booking.exception.GlobalExceptionHandler;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
 import com.cargo.booking.repository.BookingRepository;
 import com.cargo.booking.service.BookingService;
+import com.cargo.booking.testutil.JwtTestHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,32 +48,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 class BookingSecurityIntegrationTestSupport {
 
-    static final String AUTH_JWT_SECRET = "shared-auth-jwt-secret-at-least-256-bits";
-    static final String ISSUER = "platform-auth";
-    static final String AUDIENCE = "equipments-service";
-
     private BookingSecurityIntegrationTestSupport() {
-    }
-
-    static String bearer(String token) {
-        return "Bearer " + token;
-    }
-
-    static String token(Map<String, Object> claims) {
-        return token(claims, ISSUER, AUDIENCE, Instant.now().plus(Duration.ofHours(1)));
-    }
-
-    static String token(Map<String, Object> claims, String issuer, String audience, Instant expiration) {
-        return Jwts.builder()
-                .claims(claims)
-                .issuer(issuer)
-                .audience().add(audience).and()
-                .expiration(Date.from(expiration))
-                .signWith(signingKey())
-                .compact();
     }
 
     static CreateBookingRequest createRequest(Long customerId) {
@@ -135,13 +110,10 @@ class BookingSecurityIntegrationTestSupport {
                 Instant.parse("2026-05-19T13:00:00Z")
         );
     }
-
-    private static SecretKey signingKey() {
-        return Keys.hmacShaKeyFor(AUTH_JWT_SECRET.getBytes(StandardCharsets.UTF_8));
-    }
 }
 
-@WebMvcTest(controllers = BookingController.class)
+@Tag("integration")
+@WebMvcTest(controllers = {BookingController.class, SecurityRouteIntegrationTestController.class})
 @Import({
         SecurityConfig.class,
         JwtAuthenticationFilter.class,
@@ -155,9 +127,8 @@ class BookingSecurityIntegrationTestSupport {
         "app.security.enabled=true",
         "app.security.jwt.issuer=platform-auth",
         "app.security.jwt.audience=equipments-service",
-        "app.security.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
+        "app.security.jwt.secret=test-secret-key-that-is-at-least-256-bits-long"
 })
-@Tag("integration")
 class BookingSecurityIntegrationTest {
 
     @Autowired
@@ -177,54 +148,65 @@ class BookingSecurityIntegrationTest {
 
     @Test
     void shouldRejectMissingInvalidExpiredWrongIssuerAndWrongAudienceTokens() throws Exception {
-        String expired = BookingSecurityIntegrationTestSupport.token(
-                Map.of("sub", "user-123", "roles", List.of("CUSTOMER"), "customerId", 3001),
-                BookingSecurityIntegrationTestSupport.ISSUER,
-                BookingSecurityIntegrationTestSupport.AUDIENCE,
-                Instant.now().minus(Duration.ofMinutes(1))
-        );
-        String wrongIssuer = BookingSecurityIntegrationTestSupport.token(
-                Map.of("sub", "user-123", "roles", List.of("CUSTOMER"), "customerId", 3001),
-                "wrong-issuer",
-                BookingSecurityIntegrationTestSupport.AUDIENCE,
-                Instant.now().plus(Duration.ofHours(1))
-        );
-        String wrongAudience = BookingSecurityIntegrationTestSupport.token(
-                Map.of("sub", "user-123", "roles", List.of("CUSTOMER"), "customerId", 3001),
-                BookingSecurityIntegrationTestSupport.ISSUER,
-                "users-service",
-                Instant.now().plus(Duration.ofHours(1))
-        );
+        String expired = JwtTestHelper.generateExpiredToken("customer-3001");
+        String wrongIssuer = JwtTestHelper.generateWrongIssuerToken("customer-3001");
+        String wrongAudience = JwtTestHelper.generateWrongAudienceToken("customer-3001");
+        String invalidSignature = JwtTestHelper.generateInvalidSignatureToken("customer-3001");
 
         mockMvc.perform(get("/api/v1/bookings"))
                 .andExpect(status().isUnauthorized());
-        mockMvc.perform(get("/api/v1/bookings").header(HttpHeaders.AUTHORIZATION, "Bearer not-a-jwt"))
+        mockMvc.perform(get("/api/v1/bookings")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(JwtTestHelper.generateMalformedToken())))
                 .andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(expired)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(expired)))
                 .andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(wrongIssuer)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(wrongIssuer)))
                 .andExpect(status().isUnauthorized());
         mockMvc.perform(get("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(wrongAudience)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(wrongAudience)))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/api/v1/bookings")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(invalidSignature)))
                 .andExpect(status().isUnauthorized());
 
         verifyNoInteractions(bookingService, bookingMapper, bookingRepository);
     }
 
     @Test
+    void shouldPermitPublicEndpointsAndProtectMetricsWithRealJwtRoles() throws Exception {
+        String operatorToken = JwtTestHelper.generateOperatorToken("operator-1");
+        String adminToken = JwtTestHelper.generateAdminToken();
+
+        mockMvc.perform(get("/swagger-ui/index.html"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/api-docs/openapi.json"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/actuator/health"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/actuator/info"))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/actuator/metrics"))
+                .andExpect(status().isUnauthorized());
+        mockMvc.perform(get("/actuator/metrics")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(operatorToken)))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/actuator/metrics")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(adminToken)))
+                .andExpect(status().isOk());
+
+        verifyNoInteractions(bookingService, bookingMapper, bookingRepository);
+    }
+
+    @Test
     void shouldAcceptUsersStyleAdminTokenWithoutUsersIntrospection() throws Exception {
-        String usersAdminToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "users-42",
-                "name", "Users Admin",
-                "role", "admin"
-        ));
+        String usersAdminToken = JwtTestHelper.generateAdminToken();
         when(bookingService.getBookings(isNull(), isNull(), any(Pageable.class)))
                 .thenAnswer(invocation -> new PageImpl<Booking>(List.of(), invocation.getArgument(2), 0));
 
         mockMvc.perform(get("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(usersAdminToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(usersAdminToken)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content").isArray());
 
@@ -234,72 +216,58 @@ class BookingSecurityIntegrationTest {
 
     @Test
     void shouldEnforceRoleAllowAndDenyRules() throws Exception {
-        String operatorToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "operator-1",
-                "roles", List.of("OPERATOR")
-        ));
-        String customerToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "customer-1",
-                "roles", List.of("CUSTOMER"),
-                "customerId", 3001
-        ));
+        String operatorToken = JwtTestHelper.generateOperatorToken("operator-1");
+        String customerToken = JwtTestHelper.generateCustomerToken(3001L);
         Booking confirmedBooking = BookingSecurityIntegrationTestSupport.booking(3001L, BookingStatus.CONFIRMED);
         BookingResponse confirmedResponse = BookingSecurityIntegrationTestSupport.bookingResponse(3001L, "CONFIRMED");
         when(bookingService.confirmBooking(42L)).thenReturn(confirmedBooking);
         when(bookingMapper.toResponse(confirmedBooking)).thenReturn(confirmedResponse);
 
         mockMvc.perform(post("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(operatorToken))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(operatorToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 BookingSecurityIntegrationTestSupport.createRequest(3001L))))
                 .andExpect(status().isForbidden());
 
         mockMvc.perform(patch("/api/v1/bookings/42/confirm")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(customerToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerToken)))
                 .andExpect(status().isForbidden());
 
         mockMvc.perform(patch("/api/v1/bookings/42/confirm")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(operatorToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(operatorToken)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("CONFIRMED"));
     }
 
     @Test
     void shouldApplyCustomerOwnershipChecksBeforeServiceCalls() throws Exception {
-        String customerToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "customer-1",
-                "roles", List.of("CUSTOMER"),
-                "customerId", 3001
-        ));
-        String customerWithoutClaimToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "customer-2",
-                "roles", List.of("CUSTOMER")
-        ));
+        String customerToken = JwtTestHelper.generateCustomerToken(3001L);
+        String customerWithoutClaimToken = JwtTestHelper.generateCustomerTokenMissingCustomerClaim("customer-2");
         when(bookingRepository.findById(42L))
                 .thenReturn(Optional.of(BookingSecurityIntegrationTestSupport.booking(3002L, BookingStatus.PENDING)));
 
         mockMvc.perform(get("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(customerToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerToken)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("customerId query parameter is required for customer callers"));
 
         mockMvc.perform(post("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(customerWithoutClaimToken))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerWithoutClaimToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 BookingSecurityIntegrationTestSupport.createRequest(3001L))))
                 .andExpect(status().isForbidden());
 
         mockMvc.perform(post("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(customerToken))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 BookingSecurityIntegrationTestSupport.createRequest(3002L))))
                 .andExpect(status().isForbidden());
 
         mockMvc.perform(get("/api/v1/bookings/42")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(customerToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerToken)))
                 .andExpect(status().isForbidden());
 
         verify(bookingService, never()).createBooking(any());
@@ -307,12 +275,44 @@ class BookingSecurityIntegrationTest {
     }
 
     @Test
+    void shouldApplySecurityStatusPrecedenceBeforeValidationAndServiceErrors() throws Exception {
+        String customerWithoutClaimToken = JwtTestHelper.generateCustomerTokenMissingCustomerClaim("customer-2");
+
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/v1/bookings")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerWithoutClaimToken)))
+                .andExpect(status().isForbidden());
+
+        mockMvc.perform(get("/api/v1/bookings")
+                        .param("customerId", "3001")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerWithoutClaimToken)))
+                .andExpect(status().isForbidden());
+
+        verifyNoInteractions(bookingService, bookingMapper, bookingRepository);
+    }
+
+    @Test
+    void shouldDeferMissingBookingToServiceNotFoundInsteadOfOwnershipDeny() throws Exception {
+        String customerToken = JwtTestHelper.generateCustomerToken(3001L);
+        when(bookingRepository.findById(404L)).thenReturn(Optional.empty());
+        when(bookingService.getBookingById(404L))
+                .thenThrow(new BookingNotFoundException("Booking not found with id 404"));
+
+        mockMvc.perform(get("/api/v1/bookings/404")
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerToken)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Booking not found with id 404"));
+
+        verify(bookingService).getBookingById(404L);
+    }
+
+    @Test
     void shouldAllowCustomerWhenOwnershipMatches() throws Exception {
-        String customerToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "customer-1",
-                "roles", List.of("CUSTOMER"),
-                "customer_id", 3001
-        ));
+        String customerToken = JwtTestHelper.generateCustomerTokenWithSnakeCaseClaim(3001L);
         Booking booking = BookingSecurityIntegrationTestSupport.booking(3001L, BookingStatus.CANCELLED);
         BookingResponse response = BookingSecurityIntegrationTestSupport.bookingResponse(3001L, "CANCELLED");
         when(bookingRepository.findById(42L)).thenReturn(Optional.of(BookingSecurityIntegrationTestSupport.booking(
@@ -323,7 +323,7 @@ class BookingSecurityIntegrationTest {
         when(bookingMapper.toResponse(booking)).thenReturn(response);
 
         mockMvc.perform(patch("/api/v1/bookings/42/cancel")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(customerToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(customerToken)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customerId").value(3001))
                 .andExpect(jsonPath("$.status").value("CANCELLED"));
@@ -331,14 +331,8 @@ class BookingSecurityIntegrationTest {
 
     @Test
     void shouldAllowServiceAndAdminToActForRequestedCustomers() throws Exception {
-        String serviceToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "booking-worker",
-                "roles", List.of("SERVICE")
-        ));
-        String adminToken = BookingSecurityIntegrationTestSupport.token(Map.of(
-                "sub", "admin-1",
-                "roles", List.of("ADMIN")
-        ));
+        String serviceToken = JwtTestHelper.generateServiceToken("booking-worker");
+        String adminToken = JwtTestHelper.generateAdminToken("admin-1");
         Booking booking = BookingSecurityIntegrationTestSupport.booking(9001L, BookingStatus.PENDING);
         when(bookingService.createBooking(any(com.cargo.booking.service.CreateBookingRequest.class))).thenReturn(booking);
         when(bookingMapper.toCreatedResponse(booking))
@@ -347,7 +341,7 @@ class BookingSecurityIntegrationTest {
                 .thenAnswer(invocation -> new PageImpl<Booking>(List.of(), invocation.getArgument(2), 0));
 
         mockMvc.perform(post("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(serviceToken))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(serviceToken))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 BookingSecurityIntegrationTestSupport.createRequest(9001L))))
@@ -355,14 +349,15 @@ class BookingSecurityIntegrationTest {
                 .andExpect(jsonPath("$.customerId").value(9001));
 
         mockMvc.perform(get("/api/v1/bookings")
-                        .header(HttpHeaders.AUTHORIZATION, BookingSecurityIntegrationTestSupport.bearer(adminToken)))
+                        .header(HttpHeaders.AUTHORIZATION, JwtTestHelper.bearer(adminToken)))
                 .andExpect(status().isOk());
 
         verifyNoInteractions(bookingRepository);
     }
 }
 
-@WebMvcTest(controllers = BookingController.class)
+@Tag("integration")
+@WebMvcTest(controllers = {BookingController.class, SecurityRouteIntegrationTestController.class})
 @Import({
         SecurityConfig.class,
         JwtAuthenticationFilter.class,
@@ -374,9 +369,8 @@ class BookingSecurityIntegrationTest {
 })
 @TestPropertySource(properties = {
         "app.security.enabled=false",
-        "app.security.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
+        "app.security.jwt.secret=test-secret-key-that-is-at-least-256-bits-long"
 })
-@Tag("integration")
 class BookingSecurityDisabledIntegrationTest {
 
     @Autowired
@@ -432,5 +426,20 @@ class BookingSecurityDisabledIntegrationTest {
 
         verify(bookingService).getBookings(any(), any(), any(Pageable.class));
         verifyNoInteractions(bookingRepository);
+    }
+}
+
+@RestController
+class SecurityRouteIntegrationTestController {
+
+    @GetMapping({
+            "/swagger-ui/index.html",
+            "/api-docs/openapi.json",
+            "/actuator/health",
+            "/actuator/info",
+            "/actuator/metrics"
+    })
+    String publicOrActuatorEndpoint() {
+        return "ok";
     }
 }

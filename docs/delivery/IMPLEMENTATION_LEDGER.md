@@ -6,13 +6,51 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 64 |
+| Beads recorded | 65 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 63 |
+| Entries with elapsed time | 64 |
 
 ## Entries
+
+### bo-8wz.7 - Add security integration tests
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-8wz.7@mpgwn4ux` |
+| PR | https://github.com/AgenticFunProject/booking/pull/71 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T12:38:01Z |
+| Completed UTC | 2026-05-22T12:46:49Z |
+| Elapsed wall time | 8m 48s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/security/BookingSecurityIntegrationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Reworked `BookingSecurityIntegrationTest` to use the shared `JwtTestHelper` for real JWT generation instead of local token-building helpers.
+- Tagged the security MVC integration classes with `@Tag("integration")` so Maven `-Dgroups="integration"` selects them.
+- Added real-filter coverage for public Swagger/API docs/health/info routes and ADMIN-only `/actuator/metrics` behavior using generated JWTs.
+- Added status-precedence coverage for unauthenticated invalid bodies and CUSTOMER tokens missing a customer identity claim.
+- Added customer ownership and not-found deferral coverage proving missing repository rows proceed to `BookingService` for the final 404 instead of becoming an ownership 403.
+- Verified disabled-security mode permits unauthenticated booking creation and skips repository-backed ownership checks.
+
+Verification:
+
+- `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 10 tests, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test -Dgroups="integration" -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 10 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
+- Post-rebase after PR #70 merged, `git fetch origin master && git rebase origin/master` passed after resolving conflicts in the security test and delivery evidence while preserving both `bo-8wz.6` and `bo-8wz.7` entries.
+- Post-rebase `./mvnw compile` passed.
+- Post-rebase `./mvnw test -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 11 tests, 0 failures, 0 errors, and 0 skipped.
+- Post-rebase `./mvnw test -Dgroups="integration" -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 11 tests, 0 failures, 0 errors, and 0 skipped.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
 
 ### bo-8wz.6 - Add controller integration tests
 
