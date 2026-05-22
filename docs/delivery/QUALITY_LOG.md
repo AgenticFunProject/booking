@@ -327,6 +327,9 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-22 | `bo-k7u.5` | https://github.com/AgenticFunProject/booking/pull/54 | `./mvnw -version` | Maven wrapper smoke test | Passed | Wrapper resolved Apache Maven 3.9.16 from the wrapper cache. |
 | 2026-05-22 | `bo-k7u.5` | https://github.com/AgenticFunProject/booking/pull/54 | `./mvnw compile` | Post-rebase wrapper-backed compile gate | Passed | Compile completed successfully after rebasing onto latest `origin/master`; previous missing-wrapper blocker is resolved. |
 | 2026-05-22 | `bo-k7u.5` | https://github.com/AgenticFunProject/booking/pull/54 | `./mvnw test` | Post-rebase wrapper-backed full test gate | Passed | 164 tests, 0 failures, 0 errors after rebasing onto latest `origin/master`. |
+| 2026-05-22 | `bo-k7u.6` | https://github.com/AgenticFunProject/booking/pull/55 | `./mvnw -DskipTests clean compile` | Explicit annotation processing clean compile gate | Passed | Clean compile completed successfully after configuring Lombok on the Maven compiler annotation processor path; the prior javac implicit annotation-processing warning was absent. |
+| 2026-05-22 | `bo-k7u.6` | https://github.com/AgenticFunProject/booking/pull/55 | `./mvnw test` | Full test gate after compiler annotation processing configuration | Passed | 164 tests, 0 failures, 0 errors. Existing Mockito dynamic-agent warnings remain out of scope for follow-up `bo-k7u.8`. |
+| 2026-05-22 | `bo-k7u.6` | https://github.com/AgenticFunProject/booking/pull/55 | `git diff --check` | Annotation processing configuration and delivery evidence | Passed | No whitespace/diff errors. |
 
 ## Entry Template
 

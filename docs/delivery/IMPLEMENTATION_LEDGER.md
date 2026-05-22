@@ -2178,6 +2178,38 @@ Notes:
 
 - Wrapper generation used the default `only-script` distribution type from Maven Wrapper Plugin 3.3.4; no wrapper JAR is required.
 
+### bo-k7u.6 - Configure explicit annotation processing
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.6@mpgoytfw` |
+| PR | https://github.com/AgenticFunProject/booking/pull/55 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T09:03:01Z |
+| Completed UTC | 2026-05-22T09:08:47Z |
+| Elapsed wall time | 5m 46s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added an explicit `maven-compiler-plugin` configuration with Lombok on the annotation processor path.
+- Preserved Lombok as a provided dependency while removing javac's implicit annotation-processing future-warning on clean compile.
+
+Verification:
+
+- `./mvnw -DskipTests clean compile` passed and no longer emitted the implicit annotation-processing warning.
+- `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- The worktree initially sat on a stale `bo-k7u.7` branch with no commits; it was reconciled to the existing `bo-k7u.6` branch from current `origin/master` before editing.
+- Existing Mockito dynamic-agent warnings remain out of scope for this bead and are tracked by follow-up `bo-k7u.8`.
+
 ## Entry Template
 
 ```md
