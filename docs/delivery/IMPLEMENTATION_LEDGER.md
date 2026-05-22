@@ -21,11 +21,11 @@ This ledger records delivery evidence for completed implementation beads.
 | Status | Open GitHub PR |
 | Agent | obsidian |
 | Branch | `polecat/obsidian/bo-k7u.8@mpgplaz8` |
-| PR | Pending |
+| PR | https://github.com/AgenticFunProject/booking/pull/56 |
 | Merge commit | Pending |
 | Started UTC | 2026-05-22T09:20:30Z |
-| Completed UTC | 2026-05-22T09:25:30Z |
-| Elapsed wall time | 5m 00s |
+| Completed UTC | 2026-05-22T09:29:34Z |
+| Elapsed wall time | 9m 04s |
 | Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
 | Files changed | `pom.xml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/009_testing.md` |
