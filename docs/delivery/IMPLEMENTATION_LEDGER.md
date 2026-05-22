@@ -6,13 +6,42 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 59 |
+| Beads recorded | 60 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 58 |
+| Entries with elapsed time | 59 |
 
 ## Entries
+
+### bo-8wz.1 - Add test data builder utilities
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-8wz.1@mpgtqwx1` |
+| PR | https://github.com/AgenticFunProject/booking/pull/64 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T11:16:53Z |
+| Completed UTC | 2026-05-22T11:29:10Z |
+| Elapsed wall time | 12m 17s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/testutil/TestDataBuilder.java`, `src/test/java/com/cargo/booking/testutil/TestDataBuilderTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `TestDataBuilder` utility methods for valid transient booking entities, explicit persisted-looking booking entities, status-specific booking builders, equipment lines, API create-booking request DTOs, nested request DTOs, and service create-booking request defaults.
+- Exposed reusable constants for the spec-required defaults, including booking reference `BKG-2026-00001`, PENDING status, schedule `1001L`, quote `2001L`, customer `3001L`, cargo defaults, and `20FT` equipment quantity `1`.
+- Added focused unit coverage proving the transient defaults, explicit persisted-looking helper, lifecycle status builders, entity equipment line association, API request graph, and service request graph remain valid and distinct.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest=TestDataBuilderTest` passed with 6 tests, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test` passed with 170 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-mcz - Run post-cleanup cumulative audit before Phase 7
 
