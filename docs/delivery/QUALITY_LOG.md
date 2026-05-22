@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 302 |
-| Passed | 238 |
+| Checks recorded | 310 |
+| Passed | 246 |
 | Failed | 15 |
 | Blocked/skipped | 51 |
 
@@ -15,12 +15,20 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `git fetch origin master && git rebase origin/master` | PR #69 rebase after PR #68 merge | Passed | Resolved delivery evidence conflicts by preserving both `bo-8wz.4` and `bo-8wz.5` ledger/log entries and correcting summary counts. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `git diff --check origin/master...HEAD` | Post-rebase service behavior test diff check | Passed | No whitespace/diff errors after resolving delivery evidence conflicts. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `./mvnw test -Dtest="BookingServiceCreateTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest"` | Post-rebase affected service behavior tests | Passed | 31 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `./mvnw test -Dtest="BookingService*Test"` | Post-rebase broader BookingService unit test sweep | Passed | 39 tests, 0 failures, 0 errors, 0 skipped. |
 | 2026-05-22 | `bo-8wz.4` | https://github.com/AgenticFunProject/booking/pull/68 | `./mvnw compile` | Repository integration test compile gate after Java test edits | Passed | Main compilation succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-8wz.4` | https://github.com/AgenticFunProject/booking/pull/68 | `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Initial focused repository integration test run | Failed | Test compilation exposed a local helper shadowing `TestDataBuilder.aBooking()` in `BookingRepositoryTest`; qualified the shared builder before rerun. |
 | 2026-05-22 | `bo-8wz.4` | https://github.com/AgenticFunProject/booking/pull/68 | `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Focused repository integration test run after builder fix | Failed | `BookingEquipmentLineRepositoryTest.shouldDeleteByBookingId` kept the parent booking managed during bulk delete setup; cleared the persistence context before delete and reran. |
 | 2026-05-22 | `bo-8wz.4` | https://github.com/AgenticFunProject/booking/pull/68 | `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Focused repository integration tests | Passed | 27 tests, 0 failures, 0 errors, 0 skipped. Covered booking repository queries, eager fetches, specifications, migrations, equipment-line repository methods, and reference counters. |
 | 2026-05-22 | `bo-8wz.4` | https://github.com/AgenticFunProject/booking/pull/68 | `./mvnw test -Dgroups="integration" -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Repository integration tests through JUnit tag selector | Passed | 27 tests, 0 failures, 0 errors, 0 skipped. Verified the repository slice tests are selectable via the configured `integration` tag. |
 | 2026-05-22 | `bo-8wz.4` | https://github.com/AgenticFunProject/booking/pull/68 | `git diff --check origin/master...HEAD` | Repository integration test branch whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `./mvnw compile` | Service behavior test compile gate after Java test edits | Passed | Main compilation succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `./mvnw test -Dtest="BookingServiceCreateTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest"` | Affected service behavior tests for validation, client-failure, invalid-transition, and no-change expectations | Passed | 31 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `./mvnw test -Dtest="BookingService*Test"` | Broader BookingService unit test sweep | Passed | 39 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `git diff --check origin/master...HEAD` | Service behavior test branch whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw compile` | Test data builder compile gate | Passed | Build succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test -Dtest=TestDataBuilderTest` | Focused test data builder utility tests | Passed | 6 tests, 0 failures, 0 errors, 0 skipped after review fix for transient booking defaults. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test` | Full suite after adding test data builders | Passed | 170 tests, 0 failures, 0 errors, 0 skipped after review fix for transient booking defaults. |
