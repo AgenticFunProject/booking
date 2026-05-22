@@ -7,10 +7,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.sql.DataSource;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
+@Tag("integration")
 @ActiveProfiles({"test", "local"})
 class BaseWireMockTestTest extends BaseWireMockTest {
 

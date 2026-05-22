@@ -2,7 +2,6 @@ package com.cargo.booking;
 
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres;
 import java.io.IOException;
-import org.junit.jupiter.api.Tag;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -10,7 +9,6 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Tag("integration")
 public abstract class BaseIntegrationTest {
 
     private static final String POSTGRES_USER = "postgres";
