@@ -76,7 +76,10 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
-        run: docker build -t booking-service:${{ github.sha }} .
+        run: docker build -t booking-service:${{ github.sha }} -t booking-service:bo-ot8.10 .
+
+      - name: Validate Docker Compose config
+        run: docker compose config
 
       - name: Tag as latest
         if: github.ref == 'refs/heads/master'
