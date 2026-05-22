@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 57 |
+| Beads recorded | 58 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 56 |
+| Entries with elapsed time | 57 |
 
 ## Entries
+
+### bo-k7u.12 - Run cleanup final verification
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-k7u.12@mpgrv5tc` |
+| PR | https://github.com/AgenticFunProject/booking/pull/61 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T10:24:16Z |
+| Completed UTC | 2026-05-22T10:28:20Z |
+| Elapsed wall time | 4m 04s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md` |
+
+Delivered:
+
+- Ran final cleanup verification after the cleanup child tasks for Maven wrapper, annotation processing, deprecated test API usage, Mockito Java agent setup, Hibernate dialect cleanup, test log-noise cleanup, and Beads/Gas Town hygiene repair were completed.
+- Recorded before/after warning counts in `QUALITY_LOG.md`: Beads hygiene improved from 8 warnings and 0 errors to 4 warnings and 0 errors; Gas Town hygiene improved from 5 warnings and 0 failed checks to 4 warnings and 0 failed checks.
+- Confirmed Maven compile and full test gates are green with zero captured `WARN`/`WARNING`/`ERROR` log-level matches.
+- Remaining hygiene warnings are documented as local/town-structure or current-hook artifacts: redirected Dolt remote consistency, generated/local Beads state in the redirected mayor clone, transient Dolt local metadata, current attached molecule orphan dependency, user-local shell integration, town-root `.runtime/` ignore coverage, incomplete witness structure, and missing canonical `internal/testutil/`.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- `bd doctor` passed with 71 checks passed, 4 warnings, and 0 errors.
+- `gt doctor --rig booking` passed with 100 checks passed, 4 warnings, and 0 failed checks.
 
 ### bo-k7u.11 - Repair Beads and Gas Town hygiene warnings
 
