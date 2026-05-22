@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 67 |
+| Beads recorded | 68 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
-| Verification blockers recorded | 40 |
-| Entries with elapsed time | 66 |
+| Verification blockers recorded | 41 |
+| Entries with elapsed time | 67 |
 
 ## Entries
+
+### bo-ot8.1 - Add Dockerfile
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-ot8.1` |
+| PR | https://github.com/AgenticFunProject/booking/pull/76 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T14:15:00Z |
+| Completed UTC | 2026-05-22T14:19:58Z |
+| Elapsed wall time | 4m 58s |
+| Timing source | Agent-recorded UTC timestamps |
+| Files changed | `Dockerfile`, `.dockerignore`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added a multi-stage `Dockerfile` with an `eclipse-temurin:21-jdk-alpine` Maven-wrapper build stage and an `eclipse-temurin:21-jre-alpine` runtime stage.
+- Cached Maven dependencies before copying source code, then packaged the Spring Boot jar with `./mvnw package -DskipTests -B`.
+- Runs the app as non-root `appuser`, exposes port `8081`, and copies the Maven-produced `booking-service-*.jar` to `/app/app.jar`.
+- Added an actuator healthcheck for `http://localhost:8081/actuator/health`.
+- Added container-aware JVM defaults through `JAVA_OPTS`, including `UseContainerSupport`, `InitialRAMPercentage`, and `MaxRAMPercentage`, while allowing runtime override.
+- Added `.dockerignore` entries required by the deployment spec, including `target/`, `.git/`, IDE metadata, `.env` files, compose files, docs, README, and logs.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/quartz/bo-ot8.1 origin/master` passed.
+- `./mvnw package -DskipTests` passed and produced `target/booking-service-0.0.1-SNAPSHOT.jar`.
+- `docker version --format '{{.Server.Version}}'` was blocked because Docker is not installed in this environment (`docker: command not found`), so local Docker image build verification could not run.
+- `git diff --check` passed.
 
 ### bo-8wz.11 - Run cumulative Phase 1-7 audit
 
