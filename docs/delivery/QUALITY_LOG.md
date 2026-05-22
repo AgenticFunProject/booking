@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 286 |
-| Passed | 226 |
+| Checks recorded | 290 |
+| Passed | 230 |
 | Failed | 11 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,10 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw compile` | Test data builder compile gate | Passed | Build succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test -Dtest=TestDataBuilderTest` | Focused test data builder utility tests | Passed | 5 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test` | Full suite after adding test data builders | Passed | 169 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `git diff --check origin/master...HEAD` | Test data builder branch whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | Manual spec audit | Post-cleanup cumulative audit of Phases 1-6 plus Cleanup Wave `bo-k7u` | Passed | Compared `IMPLEMENTATION.md`, `AGENTS.md`, specs 001-008, delivery evidence, and implementation files. No concrete implementation gaps found. Phase 7 and Phase 8 remain unstarted. |
 | 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `./mvnw compile` | Post-cleanup cumulative audit compile gate | Passed | Build succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `./mvnw test` | Post-cleanup cumulative audit full test gate | Passed | 164 tests, 0 failures, 0 errors, 0 skipped. |
