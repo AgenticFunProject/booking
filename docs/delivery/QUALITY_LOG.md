@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 374 |
-| Passed | 302 |
+| Checks recorded | 380 |
+| Passed | 308 |
 | Failed | 20 |
 | Blocked/skipped | 54 |
 
@@ -15,6 +15,12 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.8 origin/master` | Makefile developer commands branch setup | Passed | Created a fresh quartz branch from current `origin/master` for the hooked bead. |
+| 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `git fetch origin master && git rebase origin/master` | Makefile developer commands branch sync | Passed | Rebased onto current `origin/master` after PR #82/`bo-ot8.6` merged; resolved delivery evidence conflicts by preserving both `bo-ot8.6` and `bo-ot8.8` entries and combined counts. |
+| 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `make -n build test test-unit test-integration test-e2e run docker-build docker-up docker-down docker-logs clean swagger` | Makefile developer command dry-run | Passed | Printed the expected Maven build/test/group/run commands, Docker build/Compose commands, clean commands, and Swagger URL opener fallback without executing Docker or opening a browser. |
+| 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `python3 - <<'PY' ...` | Static Makefile content check | Passed | Verified required build, test, grouped test, run, Docker, clean, and Swagger command strings are present in `Makefile`. |
+| 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `make test-unit` | Makefile unit-test target smoke check | Passed | Ran `./mvnw test -Dgroups="!integration,!e2e"` through the Makefile target: 172 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-ot8.8` | https://github.com/AgenticFunProject/booking/pull/83 | `git diff --check` | Makefile and delivery evidence whitespace check | Passed | No whitespace/diff errors after Makefile and delivery evidence edits. |
 | 2026-05-22 | `bo-ot8.6` | https://github.com/AgenticFunProject/booking/pull/82 | `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.6 origin/master` | Environment example branch setup | Passed | Created a fresh obsidian branch from current `origin/master`. |
 | 2026-05-22 | `bo-ot8.6` | https://github.com/AgenticFunProject/booking/pull/82 | `python3 - <<'PY' ...` | Static environment example and ignore-rule coverage check | Passed | Verified `.env.example` documents profile, DB, security, JWT, CORS, and integration URL/timeout variables, and `.gitignore` ignores real `.env` files while allowing `.env.example`. |
 | 2026-05-22 | `bo-ot8.6` | https://github.com/AgenticFunProject/booking/pull/82 | `git diff --check` | Environment example whitespace check | Passed | No whitespace/diff errors after adding `.env.example` and delivery evidence. |

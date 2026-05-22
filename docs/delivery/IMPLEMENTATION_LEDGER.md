@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 74 |
+| Beads recorded | 75 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 43 |
-| Entries with elapsed time | 73 |
+| Entries with elapsed time | 74 |
 
 ## Entries
+
+### bo-ot8.8 - Add Makefile developer commands
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-ot8.8` |
+| PR | https://github.com/AgenticFunProject/booking/pull/83 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T15:03:05Z |
+| Completed UTC | 2026-05-22T15:13:37Z |
+| Elapsed wall time | 10m 32s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `Makefile`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added a root `Makefile` with developer targets for build, test, unit/integration/E2E group selectors, local run, Docker build, Docker Compose up/down/logs, clean, and Swagger.
+- Matched the Maven, Docker, Docker Compose, and Swagger commands finalized in `specs/010_deployment.md`.
+- Added a cross-platform Swagger target that opens `http://localhost:8081/swagger-ui` with `xdg-open` or `open`, and prints the URL when neither opener is available.
+- Kept the targets as thin command aliases so local development and CI documentation share the same command surface.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/quartz/bo-ot8.8 origin/master` passed.
+- `git fetch origin master && git rebase origin/master` passed after resolving delivery evidence conflicts with `bo-ot8.6`, preserving both entries and combined counts.
+- `make -n build test test-unit test-integration test-e2e run docker-build docker-up docker-down docker-logs clean swagger` passed and printed the expected command list without executing Docker or opening a browser.
+- Static Makefile content check with `python3` passed for required build, test, grouped test, run, Docker, clean, and Swagger command strings.
+- `make test-unit` passed with 172 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check` passed.
 
 ### bo-ot8.6 - Add environment example
 
