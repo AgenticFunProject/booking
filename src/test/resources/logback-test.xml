@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{48} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- These categories are intentionally exercised by negative-path tests. -->
+    <logger name="com.cargo.booking.exception.GlobalExceptionHandler" level="OFF"/>
+    <logger name="com.cargo.booking.security.JwtAuthenticationFilter" level="OFF"/>
+    <logger name="com.cargo.booking.security.JwtTokenProvider" level="OFF"/>
+    <logger name="com.cargo.booking.service.BookingService" level="ERROR"/>
+
+    <!-- Local stubs announce themselves at WARN in runtime profiles; unit tests only assert their contracts. -->
+    <logger name="com.cargo.booking.client.EquipmentClientStub" level="OFF"/>
+    <logger name="com.cargo.booking.client.QuoteClientStub" level="OFF"/>
+    <logger name="com.cargo.booking.client.ScheduleClientStub" level="OFF"/>
+
+    <!-- Suppress framework startup noise from test-only application contexts. -->
+    <logger name="org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration" level="ERROR"/>
+    <logger name="org.springframework.context.annotation.AnnotationConfigApplicationContext" level="ERROR"/>
+    <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="ERROR"/>
+    <logger name="org.hibernate" level="WARN"/>
+
+    <root level="WARN">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
