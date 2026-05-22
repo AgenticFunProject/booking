@@ -18,6 +18,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+@Tag("integration")
 class ErrorHandlingMockMvcTest {
 
     private static final String REQUEST_ID = "req-123";
@@ -71,6 +73,22 @@ class ErrorHandlingMockMvcTest {
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.error").value("Conflict"))
                 .andExpect(jsonPath("$.message").value("Cannot transition booking from COMPLETED to CANCELLED"));
+    }
+
+    @Test
+    void shouldReturnStructuredErrorForBookingValidationException() throws Exception {
+        mockMvc.perform(get("/test/errors/booking-validation")
+                        .header(ErrorResponseBuilder.REQUEST_ID_HEADER, REQUEST_ID))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value(
+                        "Invalid booking identifier: abc. Expected numeric ID or booking reference in format BKG-YYYY-NNNNN"
+                ))
+                .andExpect(jsonPath("$.path").value("/test/errors/booking-validation"))
+                .andExpect(jsonPath("$.requestId").value(REQUEST_ID));
     }
 
     @Test
@@ -173,6 +191,13 @@ class ErrorHandlingMockMvcTest {
         @GetMapping("/bookings/{reference}")
         void bookingNotFound() {
             throw new BookingNotFoundException("Booking not found with reference BKG-2026-00042");
+        }
+
+        @GetMapping("/booking-validation")
+        void bookingValidation() {
+            throw new BookingValidationException(
+                    "Invalid booking identifier: abc. Expected numeric ID or booking reference in format BKG-YYYY-NNNNN"
+            );
         }
 
         @PostMapping(value = "/validate", consumes = MediaType.APPLICATION_JSON_VALUE)
