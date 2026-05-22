@@ -43,7 +43,6 @@ import java.util.Optional;
 import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageImpl;
@@ -142,7 +141,6 @@ class BookingSecurityIntegrationTestSupport {
 }
 
 @WebMvcTest(controllers = BookingController.class)
-@ImportAutoConfiguration(exclude = org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration.class)
 @Import({
         SecurityConfig.class,
         JwtAuthenticationFilter.class,
@@ -363,7 +361,6 @@ class BookingSecurityIntegrationTest {
 }
 
 @WebMvcTest(controllers = BookingController.class)
-@ImportAutoConfiguration(exclude = org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration.class)
 @Import({
         SecurityConfig.class,
         JwtAuthenticationFilter.class,

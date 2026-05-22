@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 60 |
+| Beads recorded | 61 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 59 |
+| Entries with elapsed time | 60 |
 
 ## Entries
 
@@ -42,6 +42,37 @@ Verification:
 - `./mvnw test -Dtest=TestDataBuilderTest` passed with 6 tests, 0 failures, 0 errors, and 0 skipped.
 - `./mvnw test` passed with 170 tests, 0 failures, 0 errors, and 0 skipped.
 - `git diff --check origin/master...HEAD` passed.
+
+### bo-8wz.10 - Add shared integration test infrastructure
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8wz.10@mpgtnjtu` |
+| PR | https://github.com/AgenticFunProject/booking/pull/65 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T11:14:22Z |
+| Completed UTC | 2026-05-22T11:30:14Z |
+| Elapsed wall time | 15m 52s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/service/BookingReferenceGenerator.java`, `src/test/java/com/cargo/booking/BaseIntegrationTest.java`, `src/test/java/com/cargo/booking/client/BaseWireMockTest.java`, `src/test/java/com/cargo/booking/client/BaseWireMockTestTest.java`, `src/test/java/com/cargo/booking/config/SecurityConfigTest.java`, `src/test/java/com/cargo/booking/security/BookingSecurityIntegrationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added the WireMock standalone test dependency for future external-client contract tests.
+- Added `BaseIntegrationTest` with `@SpringBootTest`, `@ActiveProfiles("test")`, a static shared embedded PostgreSQL instance, and `@DynamicPropertySource` datasource injection.
+- Added `BaseWireMockTest` with dynamic WireMock servers for schedule, equipment, and quote APIs plus dynamic integration base-url properties.
+- Added a focused infrastructure smoke test proving embedded PostgreSQL and WireMock dynamic properties bind in a full Spring Boot test context.
+- Kept repository, service, controller, security, E2E, and real external-client contract test cases out of this bead.
+- Fixed two existing full-context blockers exposed by the new infrastructure: Springdoc was aligned to the Spring Boot 3-compatible 2.8.x line, and `BookingReferenceGenerator` now marks its public constructor for Spring injection while preserving its package-private clock constructor for tests.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest=BaseWireMockTestTest` passed with 2 tests, 0 failures, 0 errors.
+- `./mvnw test -Dtest="BookingReferenceGeneratorTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 15 tests, 0 failures, 0 errors.
 
 ### bo-mcz - Run post-cleanup cumulative audit before Phase 7
 

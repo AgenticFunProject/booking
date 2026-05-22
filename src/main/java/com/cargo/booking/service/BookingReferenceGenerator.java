@@ -3,6 +3,7 @@ package com.cargo.booking.service;
 import com.cargo.booking.repository.BookingReferenceCounterRepository;
 import java.time.Clock;
 import java.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,6 +12,7 @@ public class BookingReferenceGenerator {
     private final BookingReferenceCounterRepository counterRepository;
     private final Clock clock;
 
+    @Autowired
     public BookingReferenceGenerator(BookingReferenceCounterRepository counterRepository) {
         this(counterRepository, Clock.systemUTC());
     }
