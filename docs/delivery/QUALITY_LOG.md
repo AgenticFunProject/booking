@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 280 |
-| Passed | 220 |
+| Checks recorded | 286 |
+| Passed | 226 |
 | Failed | 11 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,12 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | Manual spec audit | Post-cleanup cumulative audit of Phases 1-6 plus Cleanup Wave `bo-k7u` | Passed | Compared `IMPLEMENTATION.md`, `AGENTS.md`, specs 001-008, delivery evidence, and implementation files. No concrete implementation gaps found. Phase 7 and Phase 8 remain unstarted. |
+| 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `./mvnw compile` | Post-cleanup cumulative audit compile gate | Passed | Build succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `./mvnw test` | Post-cleanup cumulative audit full test gate | Passed | 164 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `git diff --check` | Post-cleanup audit branch whitespace check | Passed | No whitespace/diff errors before or after delivery evidence edits. |
+| 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `bd doctor` | Post-cleanup Beads hygiene audit | Passed | Initial run reported 71 passed, 4 warnings, 0 errors with stale orphan dependencies from deleted formula wisps. Removed the stale dependency edges and committed Beads metadata; final run reported 72 passed, 3 warnings, 0 errors. Remaining warnings are redirected Dolt remote consistency, generated/local Beads git working tree state in the redirected mayor clone, and transient Dolt local metadata. |
+| 2026-05-22 | `bo-mcz` | https://github.com/AgenticFunProject/booking/pull/63 | `gt doctor --rig booking` | Post-cleanup Gas Town hygiene audit | Passed | Reported 100 passed, 4 warnings, 0 failed. Remaining warnings are user-local shell integration, town-root `.runtime/` ignore coverage, incomplete witness structure, and missing canonical `internal/testutil/`. |
 | 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `./mvnw compile` | Final cleanup compile verification | Passed | Build succeeded. Captured log scan found 0 `WARN`/`WARNING`/`ERROR` log-level matches. |
 | 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `./mvnw test` | Final cleanup full test verification | Passed | 164 tests, 0 failures, 0 errors. Captured log scan found 0 `WARN`/`WARNING`/`ERROR` log-level matches. |
 | 2026-05-22 | `bo-k7u.12` | https://github.com/AgenticFunProject/booking/pull/61 | `git diff --check` | Final cleanup whitespace verification | Passed | No whitespace/diff errors. |
