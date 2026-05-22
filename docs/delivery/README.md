@@ -16,8 +16,10 @@ Agents should update these files as they complete beads:
   the bottom.
 - `QUALITY_LOG.md` records verification commands, outcomes, skipped checks, and
   environment blockers.
-- Future files owned by reporting beads, such as a spec coverage matrix, demo
-  runbook, or final delivery report, should be linked here when they are added.
+- `DEMO_API_RUNBOOK.md` records the coworker-facing local startup, Swagger, curl,
+  and lifecycle demo workflow.
+- Future files owned by reporting beads, such as a spec coverage matrix or final
+  delivery report, should be linked here when they are added.
 
 When a phase is completed, record a cumulative phase audit. The audit should
 cover Phase 1 through the phase that just completed, compare implementation
