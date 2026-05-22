@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 366 |
-| Passed | 294 |
+| Checks recorded | 371 |
+| Passed | 299 |
 | Failed | 20 |
 | Blocked/skipped | 54 |
 
@@ -15,6 +15,11 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.5 origin/master` | Request tracing MDC branch setup | Passed | Created a fresh obsidian branch from current `origin/master` for the hooked bead. |
+| 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `git fetch origin master && git rebase origin/master` | Request tracing MDC branch sync | Passed | Rebased onto current `origin/master` after PR #80/`bo-ot8.7`; resolved delivery evidence conflicts by preserving both `bo-ot8.5` and `bo-ot8.7` entries and combined counts. |
+| 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `./mvnw compile` | Request tracing MDC compile gate | Passed | Main compilation succeeded after adding request tracing filters, security-chain wiring, and service-layer `bookingRef` MDC support. |
+| 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `./mvnw test -Dtest="RequestTracingMdcFilterTest,AuthenticatedRequesterMdcFilterTest,BookingServiceCreateTest,BookingServiceReadTest,BookingServiceLifecycleTest,SecurityConfigEnabledTest,SecurityConfigDisabledTest"` | Request tracing MDC focused regression tests | Passed | 40 tests, 0 failures, 0 errors. Covered request-id header/generation/cleanup, authenticated requester MDC, service `bookingRef` MDC, and security/CORS wiring. |
+| 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `git diff --check origin/master...HEAD` | Request tracing MDC whitespace check | Passed | No whitespace/diff errors after code, tests, and delivery evidence edits. |
 | 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.7 origin/master` | CI workflow branch setup | Passed | Created the CI workflow branch from current `origin/master`. |
 | 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `python3 - <<'PY' ...` | Static GitHub Actions workflow content check | Passed | Verified CI workflow triggers on master/develop push and PR, has build-and-test and docker-build jobs, Java 21 setup, Maven cache, unit/integration/e2e group commands, artifact upload, Docker Buildx, Docker build, latest tag on master, and no CI services. |
 | 2026-05-22 | `bo-ot8.7` | https://github.com/AgenticFunProject/booking/pull/80 | `./mvnw test -Dgroups="!integration,!e2e"` | Workflow unit-test selector smoke check | Passed | 168 tests, 0 failures, 0 errors, 0 skipped. Verified the workflow's unit selector command works locally. |
