@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.crypto.SecretKey;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -156,6 +157,7 @@ class BookingSecurityIntegrationTestSupport {
         "app.security.jwt.audience=equipments-service",
         "app.security.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
 })
+@Tag("integration")
 class BookingSecurityIntegrationTest {
 
     @Autowired
@@ -374,6 +376,7 @@ class BookingSecurityIntegrationTest {
         "app.security.enabled=false",
         "app.security.jwt.secret=shared-auth-jwt-secret-at-least-256-bits"
 })
+@Tag("integration")
 class BookingSecurityDisabledIntegrationTest {
 
     @Autowired
@@ -406,6 +409,28 @@ class BookingSecurityDisabledIntegrationTest {
                 .andExpect(jsonPath("$.customerId").value(3001));
 
         verify(bookingService).createBooking(any(com.cargo.booking.service.CreateBookingRequest.class));
+        verifyNoInteractions(bookingRepository);
+    }
+
+    @Test
+    void shouldListBookingsWithCustomerIdWhenSecurityIsDisabled() throws Exception {
+        Booking booking = BookingSecurityIntegrationTestSupport.booking(3001L, BookingStatus.PENDING);
+        BookingResponse response = BookingSecurityIntegrationTestSupport.bookingResponse(3001L, "PENDING");
+        when(bookingService.getBookings(any(), any(), any(Pageable.class)))
+                .thenAnswer(invocation -> new PageImpl<Booking>(List.of(booking), invocation.getArgument(2), 1));
+        when(bookingMapper.toResponse(booking)).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/bookings")
+                        .param("customerId", "3001")
+                        .param("status", "PENDING"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].customerId").value(3001))
+                .andExpect(jsonPath("$.content[0].status").value("PENDING"))
+                .andExpect(jsonPath("$.page").value(0))
+                .andExpect(jsonPath("$.size").value(20))
+                .andExpect(jsonPath("$.totalElements").value(1));
+
+        verify(bookingService).getBookings(any(), any(), any(Pageable.class));
         verifyNoInteractions(bookingRepository);
     }
 }

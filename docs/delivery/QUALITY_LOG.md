@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 310 |
-| Passed | 246 |
+| Checks recorded | 314 |
+| Passed | 250 |
 | Failed | 15 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,10 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `./mvnw compile` | Controller integration test compile gate after Java test edits | Passed | Main compilation succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `./mvnw test -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Focused controller, error-handling, and security-disabled MockMvc coverage | Passed | 33 tests, 0 failures, 0 errors, 0 skipped. Covered validation errors, structured error responses, pagination/filter parameters, status codes, and security-disabled controller behavior. |
+| 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Integration-tag selector for affected MockMvc tests | Passed | 33 tests, 0 failures, 0 errors, 0 skipped. Verified the affected MockMvc tests are selectable via the configured `integration` tag. |
+| 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `git diff --check origin/master...HEAD` | Controller integration test branch whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `git fetch origin master && git rebase origin/master` | PR #69 rebase after PR #68 merge | Passed | Resolved delivery evidence conflicts by preserving both `bo-8wz.4` and `bo-8wz.5` ledger/log entries and correcting summary counts. |
 | 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `git diff --check origin/master...HEAD` | Post-rebase service behavior test diff check | Passed | No whitespace/diff errors after resolving delivery evidence conflicts. |
 | 2026-05-22 | `bo-8wz.5` | https://github.com/AgenticFunProject/booking/pull/69 | `./mvnw test -Dtest="BookingServiceCreateTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest"` | Post-rebase affected service behavior tests | Passed | 31 tests, 0 failures, 0 errors, 0 skipped. |

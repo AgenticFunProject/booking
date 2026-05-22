@@ -1,6 +1,7 @@
 package com.cargo.booking.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -24,7 +25,12 @@ import com.cargo.booking.dto.response.BookingResponse;
 import com.cargo.booking.dto.response.CargoResponse;
 import com.cargo.booking.dto.response.CustomerResponse;
 import com.cargo.booking.dto.response.EquipmentResponse;
+import com.cargo.booking.exception.BookingNotFoundException;
+import com.cargo.booking.exception.BookingValidationException;
 import com.cargo.booking.exception.GlobalExceptionHandler;
+import com.cargo.booking.exception.IllegalStateTransitionException;
+import com.cargo.booking.exception.QuoteNotValidException;
+import com.cargo.booking.exception.ScheduleNotAvailableException;
 import com.cargo.booking.mapper.BookingMapper;
 import com.cargo.booking.model.entity.Booking;
 import com.cargo.booking.model.enums.BookingStatus;
@@ -38,6 +44,7 @@ import java.time.Instant;
 import java.util.List;
 import org.mockito.InOrder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +60,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("integration")
 class BookingControllerTest {
 
     private MockMvc mockMvc;
@@ -136,6 +144,121 @@ class BookingControllerTest {
     }
 
     @Test
+    void shouldReturn400WhenRequestBodyInvalid() throws Exception {
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Validation failed with 6 error(s)"))
+                .andExpect(jsonPath("$.path").value("/api/v1/bookings"))
+                .andExpect(jsonPath("$.violations[*].field", containsInAnyOrder(
+                        "cargo",
+                        "customer",
+                        "customerId",
+                        "equipment",
+                        "quoteId",
+                        "scheduleId"
+                )));
+
+        verifyNoMoreInteractions(bookingAccessAuthorizer, bookingService, bookingMapper);
+    }
+
+    @Test
+    void shouldReturn400WhenEmailInvalid() throws Exception {
+        CreateBookingRequest request = new CreateBookingRequest(
+                3001L,
+                1001L,
+                2001L,
+                new CustomerRequest("Acme Shipping Co.", "not-an-email", "+36-1-234-5678"),
+                new CargoRequest("Industrial machinery parts", new BigDecimal("12000.00")),
+                List.of(new EquipmentRequest("20FT", 2))
+        );
+
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation failed with 1 error(s)"))
+                .andExpect(jsonPath("$.violations[0].field").value("customer.email"))
+                .andExpect(jsonPath("$.violations[0].rejectedValue").value("not-an-email"));
+
+        verifyNoMoreInteractions(bookingAccessAuthorizer, bookingService, bookingMapper);
+    }
+
+    @Test
+    void shouldReturn400WhenEquipmentListEmpty() throws Exception {
+        CreateBookingRequest request = new CreateBookingRequest(
+                3001L,
+                1001L,
+                2001L,
+                new CustomerRequest("Acme Shipping Co.", "logistics@acme.com", "+36-1-234-5678"),
+                new CargoRequest("Industrial machinery parts", new BigDecimal("12000.00")),
+                List.of()
+        );
+
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Validation failed with 1 error(s)"))
+                .andExpect(jsonPath("$.violations[0].field").value("equipment"));
+
+        verifyNoMoreInteractions(bookingAccessAuthorizer, bookingService, bookingMapper);
+    }
+
+    @Test
+    void shouldReturn400WhenEquipmentTypeUnsupported() throws Exception {
+        when(bookingService.createBooking(any(com.cargo.booking.service.CreateBookingRequest.class)))
+                .thenThrow(new BookingValidationException("Unsupported equipment type: TANK"));
+
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Unsupported equipment type: TANK"));
+
+        verify(bookingAccessAuthorizer).authorizeCreateCustomer(3001L);
+        verify(bookingMapper, never()).toCreatedResponse(any());
+    }
+
+    @Test
+    void shouldReturn422WhenScheduleNotAvailable() throws Exception {
+        when(bookingService.createBooking(any(com.cargo.booking.service.CreateBookingRequest.class)))
+                .thenThrow(new ScheduleNotAvailableException("Schedule 1001 is not available"));
+
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.status").value(422))
+                .andExpect(jsonPath("$.error").value("Unprocessable Entity"))
+                .andExpect(jsonPath("$.message").value("Schedule 1001 is not available"));
+
+        verify(bookingAccessAuthorizer).authorizeCreateCustomer(3001L);
+        verify(bookingMapper, never()).toCreatedResponse(any());
+    }
+
+    @Test
+    void shouldReturn422WhenQuoteNotValid() throws Exception {
+        when(bookingService.createBooking(any(com.cargo.booking.service.CreateBookingRequest.class)))
+                .thenThrow(new QuoteNotValidException("Quote 2001 is not valid"));
+
+        mockMvc.perform(post("/api/v1/bookings")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(validRequest())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.status").value(422))
+                .andExpect(jsonPath("$.error").value("Unprocessable Entity"))
+                .andExpect(jsonPath("$.message").value("Quote 2001 is not valid"));
+
+        verify(bookingAccessAuthorizer).authorizeCreateCustomer(3001L);
+        verify(bookingMapper, never()).toCreatedResponse(any());
+    }
+
+    @Test
     void shouldListBookingsWithFiltersAndPagedResponse() throws Exception {
         Booking booking = pendingBooking();
         BookingResponse response = pendingBookingResponse();
@@ -175,6 +298,18 @@ class BookingControllerTest {
         assertThat(pageable.getValue().getPageSize()).isEqualTo(2);
         assertThat(pageable.getValue().getSort().getOrderFor("createdAt").getDirection())
                 .isEqualTo(Sort.Direction.DESC);
+    }
+
+    @Test
+    void shouldReturn400WhenStatusQueryParameterInvalid() throws Exception {
+        mockMvc.perform(get("/api/v1/bookings")
+                        .param("customerId", "3001")
+                        .param("status", "LOST"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Parameter 'status' must be a valid BookingStatus"));
+
+        verifyNoMoreInteractions(bookingAccessAuthorizer, bookingService, bookingMapper);
     }
 
     @Test
@@ -226,6 +361,25 @@ class BookingControllerTest {
         orderedCalls.verify(bookingService).getBookingById(42L);
         orderedCalls.verify(bookingMapper).toResponse(booking);
         verify(bookingService, never()).getBookingByReference(any());
+    }
+
+    @Test
+    void shouldReturn404WhenBookingNotFound() throws Exception {
+        when(bookingService.getBookingById(42L))
+                .thenThrow(new BookingNotFoundException("Booking not found with id 42"));
+
+        mockMvc.perform(get("/api/v1/bookings/42")
+                        .header("X-Request-ID", "req-controller-404"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Booking not found with id 42"))
+                .andExpect(jsonPath("$.path").value("/api/v1/bookings/42"))
+                .andExpect(jsonPath("$.requestId").value("req-controller-404"));
+
+        verify(bookingAccessAuthorizer).authorizeBookingAccess(42L);
+        verify(bookingMapper, never()).toResponse(any());
     }
 
     @Test
@@ -281,6 +435,21 @@ class BookingControllerTest {
         orderedCalls.verify(bookingAccessAuthorizer).authorizeBookingAccess(42L);
         orderedCalls.verify(bookingService).cancelBooking(42L);
         orderedCalls.verify(bookingMapper).toResponse(cancelledBooking);
+    }
+
+    @Test
+    void shouldReturn409WhenInvalidStateTransition() throws Exception {
+        when(bookingService.cancelBooking(42L))
+                .thenThrow(new IllegalStateTransitionException("Cannot transition booking from COMPLETED to CANCELLED"));
+
+        mockMvc.perform(patch("/api/v1/bookings/42/cancel"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.status").value(409))
+                .andExpect(jsonPath("$.error").value("Conflict"))
+                .andExpect(jsonPath("$.message").value("Cannot transition booking from COMPLETED to CANCELLED"));
+
+        verify(bookingAccessAuthorizer).authorizeBookingAccess(42L);
+        verify(bookingMapper, never()).toResponse(any());
     }
 
     @Test

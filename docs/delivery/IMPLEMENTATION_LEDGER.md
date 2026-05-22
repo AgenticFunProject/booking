@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 63 |
+| Beads recorded | 64 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 62 |
+| Entries with elapsed time | 63 |
 
 ## Entries
+
+### bo-8wz.6 - Add controller integration tests
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8wz.6@mpgwk4be` |
+| PR | https://github.com/AgenticFunProject/booking/pull/70 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T12:35:38Z |
+| Completed UTC | 2026-05-22T12:41:07Z |
+| Elapsed wall time | 5m 29s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `src/test/java/com/cargo/booking/exception/ErrorHandlingMockMvcTest.java`, `src/test/java/com/cargo/booking/security/BookingSecurityIntegrationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Expanded `BookingControllerTest` with MockMvc coverage for create-request validation failures, service-level 400 and 422 create errors, invalid status query conversion, structured 404 responses, and invalid cancellation state transitions.
+- Tagged controller and error/security MockMvc integration-style tests with `@Tag("integration")` so Maven `-Dgroups="integration"` selects them.
+- Added structured `BookingValidationException` error-response coverage in `ErrorHandlingMockMvcTest`.
+- Added security-disabled list coverage proving query `customerId` and `status` parameters flow to the controller/service without JWT authentication.
+- Kept repository, service, production security, and E2E implementation work out of scope.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 33 tests, 0 failures, 0 errors, and 0 skipped.
+- `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 33 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-8wz.4 - Add repository integration tests
 
