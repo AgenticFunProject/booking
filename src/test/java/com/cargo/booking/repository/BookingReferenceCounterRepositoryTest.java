@@ -2,6 +2,7 @@ package com.cargo.booking.repository;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -25,6 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.EMBEDDED)
 @Import(BookingReferenceCounterRepository.class)
+@Tag("integration")
 class BookingReferenceCounterRepositoryTest {
 
     @Autowired
@@ -51,6 +53,19 @@ class BookingReferenceCounterRepositoryTest {
         assertThat(bookingReferenceCounterRepository.getNextReferenceSeqForYear(2027)).isEqualTo(1L);
         assertThat(bookingReferenceCounterRepository.getNextReferenceSeqForYear(2027)).isEqualTo(2L);
         assertThat(bookingReferenceCounterRepository.getNextReferenceSeqForYear(2027)).isEqualTo(3L);
+    }
+
+    @Test
+    void shouldPersistCounterRowsWithNextValue() {
+        bookingReferenceCounterRepository.getNextReferenceSeqForYear(2031);
+        bookingReferenceCounterRepository.getNextReferenceSeqForYear(2031);
+
+        Object nextValue = entityManager
+                .createNativeQuery("SELECT next_value FROM booking_reference_counters WHERE year = :year")
+                .setParameter("year", 2031)
+                .getSingleResult();
+
+        assertThat(((Number) nextValue).longValue()).isEqualTo(3L);
     }
 
     @Test

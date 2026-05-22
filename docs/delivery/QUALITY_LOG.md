@@ -6,15 +6,21 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 296 |
-| Passed | 234 |
-| Failed | 13 |
+| Checks recorded | 302 |
+| Passed | 238 |
+| Failed | 15 |
 | Blocked/skipped | 51 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8wz.4` | Pending GitHub PR | `./mvnw compile` | Repository integration test compile gate after Java test edits | Passed | Main compilation succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.4` | Pending GitHub PR | `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Initial focused repository integration test run | Failed | Test compilation exposed a local helper shadowing `TestDataBuilder.aBooking()` in `BookingRepositoryTest`; qualified the shared builder before rerun. |
+| 2026-05-22 | `bo-8wz.4` | Pending GitHub PR | `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Focused repository integration test run after builder fix | Failed | `BookingEquipmentLineRepositoryTest.shouldDeleteByBookingId` kept the parent booking managed during bulk delete setup; cleared the persistence context before delete and reran. |
+| 2026-05-22 | `bo-8wz.4` | Pending GitHub PR | `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Focused repository integration tests | Passed | 27 tests, 0 failures, 0 errors, 0 skipped. Covered booking repository queries, eager fetches, specifications, migrations, equipment-line repository methods, and reference counters. |
+| 2026-05-22 | `bo-8wz.4` | Pending GitHub PR | `./mvnw test -Dgroups="integration" -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` | Repository integration tests through JUnit tag selector | Passed | 27 tests, 0 failures, 0 errors, 0 skipped. Verified the repository slice tests are selectable via the configured `integration` tag. |
+| 2026-05-22 | `bo-8wz.4` | Pending GitHub PR | `git diff --check origin/master...HEAD` | Repository integration test branch whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw compile` | Test data builder compile gate | Passed | Build succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test -Dtest=TestDataBuilderTest` | Focused test data builder utility tests | Passed | 6 tests, 0 failures, 0 errors, 0 skipped after review fix for transient booking defaults. |
 | 2026-05-22 | `bo-8wz.1` | https://github.com/AgenticFunProject/booking/pull/64 | `./mvnw test` | Full suite after adding test data builders | Passed | 170 tests, 0 failures, 0 errors, 0 skipped after review fix for transient booking defaults. |

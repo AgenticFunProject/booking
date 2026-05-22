@@ -6,13 +6,44 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 61 |
+| Beads recorded | 62 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 40 |
-| Entries with elapsed time | 60 |
+| Entries with elapsed time | 61 |
 
 ## Entries
+
+### bo-8wz.4 - Add repository integration tests
+
+| Field | Value |
+| --- | --- |
+| Status | Pending GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8wz.4@mpgvpsuv` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T12:12:12Z |
+| Completed UTC | 2026-05-22T12:20:37Z |
+| Elapsed wall time | 8m 25s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingEquipmentLineRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Expanded embedded PostgreSQL `@DataJpaTest` coverage for booking repository persistence, reference lookup, customer/status/schedule queries, counts, eager equipment-line fetches, cascade behavior, null-safe specifications, created-at specifications, and Flyway-created booking/equipment schema shape.
+- Added `BookingEquipmentLineRepositoryTest` for `findByBookingId`, `deleteByBookingId`, and the lazy booking association.
+- Tagged repository slice tests with `@Tag("integration")` so Maven `-Dgroups="integration"` selects them.
+- Reused `TestDataBuilder` defaults for repository test entity setup instead of local duplicate field defaults.
+- Added counter repository coverage for persisted `next_value` after multiple allocations, alongside existing new-year, increment, independent-year, migration-shape, and concurrency coverage.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped after fixing two test-only setup issues recorded in `QUALITY_LOG.md`.
+- `./mvnw test -Dgroups="integration" -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
 
 ### bo-8wz.1 - Add test data builder utilities
 
