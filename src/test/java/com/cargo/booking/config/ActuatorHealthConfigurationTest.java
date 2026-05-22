@@ -22,6 +22,9 @@ class ActuatorHealthConfigurationTest {
                 .isEqualTo("when_authorized");
         assertThat(properties.getProperty("management.endpoint.health.roles"))
                 .isEqualTo("ADMIN");
+        assertThat(properties.getProperty("server.shutdown")).isEqualTo("graceful");
+        assertThat(properties.getProperty("spring.lifecycle.timeout-per-shutdown-phase"))
+                .isEqualTo("30s");
     }
 
     @Test
@@ -123,7 +126,7 @@ class ActuatorHealthConfigurationTest {
         assertThat(properties.getProperty("spring.jpa.hibernate.ddl-auto")).isEqualTo("validate");
         assertThat(properties.getProperty("spring.flyway.enabled")).isEqualTo(true);
         assertThat(properties.getProperty("app.security.enabled")).isEqualTo(true);
-        assertThat(properties.getProperty("app.security.jwt.issuer")).isEqualTo("platform-auth");
+        assertThat(properties.getProperty("app.security.jwt.issuer")).isEqualTo("test-issuer");
         assertThat(properties.getProperty("app.security.jwt.audience")).isEqualTo("equipments-service");
         assertThat(properties.getProperty("app.security.jwt.secret"))
                 .isEqualTo("${AUTH_JWT_SECRET:test-secret-key-that-is-at-least-256-bits-long}");

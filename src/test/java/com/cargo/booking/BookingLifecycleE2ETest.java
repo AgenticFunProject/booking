@@ -42,18 +42,7 @@ class BookingLifecycleE2ETest extends BaseIntegrationTest {
     void shouldCompleteBookingLifecycleEndToEnd() throws JsonProcessingException {
         CreateBookingRequest request = validCreateBookingRequest();
 
-        ResponseEntity<BookingCreatedResponse> created = restTemplate.postForEntity(
-                "/api/v1/bookings",
-                request,
-                BookingCreatedResponse.class
-        );
-
-        assertThat(created.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(created.getBody()).isNotNull();
-        assertThat(created.getBody().id()).isNotNull();
-        assertThat(created.getBody().bookingReference()).matches("BKG-\\d{4}-\\d{5}");
-        assertThat(created.getBody().customerId()).isEqualTo(E2E_CUSTOMER_ID);
-        assertThat(created.getBody().status()).isEqualTo("PENDING");
+        ResponseEntity<BookingCreatedResponse> created = createBooking(request);
 
         Long bookingId = created.getBody().id();
 
@@ -97,6 +86,43 @@ class BookingLifecycleE2ETest extends BaseIntegrationTest {
                     assertThat(booking.status()).isEqualTo("COMPLETED");
                     assertThat(booking.customerId()).isEqualTo(E2E_CUSTOMER_ID);
                 });
+    }
+
+    @Test
+    void shouldCancelBookingEndToEndAndRejectLaterConfirmation() throws JsonProcessingException {
+        ResponseEntity<BookingCreatedResponse> created = createBooking(validCreateBookingRequest());
+        Long bookingId = created.getBody().id();
+
+        BookingResponse cancelled = patchLifecycleEndpoint(bookingId, "cancel", "CANCELLED");
+
+        assertThat(cancelled.bookingReference()).isEqualTo(created.getBody().bookingReference());
+
+        ResponseEntity<String> confirmAfterCancel = restTemplate.exchange(
+                "/api/v1/bookings/{id}/confirm",
+                HttpMethod.PATCH,
+                HttpEntity.EMPTY,
+                String.class,
+                bookingId
+        );
+
+        assertThat(confirmAfterCancel.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(confirmAfterCancel.getBody()).contains("CANCELLED to CONFIRMED");
+    }
+
+    private ResponseEntity<BookingCreatedResponse> createBooking(CreateBookingRequest request) {
+        ResponseEntity<BookingCreatedResponse> created = restTemplate.postForEntity(
+                "/api/v1/bookings",
+                request,
+                BookingCreatedResponse.class
+        );
+
+        assertThat(created.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(created.getBody()).isNotNull();
+        assertThat(created.getBody().id()).isNotNull();
+        assertThat(created.getBody().bookingReference()).matches("BKG-\\d{4}-\\d{5}");
+        assertThat(created.getBody().customerId()).isEqualTo(E2E_CUSTOMER_ID);
+        assertThat(created.getBody().status()).isEqualTo("PENDING");
+        return created;
     }
 
     private BookingResponse patchLifecycleEndpoint(
