@@ -1,417 +1,496 @@
-# File: 010_deployment.md
-# Depends on: 001_project_setup.md, 006_security.md, 008_integrations.md, 009_testing.md
-# Produces: Dockerfile, Docker Compose, environment-specific profiles, logging configuration,
-#           CI pipeline definition, health check scripts, README
-# Context: Defines how the Cargo Booking Service is built, containerized, and deployed.
-#          The AI agent must have processed 001–009 so that all dependencies, configuration
-#          properties, and external service details are known.
+# Deployment and Infrastructure
 
-Feature: Deployment and Infrastructure
-  As an AI code generator
-  I need to define the containerization, environment configuration, and deployment pipeline
-  So that the Booking Service can be built, tested, and deployed consistently across environments
+## Metadata
 
-  Background:
-    Given the application name is "booking-service"
-    And the base package is "com.cargo.booking"
-    And the build tool is Maven
-    And Java version is 21 (from 001_project_setup.md)
-    And the application port is 8081 (from 001_project_setup.md)
+| Field | Value |
+| --- | --- |
+| File | 010_deployment.md |
+| Depends on | 001_project_setup.md, 006_security.md, 008_integrations.md, 009_testing.md |
+| Produces | Dockerfile, Docker Compose, environment-specific profiles, logging configuration, CI pipeline definition, health check scripts, README |
+| Context | Defines how the Cargo Booking Service is built, containerized, and deployed. The AI agent must have processed 001–009 so that all dependencies, configuration properties, and external service details are known. |
 
-  # ---------------------------------------------------------------------------
-  # Dockerfile
-  # ---------------------------------------------------------------------------
+## Goal
 
-  @deployment @docker
-  Scenario: Multi-stage Dockerfile
-    Given a file "Dockerfile" in the project root
-    Then it must use a multi-stage build with the following stages:
+- As an AI code generator
+- I need to define the containerization, environment configuration, and deployment pipeline
+- So that the Booking Service can be built, tested, and deployed consistently across environments
 
-    And Stage 1 (build) must:
-      | step | instruction                                                          |
-      | 1    | FROM eclipse-temurin:21-jdk-alpine AS build                          |
-      | 2    | WORKDIR /app                                                         |
-      | 3    | COPY pom.xml .                                                       |
-      | 4    | COPY .mvn .mvn                                                       |
-      | 5    | COPY mvnw .                                                          |
-      | 6    | RUN ./mvnw dependency:go-offline -B (cache dependencies)             |
-      | 7    | COPY src ./src                                                       |
-      | 8    | RUN ./mvnw package -DskipTests -B                                    |
+## Background
 
-    And Stage 2 (runtime) must:
-      | step | instruction                                                          |
-      | 1    | FROM eclipse-temurin:21-jre-alpine AS runtime                        |
-      | 2    | RUN addgroup -S appgroup && adduser -S appuser -G appgroup           |
-      | 3    | WORKDIR /app                                                         |
-      | 4    | COPY --from=build /app/target/booking-service-*.jar app.jar          |
-      | 5    | USER appuser                                                         |
-      | 6    | EXPOSE 8081                                                          |
-      | 7    | HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://localhost:8081/actuator/health \|\| exit 1 |
-      | 8    | ENTRYPOINT uses the container-aware JVM settings defined in the JVM configuration scenario |
+- Given the application name is "booking-service"
+- And the base package is "com.cargo.booking"
+- And the build tool is Maven
+- And Java version is 21 (from 001_project_setup.md)
+- And the application port is 8081 (from 001_project_setup.md)
 
-  @deployment @docker
-  Scenario: Dockerfile best practices
-    Given the Dockerfile
-    Then the following rules must apply:
-      | rule                                                                               |
-      | Use Alpine-based images to minimize image size                                     |
-      | Run the application as a non-root user (appuser)                                   |
-      | Dependencies are cached in a separate layer before copying source code             |
-      | No secrets or credentials are baked into the image                                 |
-      | The .dockerignore file must exclude target/, .git/, .idea/, *.iml, .env            |
+## Dockerfile
 
-  @deployment @docker
-  Scenario: .dockerignore file
-    Given a file ".dockerignore" in the project root
-    Then it must contain:
-      """
-      target/
-      .git/
-      .gitignore
-      .idea/
-      *.iml
-      .env
-      .env.*
-      docker-compose*.yml
-      README.md
-      docs/
-      *.log
-      """
+### Multi-stage Dockerfile
 
-  # ---------------------------------------------------------------------------
-  # Docker Compose - Local Development
-  # ---------------------------------------------------------------------------
+Tags: `deployment`, `docker`
 
-  @deployment @compose
-  Scenario: Docker Compose for local development
-    Given a file "docker-compose.yml" in the project root
-    Then it must define PostgreSQL and the Booking Service application
+- Given a file "Dockerfile" in the project root
+- Then it must use a multi-stage build with the following stages:
 
-  @deployment @compose
-  Scenario: PostgreSQL service
-    Given the docker-compose.yml file
-    Then it must define a "postgres" service:
-      | setting       | value                                |
-      | image         | postgres:16-alpine                   |
-      | container_name| booking-postgres                     |
-      | ports         | 5432:5432                            |
-      | environment   | POSTGRES_DB=booking_db               |
-      | environment   | POSTGRES_USER=booking_user           |
-      | environment   | POSTGRES_PASSWORD=booking_pass       |
-      | volumes       | postgres_data:/var/lib/postgresql/data|
-      | healthcheck   | pg_isready -U booking_user -d booking_db |
-      | restart       | unless-stopped                       |
+- And Stage 1 (build) must:
 
-  @deployment @compose
-  Scenario: Booking Service application container
-    Given the docker-compose.yml file
-    Then it must define a "booking-service" service:
-      | setting       | value                                |
-      | build         | . (current directory Dockerfile)     |
-      | container_name| booking-service                      |
-      | ports         | 8081:8081                            |
-      | depends_on    | postgres (condition: service_healthy) |
-      | environment   | SPRING_PROFILES_ACTIVE=local         |
-      | environment   | DB_USERNAME=booking_user             |
-      | environment   | DB_PASSWORD=booking_pass             |
-      | environment   | SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db |
-      | environment   | SECURITY_ENABLED=false               |
-      | environment   | JWT_SECRET=${JWT_SECRET:-dev-secret-key-that-is-at-least-256-bits-long-for-hs256} |
-      | restart       | unless-stopped                       |
-    And it must use the "local" profile so stub clients are activated and JWT security is disabled by default
+| step | instruction                                                          |
+| --- | --- |
+| 1    | FROM eclipse-temurin:21-jdk-alpine AS build                          |
+| 2    | WORKDIR /app                                                         |
+| 3    | COPY pom.xml .                                                       |
+| 4    | COPY .mvn .mvn                                                       |
+| 5    | COPY mvnw .                                                          |
+| 6    | RUN ./mvnw dependency:go-offline -B (cache dependencies)             |
+| 7    | COPY src ./src                                                       |
+| 8    | RUN ./mvnw package -DskipTests -B                                    |
 
-  @deployment @compose
-  Scenario: Docker Compose volumes
-    Given the docker-compose.yml file
-    Then it must define a named volume:
-      | volume         | purpose                              |
-      | postgres_data  | Persist PostgreSQL data across restarts |
+- And Stage 2 (runtime) must:
 
-  # ---------------------------------------------------------------------------
-  # Environment Profiles
-  # ---------------------------------------------------------------------------
+| step | instruction                                                          |
+| --- | --- |
+| 1    | FROM eclipse-temurin:21-jre-alpine AS runtime                        |
+| 2    | RUN addgroup -S appgroup && adduser -S appuser -G appgroup           |
+| 3    | WORKDIR /app                                                         |
+| 4    | COPY --from=build /app/target/booking-service-*.jar app.jar          |
+| 5    | USER appuser                                                         |
+| 6    | EXPOSE 8081                                                          |
+| 7    | HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD wget -qO- http://localhost:8081/actuator/health \|\| exit 1 |
+| 8    | ENTRYPOINT uses the container-aware JVM settings defined in the JVM configuration scenario |
 
-  @deployment @profiles
-  Scenario: Spring profiles strategy
-    Given the Booking Service
-    Then the following Spring profiles must be supported:
-      | profile     | purpose                                           | configuration                                |
-      | local       | Local development with stubs                      | Stub clients, local DB, security disabled, console logging |
-      | dev         | Development/staging environment                   | Real clients when contracts exist; dev DB, JSON logging |
-      | prod        | Production environment                            | Real clients when contracts exist; prod DB, JSON logging, strict |
-      | test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
-    And dev and prod profiles are configuration placeholders until real client implementations are added from finalized external API contracts
+### Dockerfile best practices
 
-  @deployment @profiles
-  Scenario: Profile-specific application properties
-    Given the following profile-specific config files must exist:
-      | file                                   | key overrides                                          |
-      | application.yml                        | Base config shared across profiles; does not activate client beans by itself |
-      | application-local.yml                  | Explicit local settings, security disabled, verbose logging |
-      | application-dev.yml                    | Dev environment URLs for future real clients, JSON logging |
-      | application-prod.yml                   | Prod URLs for future real clients, JSON logging, stricter security |
-      | application-test.yml                   | Embedded PostgreSQL, test JWT secret                   |
+Tags: `deployment`, `docker`
 
-  @deployment @profiles
-  Scenario: Production profile hardening
-    Given the file "src/main/resources/application-prod.yml"
-    Then it must include:
-      | property                                      | value                  | purpose                              |
-      | spring.jpa.show-sql                           | false                  | No SQL logging in prod               |
-      | spring.jpa.open-in-view                       | false                  | Already set in base, reinforced here |
-      | management.endpoints.web.exposure.include      | health,info            | Minimize exposed actuator endpoints  |
-      | management.endpoint.health.show-details        | never                  | Hide health details from all prod callers, including ADMIN |
-      | server.error.include-message                   | never                  | Never leak error details             |
-      | server.error.include-stacktrace                | never                  | Never leak stack traces              |
-      | logging.level.root                             | WARN                   | Less verbose in production           |
-      | logging.level.com.cargo.booking                | INFO                   | App-level info logging               |
+- Given the Dockerfile
+- Then the following rules must apply:
 
-  # ---------------------------------------------------------------------------
-  # Logging Configuration
-  # ---------------------------------------------------------------------------
+| rule                                                                               |
+| --- |
+| Use Alpine-based images to minimize image size                                     |
+| Run the application as a non-root user (appuser)                                   |
+| Dependencies are cached in a separate layer before copying source code             |
+| No secrets or credentials are baked into the image                                 |
+| The .dockerignore file must exclude target/, .git/, .idea/, *.iml, .env            |
 
-  @deployment @logging
-  Scenario: Logback configuration for local profile
-    Given a file "src/main/resources/logback-spring.xml"
-    Then it must define profile-specific logging:
+### .dockerignore file
 
-    And for the "local" profile:
-      | setting              | value                                      |
-      | appender             | ConsoleAppender                            |
-      | pattern              | %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n |
-      | root level           | INFO                                       |
-      | com.cargo.booking    | DEBUG                                      |
+Tags: `deployment`, `docker`
 
-    And for the "dev" and "prod" profiles:
-      | setting              | value                                      |
-      | appender             | ConsoleAppender with JSON layout            |
-      | JSON fields          | timestamp, level, logger, message, thread, mdc |
-      | root level           | WARN (prod), INFO (dev)                    |
-      | com.cargo.booking    | INFO                                       |
+- Given a file ".dockerignore" in the project root
+- Then it must contain:
 
-  @deployment @logging
-  Scenario: Structured logging dependency
-    Given the pom.xml dependency section
-    Then it must include a JSON logging encoder:
-      | groupId                  | artifactId                        | purpose                     |
-      | net.logstash.logback     | logstash-logback-encoder          | JSON structured logging     |
+```
+target/
+.git/
+.gitignore
+.idea/
+*.iml
+.env
+.env.*
+docker-compose*.yml
+README.md
+docs/
+*.log
+```
 
-  @deployment @logging
-  Scenario: MDC context for request tracing
-    Given the Booking Service request handling
-    Then request tracing must be split by when data is available:
-      | mdc key        | source                                           |
-      | requestId      | Early request filter: X-Request-ID header when present; generated correlation ID for logs if absent |
-      | principal      | Post-auth filter/interceptor: JWT subject / authenticated requester when present |
-      | customerId     | Post-auth filter/interceptor: JWT customerId/customer_id claim when present |
-      | bookingRef     | Service layer when available                      |
-    And the MDC must be cleared after each request
-    And the requestId filter must be registered with highest priority so all logs can include a correlation ID
-    And principal and customerId must be populated only after Spring Security has built the Authentication
+## Docker Compose - Local Development
 
-  # ---------------------------------------------------------------------------
-  # Environment Variables Reference
-  # ---------------------------------------------------------------------------
+### Docker Compose for local development
 
-  @deployment @env
-  Scenario: Required environment variables
-    Given the Booking Service deployment
-    Then the following environment variables must be documented:
-      | variable                  | required | default                          | description                    |
-      | DB_USERNAME               | conditional: yes outside local/dev defaults | booking_user | Database username |
-      | DB_PASSWORD               | conditional: yes outside local/dev defaults | booking_pass | Database password |
-      | SPRING_DATASOURCE_URL     | conditional: yes outside local/dev defaults | jdbc:postgresql://localhost:5432/booking_db | JDBC URL |
-      | SECURITY_ENABLED          | no       | true                              | Enable JWT authentication and authorization |
-      | JWT_SECRET                | conditional: yes when SECURITY_ENABLED=true | (dev default in yml) | JWT signing key (min 256 bits) |
-      | JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
-      | SCHEDULE_API_URL          | no       | http://localhost:8082            | Schedules API base URL         |
-      | EQUIPMENT_API_URL         | no       | http://localhost:8083            | Equipment API base URL         |
-      | QUOTE_API_URL             | no       | http://localhost:8084            | Quotes API base URL            |
-      | CORS_ALLOWED_ORIGINS      | no       | http://localhost:3000            | CORS allowed origins           |
-      | SPRING_PROFILES_ACTIVE    | yes      | local for local/docker usage     | Active Spring profile; required so either stub or real client beans are available |
+Tags: `deployment`, `compose`
 
-  @deployment @env
-  Scenario: .env.example file
-    Given a file ".env.example" in the project root
-    Then it must list all environment variables with placeholder values
-    And a comment at the top must say "Copy this file to .env and fill in your values"
-    And .env must be listed in .gitignore
+- Given a file "docker-compose.yml" in the project root
+- Then it must define PostgreSQL and the Booking Service application
 
-  # ---------------------------------------------------------------------------
-  # CI Pipeline
-  # ---------------------------------------------------------------------------
+### PostgreSQL service
 
-  @deployment @ci
-  Scenario: GitHub Actions CI pipeline
-    Given a file ".github/workflows/ci.yml"
-    Then it must define a workflow named "CI" triggered on:
-      | trigger          | branches       |
-      | push             | master, develop |
-      | pull_request     | master, develop |
+Tags: `deployment`, `compose`
 
-  @deployment @ci
-  Scenario: CI pipeline jobs
-    Given the CI workflow
-    Then it must define the following jobs:
+- Given the docker-compose.yml file
+- Then it must define a "postgres" service:
 
-    And a "build-and-test" job:
-      | step | name                    | action                                              |
-      | 1    | Checkout code           | actions/checkout@v4                                 |
-      | 2    | Set up Java 21          | actions/setup-java@v4 with temurin distribution     |
-      | 3    | Cache Maven deps        | actions/cache@v4 for ~/.m2/repository               |
-      | 4    | Run unit tests          | ./mvnw test -Dgroups="!integration,!e2e"            |
-      | 5    | Run integration tests   | ./mvnw test -Dgroups="integration"                  |
-      | 6    | Run E2E tests           | ./mvnw test -Dgroups="e2e"                          |
-      | 7    | Generate test report    | Upload test results as artifact                     |
-      | 8    | Build JAR               | ./mvnw package -DskipTests                          |
-      | 9    | Upload JAR artifact     | actions/upload-artifact@v4                          |
+| setting       | value                                |
+| --- | --- |
+| image         | postgres:16-alpine                   |
+| container_name| booking-postgres                     |
+| ports         | 5432:5432                            |
+| environment   | POSTGRES_DB=booking_db               |
+| environment   | POSTGRES_USER=booking_user           |
+| environment   | POSTGRES_PASSWORD=booking_pass       |
+| volumes       | postgres_data:/var/lib/postgresql/data|
+| healthcheck   | pg_isready -U booking_user -d booking_db |
+| restart       | unless-stopped                       |
 
-    And a "docker-build" job (depends on build-and-test):
-      | step | name                    | action                                              |
-      | 1    | Checkout code           | actions/checkout@v4                                 |
-      | 2    | Set up Docker Buildx    | docker/setup-buildx-action@v3                       |
-      | 3    | Build Docker image      | docker build -t booking-service:${{ github.sha }}   |
-      | 4    | Tag as latest           | Only on master branch                               |
+### Booking Service application container
 
-  @deployment @ci
-  Scenario: CI pipeline services
-    Given the CI "build-and-test" job
-    Then it must not define a PostgreSQL service for tests
-    And integration tests must use the embedded PostgreSQL setup from 009_testing.md
+Tags: `deployment`, `compose`
 
-  # ---------------------------------------------------------------------------
-  # JVM Tuning
-  # ---------------------------------------------------------------------------
+- Given the docker-compose.yml file
+- Then it must define a "booking-service" service:
 
-  @deployment @jvm
-  Scenario: JVM configuration for containers
-    Given the Docker ENTRYPOINT
-    Then the JVM must be configured with container-aware settings:
-      """
-      ENTRYPOINT ["java",
-        "-XX:+UseContainerSupport",
-        "-XX:MaxRAMPercentage=75.0",
-        "-XX:InitialRAMPercentage=50.0",
-        "-Djava.security.egd=file:/dev/./urandom",
-        "-jar", "app.jar"]
-      """
-    And these settings ensure the JVM respects container memory limits
-    And -Djava.security.egd speeds up random number generation for JWT and correlation IDs
+| setting       | value                                |
+| --- | --- |
+| build         | . (current directory Dockerfile)     |
+| container_name| booking-service                      |
+| ports         | 8081:8081                            |
+| depends_on    | postgres (condition: service_healthy) |
+| environment   | SPRING_PROFILES_ACTIVE=local         |
+| environment   | DB_USERNAME=booking_user             |
+| environment   | DB_PASSWORD=booking_pass             |
+| environment   | SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/booking_db |
+| environment   | SECURITY_ENABLED=false               |
+| environment   | JWT_SECRET=${JWT_SECRET:-dev-secret-key-that-is-at-least-256-bits-long-for-hs256} |
+| restart       | unless-stopped                       |
 
-  # ---------------------------------------------------------------------------
-  # Graceful Shutdown
-  # ---------------------------------------------------------------------------
+- And it must use the "local" profile so stub clients are activated and JWT security is disabled by default
 
-  @deployment @shutdown
-  Scenario: Graceful shutdown configuration
-    Given the file "src/main/resources/application.yml"
-    Then it must include:
-      | property                                      | value    | purpose                                     |
-      | server.shutdown                               | graceful | Wait for in-flight requests to complete     |
-      | spring.lifecycle.timeout-per-shutdown-phase    | 30s      | Max wait time before forced shutdown        |
-    And the application must handle SIGTERM gracefully in the Docker container
+### Docker Compose volumes
 
-  # ---------------------------------------------------------------------------
-  # README
-  # ---------------------------------------------------------------------------
+Tags: `deployment`, `compose`
 
-  @deployment @docs
-  Scenario: Project README
-    Given a file "README.md" in the project root
-    Then it must contain the following sections:
-      | section              | content                                                       |
-      | Title                | Booking Service                                               |
-      | Description          | Brief description of the service and its responsibilities     |
-      | Prerequisites        | Java 21, Maven, Docker, Docker Compose                        |
-      | Quick Start          | docker-compose up -d, then access Swagger UI                  |
-      | Local Development    | How to run with local profile, stub clients                   |
-      | API Documentation    | Link to Swagger UI at http://localhost:8081/swagger-ui         |
-      | Environment Variables| Table from the env vars scenario above                        |
-      | Running Tests        | mvnw test, mvnw test -Dgroups="integration"                  |
-      | Project Structure    | Package layout from 001_project_setup.md                     |
-      | Architecture         | Brief description of layers and external dependencies         |
-      | Contributing         | Branch naming, PR process, test requirements                  |
+- Given the docker-compose.yml file
+- Then it must define a named volume:
 
-  # ---------------------------------------------------------------------------
-  # Git Configuration
-  # ---------------------------------------------------------------------------
+| volume         | purpose                              |
+| --- | --- |
+| postgres_data  | Persist PostgreSQL data across restarts |
 
-  @deployment @git
-  Scenario: .gitignore file
-    Given a file ".gitignore" in the project root
-    Then it must contain:
-      """
-      # Build
-      target/
-      *.jar
-      *.war
+## Environment Profiles
 
-      # IDE
-      .idea/
-      *.iml
-      .vscode/
-      .settings/
-      .project
-      .classpath
+### Spring profiles strategy
 
-      # Environment
-      .env
-      .env.*
-      !.env.example
+Tags: `deployment`, `profiles`
 
-      # OS
-      .DS_Store
-      Thumbs.db
+- Given the Booking Service
+- Then the following Spring profiles must be supported:
 
-      # Logs
-      *.log
-      logs/
+| profile     | purpose                                           | configuration                                |
+| --- | --- | --- |
+| local       | Local development with stubs                      | Stub clients, local DB, security disabled, console logging |
+| dev         | Development/staging environment                   | Real clients when contracts exist; dev DB, JSON logging |
+| prod        | Production environment                            | Real clients when contracts exist; prod DB, JSON logging, strict |
+| test        | Automated testing                                 | Embedded PostgreSQL, test JWT secret         |
 
-      # Docker
-      docker-compose.override.yml
-      """
+- And dev and prod profiles are configuration placeholders until real client implementations are added from finalized external API contracts
 
-  # ---------------------------------------------------------------------------
-  # Makefile (Developer Convenience)
-  # ---------------------------------------------------------------------------
+### Profile-specific application properties
 
-  @deployment @developer
-  Scenario: Makefile for common tasks
-    Given a file "Makefile" in the project root
-    Then it must define the following targets:
-      | target          | command                                                  | description                    |
-      | build           | ./mvnw clean package -DskipTests                         | Build the JAR                  |
-      | test            | ./mvnw test                                              | Run all tests                  |
-      | test-unit       | ./mvnw test -Dgroups="!integration,!e2e"                 | Run unit tests only            |
-      | test-integration| ./mvnw test -Dgroups="integration"                       | Run integration tests          |
-      | test-e2e        | ./mvnw test -Dgroups="e2e"                               | Run E2E tests                  |
-      | run             | ./mvnw spring-boot:run -Dspring-boot.run.profiles=local  | Run locally with stubs         |
-      | docker-build    | docker build -t booking-service .                        | Build Docker image             |
-      | docker-up       | docker-compose up -d                                     | Start all services             |
-      | docker-down     | docker-compose down                                      | Stop all services              |
-      | docker-logs     | docker-compose logs -f booking-service                   | Tail application logs          |
-      | clean           | ./mvnw clean && docker-compose down -v                   | Clean build and volumes        |
-      | swagger         | open http://localhost:8081/swagger-ui                     | Open Swagger UI in browser     |
+Tags: `deployment`, `profiles`
 
-  # ---------------------------------------------------------------------------
-  # Summary: Full File Sequence
-  # ---------------------------------------------------------------------------
+- Given the following profile-specific config files must exist:
 
-  @deployment @summary
-  Scenario: Complete file sequence reference
-    Given all specification files have been processed
-    Then the AI agent has built the Booking Service from the following sequence:
-      | file                      | produces                                              |
-      | 001_project_setup.md     | Maven project, dependencies, packages, conventions    |
-      | 002_domain_model.md      | Entities, enums, validations, migrations              |
-      | 003_data_access.md        | Repositories, queries, specifications                 |
-      | 004_business_rules.md     | Services, lifecycle, clients, exceptions              |
-      | 005_api_endpoints.md      | Controllers, DTOs, mappers, OpenAPI                   |
-      | 006_security.md           | JWT auth, roles, ownership, CORS                      |
-      | 007_error_handling.md     | Global exception handler, error responses             |
-      | 008_integrations.md       | Integration properties, RestClient pattern, resilience, health |
-      | 009_testing.md            | Unit, integration, E2E tests, test utilities          |
-      | 010_deployment.md         | Docker, Compose, CI, profiles, logging, README        |
-    And the application should be fully runnable with "docker-compose up -d"
-    And the API should be explorable at http://localhost:8081/swagger-ui
-    And all tests should pass with "make test"
+| file                                   | key overrides                                          |
+| --- | --- |
+| application.yml                        | Base config shared across profiles; does not activate client beans by itself |
+| application-local.yml                  | Explicit local settings, security disabled, verbose logging |
+| application-dev.yml                    | Dev environment URLs for future real clients, JSON logging |
+| application-prod.yml                   | Prod URLs for future real clients, JSON logging, stricter security |
+| application-test.yml                   | Embedded PostgreSQL, test JWT secret                   |
+
+### Production profile hardening
+
+Tags: `deployment`, `profiles`
+
+- Given the file "src/main/resources/application-prod.yml"
+- Then it must include:
+
+| property                                      | value                  | purpose                              |
+| --- | --- | --- |
+| spring.jpa.show-sql                           | false                  | No SQL logging in prod               |
+| spring.jpa.open-in-view                       | false                  | Already set in base, reinforced here |
+| management.endpoints.web.exposure.include      | health,info            | Minimize exposed actuator endpoints  |
+| management.endpoint.health.show-details        | never                  | Hide health details from all prod callers, including ADMIN |
+| server.error.include-message                   | never                  | Never leak error details             |
+| server.error.include-stacktrace                | never                  | Never leak stack traces              |
+| logging.level.root                             | WARN                   | Less verbose in production           |
+| logging.level.com.cargo.booking                | INFO                   | App-level info logging               |
+
+## Logging Configuration
+
+### Logback configuration for local profile
+
+Tags: `deployment`, `logging`
+
+- Given a file "src/main/resources/logback-spring.xml"
+- Then it must define profile-specific logging:
+
+- And for the "local" profile:
+
+| setting              | value                                      |
+| --- | --- |
+| appender             | ConsoleAppender                            |
+| pattern              | %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n |
+| root level           | INFO                                       |
+| com.cargo.booking    | DEBUG                                      |
+
+- And for the "dev" and "prod" profiles:
+
+| setting              | value                                      |
+| --- | --- |
+| appender             | ConsoleAppender with JSON layout            |
+| JSON fields          | timestamp, level, logger, message, thread, mdc |
+| root level           | WARN (prod), INFO (dev)                    |
+| com.cargo.booking    | INFO                                       |
+
+### Structured logging dependency
+
+Tags: `deployment`, `logging`
+
+- Given the pom.xml dependency section
+- Then it must include a JSON logging encoder:
+
+| groupId                  | artifactId                        | purpose                     |
+| --- | --- | --- |
+| net.logstash.logback     | logstash-logback-encoder          | JSON structured logging     |
+
+### MDC context for request tracing
+
+Tags: `deployment`, `logging`
+
+- Given the Booking Service request handling
+- Then request tracing must be split by when data is available:
+
+| mdc key        | source                                           |
+| --- | --- |
+| requestId      | Early request filter: X-Request-ID header when present; generated correlation ID for logs if absent |
+| principal      | Post-auth filter/interceptor: JWT subject / authenticated requester when present |
+| customerId     | Post-auth filter/interceptor: JWT customerId/customer_id claim when present |
+| bookingRef     | Service layer when available                      |
+
+- And the MDC must be cleared after each request
+- And the requestId filter must be registered with highest priority so all logs can include a correlation ID
+- And principal and customerId must be populated only after Spring Security has built the Authentication
+
+## Environment Variables Reference
+
+### Required environment variables
+
+Tags: `deployment`, `env`
+
+- Given the Booking Service deployment
+- Then the following environment variables must be documented:
+
+| variable                  | required | default                          | description                    |
+| --- | --- | --- | --- |
+| DB_USERNAME               | conditional: yes outside local/dev defaults | booking_user | Database username |
+| DB_PASSWORD               | conditional: yes outside local/dev defaults | booking_pass | Database password |
+| SPRING_DATASOURCE_URL     | conditional: yes outside local/dev defaults | jdbc:postgresql://localhost:5432/booking_db | JDBC URL |
+| SECURITY_ENABLED          | no       | true                              | Enable JWT authentication and authorization |
+| JWT_SECRET                | conditional: yes when SECURITY_ENABLED=true | (dev default in yml) | JWT signing key (min 256 bits) |
+| JWT_ISSUER                | no       | cargo-platform                   | Expected JWT issuer            |
+| SCHEDULE_API_URL          | no       | http://localhost:8082            | Schedules API base URL         |
+| EQUIPMENT_API_URL         | no       | http://localhost:8083            | Equipment API base URL         |
+| QUOTE_API_URL             | no       | http://localhost:8084            | Quotes API base URL            |
+| CORS_ALLOWED_ORIGINS      | no       | http://localhost:3000            | CORS allowed origins           |
+| SPRING_PROFILES_ACTIVE    | yes      | local for local/docker usage     | Active Spring profile; required so either stub or real client beans are available |
+
+### .env.example file
+
+Tags: `deployment`, `env`
+
+- Given a file ".env.example" in the project root
+- Then it must list all environment variables with placeholder values
+- And a comment at the top must say "Copy this file to .env and fill in your values"
+- And .env must be listed in .gitignore
+
+## CI Pipeline
+
+### GitHub Actions CI pipeline
+
+Tags: `deployment`, `ci`
+
+- Given a file ".github/workflows/ci.yml"
+- Then it must define a workflow named "CI" triggered on:
+
+| trigger          | branches       |
+| --- | --- |
+| push             | master, develop |
+| pull_request     | master, develop |
+
+### CI pipeline jobs
+
+Tags: `deployment`, `ci`
+
+- Given the CI workflow
+- Then it must define the following jobs:
+
+- And a "build-and-test" job:
+
+| step | name                    | action                                              |
+| --- | --- | --- |
+| 1    | Checkout code           | actions/checkout@v4                                 |
+| 2    | Set up Java 21          | actions/setup-java@v4 with temurin distribution     |
+| 3    | Cache Maven deps        | actions/cache@v4 for ~/.m2/repository               |
+| 4    | Run unit tests          | ./mvnw test -Dgroups="!integration,!e2e"            |
+| 5    | Run integration tests   | ./mvnw test -Dgroups="integration"                  |
+| 6    | Run E2E tests           | ./mvnw test -Dgroups="e2e"                          |
+| 7    | Generate test report    | Upload test results as artifact                     |
+| 8    | Build JAR               | ./mvnw package -DskipTests                          |
+| 9    | Upload JAR artifact     | actions/upload-artifact@v4                          |
+
+- And a "docker-build" job (depends on build-and-test):
+
+| step | name                    | action                                              |
+| --- | --- | --- |
+| 1    | Checkout code           | actions/checkout@v4                                 |
+| 2    | Set up Docker Buildx    | docker/setup-buildx-action@v3                       |
+| 3    | Build Docker image      | docker build -t booking-service:${{ github.sha }}   |
+| 4    | Tag as latest           | Only on master branch                               |
+
+### CI pipeline services
+
+Tags: `deployment`, `ci`
+
+- Given the CI "build-and-test" job
+- Then it must not define a PostgreSQL service for tests
+- And integration tests must use the embedded PostgreSQL setup from 009_testing.md
+
+## JVM Tuning
+
+### JVM configuration for containers
+
+Tags: `deployment`, `jvm`
+
+- Given the Docker ENTRYPOINT
+- Then the JVM must be configured with container-aware settings:
+
+```
+ENTRYPOINT ["java",
+  "-XX:+UseContainerSupport",
+  "-XX:MaxRAMPercentage=75.0",
+  "-XX:InitialRAMPercentage=50.0",
+  "-Djava.security.egd=file:/dev/./urandom",
+  "-jar", "app.jar"]
+```
+- And these settings ensure the JVM respects container memory limits
+- And -Djava.security.egd speeds up random number generation for JWT and correlation IDs
+
+## Graceful Shutdown
+
+### Graceful shutdown configuration
+
+Tags: `deployment`, `shutdown`
+
+- Given the file "src/main/resources/application.yml"
+- Then it must include:
+
+| property                                      | value    | purpose                                     |
+| --- | --- | --- |
+| server.shutdown                               | graceful | Wait for in-flight requests to complete     |
+| spring.lifecycle.timeout-per-shutdown-phase    | 30s      | Max wait time before forced shutdown        |
+
+- And the application must handle SIGTERM gracefully in the Docker container
+
+## README
+
+### Project README
+
+Tags: `deployment`, `docs`
+
+- Given a file "README.md" in the project root
+- Then it must contain the following sections:
+
+| section              | content                                                       |
+| --- | --- |
+| Title                | Booking Service                                               |
+| Description          | Brief description of the service and its responsibilities     |
+| Prerequisites        | Java 21, Maven, Docker, Docker Compose                        |
+| Quick Start          | docker-compose up -d, then access Swagger UI                  |
+| Local Development    | How to run with local profile, stub clients                   |
+| API Documentation    | Link to Swagger UI at http://localhost:8081/swagger-ui         |
+| Environment Variables| Table from the env vars scenario above                        |
+| Running Tests        | mvnw test, mvnw test -Dgroups="integration"                  |
+| Project Structure    | Package layout from 001_project_setup.md                     |
+| Architecture         | Brief description of layers and external dependencies         |
+| Contributing         | Branch naming, PR process, test requirements                  |
+
+## Git Configuration
+
+### .gitignore file
+
+Tags: `deployment`, `git`
+
+- Given a file ".gitignore" in the project root
+- Then it must contain:
+
+```
+# Build
+target/
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
+```
+
+## Makefile (Developer Convenience)
+
+### Makefile for common tasks
+
+Tags: `deployment`, `developer`
+
+- Given a file "Makefile" in the project root
+- Then it must define the following targets:
+
+| target          | command                                                  | description                    |
+| --- | --- | --- |
+| build           | ./mvnw clean package -DskipTests                         | Build the JAR                  |
+| test            | ./mvnw test                                              | Run all tests                  |
+| test-unit       | ./mvnw test -Dgroups="!integration,!e2e"                 | Run unit tests only            |
+| test-integration| ./mvnw test -Dgroups="integration"                       | Run integration tests          |
+| test-e2e        | ./mvnw test -Dgroups="e2e"                               | Run E2E tests                  |
+| run             | ./mvnw spring-boot:run -Dspring-boot.run.profiles=local  | Run locally with stubs         |
+| docker-build    | docker build -t booking-service .                        | Build Docker image             |
+| docker-up       | docker-compose up -d                                     | Start all services             |
+| docker-down     | docker-compose down                                      | Stop all services              |
+| docker-logs     | docker-compose logs -f booking-service                   | Tail application logs          |
+| clean           | ./mvnw clean && docker-compose down -v                   | Clean build and volumes        |
+| swagger         | open http://localhost:8081/swagger-ui                     | Open Swagger UI in browser     |
+
+## Summary: Full File Sequence
+
+### Complete file sequence reference
+
+Tags: `deployment`, `summary`
+
+- Given all specification files have been processed
+- Then the AI agent has built the Booking Service from the following sequence:
+
+| file                      | produces                                              |
+| --- | --- |
+| 001_project_setup.md     | Maven project, dependencies, packages, conventions    |
+| 002_domain_model.md      | Entities, enums, validations, migrations              |
+| 003_data_access.md        | Repositories, queries, specifications                 |
+| 004_business_rules.md     | Services, lifecycle, clients, exceptions              |
+| 005_api_endpoints.md      | Controllers, DTOs, mappers, OpenAPI                   |
+| 006_security.md           | JWT auth, roles, ownership, CORS                      |
+| 007_error_handling.md     | Global exception handler, error responses             |
+| 008_integrations.md       | Integration properties, RestClient pattern, resilience, health |
+| 009_testing.md            | Unit, integration, E2E tests, test utilities          |
+| 010_deployment.md         | Docker, Compose, CI, profiles, logging, README        |
+
+- And the application should be fully runnable with "docker-compose up -d"
+- And the API should be explorable at http://localhost:8081/swagger-ui
+- And all tests should pass with "make test"

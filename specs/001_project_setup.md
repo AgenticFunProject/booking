@@ -1,185 +1,217 @@
-# File: 001_project_setup.md
-# Depends on: None (this is the foundation file)
-# Produces: Maven project structure, pom.xml, application configuration, base packages
-# Context: Cargo Booking Service — a microservice that manages cargo booking requests
-#          and lifecycle state transitions.
+# Project Setup and Configuration
 
-Feature: Project Setup and Configuration
-  As an AI code generator
-  I need to scaffold a Spring Boot microservice for the Booking Service
-  So that all subsequent features have a consistent foundation to build on
+## Metadata
 
-  Background:
-    Given the application name is "booking-service"
-    And the group ID is "com.cargo"
-    And the artifact ID is "booking-service"
-    And the base package is "com.cargo.booking"
+| Field | Value |
+| --- | --- |
+| File | 001_project_setup.md |
+| Depends on | None (this is the foundation file) |
+| Produces | Maven project structure, pom.xml, application configuration, base packages |
+| Context | Cargo Booking Service — a microservice that manages cargo booking requests and lifecycle state transitions. |
 
-  # ---------------------------------------------------------------------------
-  # Build Tool & Language
-  # ---------------------------------------------------------------------------
+## Goal
 
-  @setup @build
-  Scenario: Maven project with Java 21
-    Given I am creating a new Spring Boot project
-    Then the build tool must be Maven
-    And the Java version must be 21 (latest LTS)
-    And the Spring Boot version must be 3.5.x (latest stable 3.5 release)
-    And the pom.xml must set <maven.compiler.source> and <maven.compiler.target> to 21
-    And the packaging must be "jar"
+- As an AI code generator
+- I need to scaffold a Spring Boot microservice for the Booking Service
+- So that all subsequent features have a consistent foundation to build on
 
-  # ---------------------------------------------------------------------------
-  # Dependencies
-  # ---------------------------------------------------------------------------
+## Background
 
-  @setup @dependencies
-  Scenario: Core Spring Boot starters
-    Given the pom.xml dependency section
-    Then it must include the following starters:
-      | groupId                        | artifactId                         | purpose                            |
-      | org.springframework.boot       | spring-boot-starter-web            | Spring MVC REST API support        |
-      | org.springframework.boot       | spring-boot-starter-data-jpa       | JPA / Hibernate persistence        |
-      | org.springframework.boot       | spring-boot-starter-validation     | Bean validation (Jakarta)          |
-      | org.springframework.boot       | spring-boot-starter-actuator       | Health checks and metrics          |
+- Given the application name is "booking-service"
+- And the group ID is "com.cargo"
+- And the artifact ID is "booking-service"
+- And the base package is "com.cargo.booking"
 
-  @setup @dependencies
-  Scenario: Database dependencies
-    Given the pom.xml dependency section
-    Then it must include:
-      | groupId          | artifactId         | scope    | purpose                          |
-      | org.postgresql   | postgresql         | runtime  | PostgreSQL JDBC driver           |
-      | org.flywaydb     | flyway-core        | compile  | Database migration management    |
-      | org.flywaydb     | flyway-database-postgresql | compile | Flyway PostgreSQL support |
-      | io.zonky.test    | embedded-database-spring-test | test | Spring test integration for embedded PostgreSQL |
+## Build Tool & Language
 
-  @setup @dependencies
-  Scenario: Utility and documentation dependencies
-    Given the pom.xml dependency section
-    Then it must include:
-      | groupId                 | artifactId               | scope    | purpose                     |
-      | org.projectlombok       | lombok                  | provided | Reduce boilerplate code     |
-      | org.springdoc           | springdoc-openapi-starter-webmvc-ui | compile | OpenAPI / Swagger UI |
-      | org.springframework.boot | spring-boot-starter-test | test    | Testing support             |
+### Maven project with Java 21
 
-  # ---------------------------------------------------------------------------
-  # Package Structure
-  # ---------------------------------------------------------------------------
+Tags: `setup`, `build`
 
-  @setup @structure
-  Scenario: Layered package architecture
-    Given the base package is "com.cargo.booking"
-    Then the project must have the following package structure:
-      | package                          | purpose                                      |
-      | com.cargo.booking                | Main application class                       |
-      | com.cargo.booking.controller     | REST controllers                             |
-      | com.cargo.booking.service        | Business logic and orchestration              |
-      | com.cargo.booking.repository     | Spring Data JPA repository interfaces         |
-      | com.cargo.booking.model.entity   | JPA entity classes                            |
-      | com.cargo.booking.model.enums    | Enums (e.g. BookingStatus)                   |
-      | com.cargo.booking.dto.request    | Inbound request DTOs                         |
-      | com.cargo.booking.dto.response   | Outbound response DTOs                       |
-      | com.cargo.booking.config         | Spring configuration beans                   |
-      | com.cargo.booking.exception      | Custom exceptions and global error handler   |
-      | com.cargo.booking.client         | REST clients for external services           |
-      | com.cargo.booking.client.dto     | DTOs for external service interfaces         |
-      | com.cargo.booking.mapper         | Entity-to-DTO mapping logic                  |
-      | com.cargo.booking.security       | JWT authentication and authorization helpers |
+- Given I am creating a new Spring Boot project
+- Then the build tool must be Maven
+- And the Java version must be 21 (latest LTS)
+- And the Spring Boot version must be 3.5.x (latest stable 3.5 release)
+- And the pom.xml must set <maven.compiler.source> and <maven.compiler.target> to 21
+- And the packaging must be "jar"
 
-  # ---------------------------------------------------------------------------
-  # Application Configuration
-  # ---------------------------------------------------------------------------
+## Dependencies
 
-  @setup @config
-  Scenario: Base application properties
-    Given the file "src/main/resources/application.yml"
-    Then it must contain the following configuration:
-      | property                                    | value                                      |
-      | server.port                                 | 8081                                       |
-      | spring.application.name                     | booking-service                            |
-      | spring.datasource.url                       | jdbc:postgresql://localhost:5432/booking_db |
-      | spring.datasource.username                  | ${DB_USERNAME:booking_user}                |
-      | spring.datasource.password                  | ${DB_PASSWORD:booking_pass}                |
-      | spring.jpa.hibernate.ddl-auto               | validate                                   |
-      | spring.jpa.properties.hibernate.jdbc.time_zone | UTC                                      |
-      | spring.jpa.open-in-view                     | false                                      |
-      | spring.flyway.enabled                       | true                                       |
-      | spring.flyway.locations                     | classpath:db/migration                     |
-      | springdoc.api-docs.path                     | /api-docs                                  |
-      | springdoc.swagger-ui.path                   | /swagger-ui                                |
-      | management.endpoints.web.exposure.include   | health,info,metrics                        |
+### Core Spring Boot starters
 
-  @setup @config
-  Scenario: Application properties for test profile
-    Given the file "src/test/resources/application-test.yml"
-    Then it must override the following for tests:
-      | property                       | value                        |
-      | spring.datasource.url          | Provided by embedded PostgreSQL test bootstrap |
-      | spring.datasource.driver-class-name | org.postgresql.Driver   |
-      | spring.jpa.hibernate.ddl-auto  | validate                     |
-      | spring.flyway.enabled          | true                         |
+Tags: `setup`, `dependencies`
 
-  # ---------------------------------------------------------------------------
-  # Main Application Class
-  # ---------------------------------------------------------------------------
+- Given the pom.xml dependency section
+- Then it must include the following starters:
 
-  @setup @entrypoint
-  Scenario: Spring Boot main class
-    Given the base package is "com.cargo.booking"
-    Then a class "BookingServiceApplication" must exist in the base package
-    And it must be annotated with @SpringBootApplication
-    And it must contain a standard main method that calls SpringApplication.run()
+| groupId                        | artifactId                         | purpose                            |
+| --- | --- | --- |
+| org.springframework.boot       | spring-boot-starter-web            | Spring MVC REST API support        |
+| org.springframework.boot       | spring-boot-starter-data-jpa       | JPA / Hibernate persistence        |
+| org.springframework.boot       | spring-boot-starter-validation     | Bean validation (Jakarta)          |
+| org.springframework.boot       | spring-boot-starter-actuator       | Health checks and metrics          |
 
-  # ---------------------------------------------------------------------------
-  # Conventions & Constraints
-  # ---------------------------------------------------------------------------
+### Database dependencies
 
-  @setup @conventions
-  Scenario: Coding conventions the AI agent must follow
-    Given I am generating code for this project
-    Then I must follow these conventions:
-      | rule                                                                                 |
-      | Use Lombok annotations (@Data, @Builder, @NoArgsConstructor, @AllArgsConstructor)    |
-      | Use constructor injection (not field injection) for all Spring beans                  |
-      | All REST endpoints must be prefixed with "/api/v1"                                   |
-      | All timestamps must be stored and returned in UTC using ISO-8601 format               |
-      | Entity IDs must be Long values generated with @GeneratedValue(strategy = GenerationType.IDENTITY) |
-      | Use records for DTOs where the DTO is immutable                                       |
-      | Never expose JPA entities directly in API responses — always map to DTOs              |
-      | Database table names must be lowercase_snake_case                                     |
-      | Boolean fields must not be prefixed with "is" at the entity level                     |
-      | Use SLF4J logging for meaningful business actions, state transitions, external calls, and failures; avoid mechanical logging on every method |
+Tags: `setup`, `dependencies`
 
-  @setup @conventions
-  Scenario: Error response structure convention
-    Given any error returned by the API
-    Then the response body must follow this JSON structure:
-      """
-      {
-        "timestamp": "ISO-8601 UTC",
-        "status": "HTTP status code (int)",
-        "error": "HTTP reason phrase",
-        "message": "Human-readable description",
-        "path": "Request URI",
-        "requestId": "Optional X-Request-ID correlation value; omit when absent"
-      }
-      """
+- Given the pom.xml dependency section
+- Then it must include:
 
-  # ---------------------------------------------------------------------------
-  # Out of Scope for this file
-  # ---------------------------------------------------------------------------
+| groupId          | artifactId         | scope    | purpose                          |
+| --- | --- | --- | --- |
+| org.postgresql   | postgresql         | runtime  | PostgreSQL JDBC driver           |
+| org.flywaydb     | flyway-core        | compile  | Database migration management    |
+| org.flywaydb     | flyway-database-postgresql | compile | Flyway PostgreSQL support |
+| io.zonky.test    | embedded-database-spring-test | test | Spring test integration for embedded PostgreSQL |
 
-  @setup @out-of-scope
-  Scenario: Items NOT covered in project setup
-    Given this is the project setup file only
-    Then the following are NOT defined here and will be addressed in later files:
-      | topic                        | deferred to           |
-      | Entity field definitions     | 002_domain_model.md  |
-      | Repository interfaces        | 003_data_access.md   |
-      | Service layer logic          | 004_business_rules.md|
-      | Controller implementations   | 005_api_endpoints.md |
-      | Security configuration       | 006_security.md      |
-      | Error handling details       | 007_error_handling.md|
-      | External service clients     | 008_integrations.md  |
-      | Messaging / event streaming  | Out of scope for v1  |
-      | Test scenarios               | 009_testing.md       |
-      | Docker / deployment config   | 010_deployment.md    |
+### Utility and documentation dependencies
+
+Tags: `setup`, `dependencies`
+
+- Given the pom.xml dependency section
+- Then it must include:
+
+| groupId                 | artifactId               | scope    | purpose                     |
+| --- | --- | --- | --- |
+| org.projectlombok       | lombok                  | provided | Reduce boilerplate code     |
+| org.springdoc           | springdoc-openapi-starter-webmvc-ui | compile | OpenAPI / Swagger UI |
+| org.springframework.boot | spring-boot-starter-test | test    | Testing support             |
+
+## Package Structure
+
+### Layered package architecture
+
+Tags: `setup`, `structure`
+
+- Given the base package is "com.cargo.booking"
+- Then the project must have the following package structure:
+
+| package                          | purpose                                      |
+| --- | --- |
+| com.cargo.booking                | Main application class                       |
+| com.cargo.booking.controller     | REST controllers                             |
+| com.cargo.booking.service        | Business logic and orchestration              |
+| com.cargo.booking.repository     | Spring Data JPA repository interfaces         |
+| com.cargo.booking.model.entity   | JPA entity classes                            |
+| com.cargo.booking.model.enums    | Enums (e.g. BookingStatus)                   |
+| com.cargo.booking.dto.request    | Inbound request DTOs                         |
+| com.cargo.booking.dto.response   | Outbound response DTOs                       |
+| com.cargo.booking.config         | Spring configuration beans                   |
+| com.cargo.booking.exception      | Custom exceptions and global error handler   |
+| com.cargo.booking.client         | REST clients for external services           |
+| com.cargo.booking.client.dto     | DTOs for external service interfaces         |
+| com.cargo.booking.mapper         | Entity-to-DTO mapping logic                  |
+| com.cargo.booking.security       | JWT authentication and authorization helpers |
+
+## Application Configuration
+
+### Base application properties
+
+Tags: `setup`, `config`
+
+- Given the file "src/main/resources/application.yml"
+- Then it must contain the following configuration:
+
+| property                                    | value                                      |
+| --- | --- |
+| server.port                                 | 8081                                       |
+| spring.application.name                     | booking-service                            |
+| spring.datasource.url                       | jdbc:postgresql://localhost:5432/booking_db |
+| spring.datasource.username                  | ${DB_USERNAME:booking_user}                |
+| spring.datasource.password                  | ${DB_PASSWORD:booking_pass}                |
+| spring.jpa.hibernate.ddl-auto               | validate                                   |
+| spring.jpa.properties.hibernate.jdbc.time_zone | UTC                                      |
+| spring.jpa.open-in-view                     | false                                      |
+| spring.flyway.enabled                       | true                                       |
+| spring.flyway.locations                     | classpath:db/migration                     |
+| springdoc.api-docs.path                     | /api-docs                                  |
+| springdoc.swagger-ui.path                   | /swagger-ui                                |
+| management.endpoints.web.exposure.include   | health,info,metrics                        |
+
+### Application properties for test profile
+
+Tags: `setup`, `config`
+
+- Given the file "src/test/resources/application-test.yml"
+- Then it must override the following for tests:
+
+| property                       | value                        |
+| --- | --- |
+| spring.datasource.url          | Provided by embedded PostgreSQL test bootstrap |
+| spring.datasource.driver-class-name | org.postgresql.Driver   |
+| spring.jpa.hibernate.ddl-auto  | validate                     |
+| spring.flyway.enabled          | true                         |
+
+## Main Application Class
+
+### Spring Boot main class
+
+Tags: `setup`, `entrypoint`
+
+- Given the base package is "com.cargo.booking"
+- Then a class "BookingServiceApplication" must exist in the base package
+- And it must be annotated with @SpringBootApplication
+- And it must contain a standard main method that calls SpringApplication.run()
+
+## Conventions & Constraints
+
+### Coding conventions the AI agent must follow
+
+Tags: `setup`, `conventions`
+
+- Given I am generating code for this project
+- Then I must follow these conventions:
+
+| rule                                                                                 |
+| --- |
+| Use Lombok annotations (@Data, @Builder, @NoArgsConstructor, @AllArgsConstructor)    |
+| Use constructor injection (not field injection) for all Spring beans                  |
+| All REST endpoints must be prefixed with "/api/v1"                                   |
+| All timestamps must be stored and returned in UTC using ISO-8601 format               |
+| Entity IDs must be Long values generated with @GeneratedValue(strategy = GenerationType.IDENTITY) |
+| Use records for DTOs where the DTO is immutable                                       |
+| Never expose JPA entities directly in API responses — always map to DTOs              |
+| Database table names must be lowercase_snake_case                                     |
+| Boolean fields must not be prefixed with "is" at the entity level                     |
+| Use SLF4J logging for meaningful business actions, state transitions, external calls, and failures; avoid mechanical logging on every method |
+
+### Error response structure convention
+
+Tags: `setup`, `conventions`
+
+- Given any error returned by the API
+- Then the response body must follow this JSON structure:
+
+```
+{
+  "timestamp": "ISO-8601 UTC",
+  "status": "HTTP status code (int)",
+  "error": "HTTP reason phrase",
+  "message": "Human-readable description",
+  "path": "Request URI",
+  "requestId": "Optional X-Request-ID correlation value; omit when absent"
+}
+```
+
+## Out of Scope for this file
+
+### Items NOT covered in project setup
+
+Tags: `setup`, `out-of-scope`
+
+- Given this is the project setup file only
+- Then the following are NOT defined here and will be addressed in later files:
+
+| topic                        | deferred to           |
+| --- | --- |
+| Entity field definitions     | 002_domain_model.md  |
+| Repository interfaces        | 003_data_access.md   |
+| Service layer logic          | 004_business_rules.md|
+| Controller implementations   | 005_api_endpoints.md |
+| Security configuration       | 006_security.md      |
+| Error handling details       | 007_error_handling.md|
+| External service clients     | 008_integrations.md  |
+| Messaging / event streaming  | Out of scope for v1  |
+| Test scenarios               | 009_testing.md       |
+| Docker / deployment config   | 010_deployment.md    |
