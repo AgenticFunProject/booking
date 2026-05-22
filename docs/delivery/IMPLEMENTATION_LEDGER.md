@@ -6,13 +6,42 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 79 |
+| Beads recorded | 80 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 44 |
-| Entries with elapsed time | 78 |
+| Entries with elapsed time | 79 |
 
 ## Entries
+
+### bo-8z3.3 - Add spec coverage matrix
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8z3.3@mph4ahuv` |
+| PR | https://github.com/AgenticFunProject/booking/pull/88 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T16:12:10Z |
+| Completed UTC | 2026-05-22T16:17:37Z |
+| Elapsed wall time | 5m 27s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `docs/delivery/SPEC_COVERAGE_MATRIX.md`, `docs/delivery/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md`, `docs/delivery/DEMO_API_RUNBOOK.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added a coworker-facing spec coverage matrix mapping specs 001 through 010 to implementation beads, PR links, quality evidence, implementation status, and gaps/deferred scope.
+- Based the matrix on current `master` at `f41a78b` after PR #87, the implementation ledger, quality log, and demo/API runbook.
+- Called out the remaining deferred or environment-blocked scope: real external client contracts/tests, Docker verification on a Docker-capable runner through `bo-1v4`, and historical pre-PR workflow beads with no GitHub PR URL recorded.
+- Linked the matrix from the delivery evidence README.
+
+Verification:
+
+- Matrix source review passed against current `master` after PR #87, delivery ledger, quality log, and demo/API runbook.
+- Static coverage check confirmed all spec paths from `specs/001_project_setup.md` through `specs/010_deployment.md` are listed in `docs/delivery/SPEC_COVERAGE_MATRIX.md`.
+- `git diff --check` passed.
 
 ### bo-ot8.12 - Run cumulative Phase 1-8 audit
 
