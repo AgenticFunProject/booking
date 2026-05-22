@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 348 |
-| Passed | 279 |
+| Checks recorded | 352 |
+| Passed | 283 |
 | Failed | 19 |
 | Blocked/skipped | 52 |
 
@@ -19,6 +19,10 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `./mvnw package -DskipTests` | Maven package step used by the Docker build stage | Passed | Built `target/booking-service-0.0.1-SNAPSHOT.jar`; tests intentionally skipped to match the Dockerfile build command. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `docker version --format '{{.Server.Version}}'` | Docker image build feasibility check | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Docker build verification could not run locally. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `git diff --check` | Dockerfile and `.dockerignore` whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-22 | `bo-ot8.3` | https://github.com/AgenticFunProject/booking/pull/77 | `git fetch origin master && git rebase origin/master` | Profile configuration branch sync | Passed | Branch was already up to date with `origin/master` before final verification. |
+| 2026-05-22 | `bo-ot8.3` | https://github.com/AgenticFunProject/booking/pull/77 | `./mvnw compile` | Profile-specific application configuration compile gate | Passed | Main compilation succeeded after hardening local/dev/prod/test profile YAML. |
+| 2026-05-22 | `bo-ot8.3` | https://github.com/AgenticFunProject/booking/pull/77 | `./mvnw test -Dtest=ActuatorHealthConfigurationTest` | Profile YAML regression tests | Passed | 5 tests, 0 failures, 0 errors. Covered local/dev/prod health/security/logging/client/DB settings and test embedded PostgreSQL/JWT/integration settings. |
+| 2026-05-22 | `bo-ot8.3` | https://github.com/AgenticFunProject/booking/pull/77 | `git diff --check` | Profile configuration and delivery evidence whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `git fetch origin master && git rebase origin/master` | Phase 1-7 audit branch setup | Passed | Branch was already up to date with `origin/master` before edits. |
 | 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | Manual spec audit | Cumulative Phase 1-7 implementation against `IMPLEMENTATION.md`, `AGENTS.md`, and specs 001-009 | Passed | Confirmed the implementation covers foundation, domain, data access, service lifecycle, API/error handling, integration infrastructure, security, and Phase 7 testing. The audit found one concrete grouped-test selector gap, fixed in this bead; no remaining concrete Phase 1-7 gaps found. |
 | 2026-05-22 | `bo-8wz.11` | https://github.com/AgenticFunProject/booking/pull/73 | `./mvnw compile` | Initial cumulative audit compile gate | Passed | Main compilation succeeded with the Maven wrapper before audit fixes. |

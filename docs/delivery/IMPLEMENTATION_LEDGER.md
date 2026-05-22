@@ -6,11 +6,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 68 |
+| Beads recorded | 69 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 41 |
-| Entries with elapsed time | 67 |
+| Entries with elapsed time | 68 |
 
 ## Entries
 
@@ -44,6 +44,37 @@ Verification:
 - `git fetch origin master && git switch -c polecat/quartz/bo-ot8.1 origin/master` passed.
 - `./mvnw package -DskipTests` passed and produced `target/booking-service-0.0.1-SNAPSHOT.jar`.
 - `docker version --format '{{.Server.Version}}'` was blocked because Docker is not installed in this environment (`docker: command not found`), so local Docker image build verification could not run.
+- `git diff --check` passed.
+
+### bo-ot8.3 - Add profile-specific application config
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.3@mph00p1q` |
+| PR | https://github.com/AgenticFunProject/booking/pull/77 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T14:12:30Z |
+| Completed UTC | 2026-05-22T14:18:40Z |
+| Elapsed wall time | 6m 10s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/resources/application-local.yml`, `src/main/resources/application-dev.yml`, `src/main/resources/application-prod.yml`, `src/test/resources/application-test.yml`, `src/test/java/com/cargo/booking/config/ActuatorHealthConfigurationTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/010_deployment.md`, `specs/001_project_setup.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Hardened local, dev, prod, and test profile resources with explicit database, security, integration URL/timeout, logging, and actuator health settings.
+- Kept local security disabled for stub development and made local integration endpoints explicitly localhost-only placeholders.
+- Configured dev/prod integration URLs as deployed-environment placeholders for future real clients while adding no real client beans before external API contracts exist.
+- Reinforced prod hardening with required datasource/JWT secret environment placeholders, hidden error details, hidden health details/components, reduced actuator exposure, and WARN root logging.
+- Extended the profile YAML regression test to cover local/dev/prod/test settings directly from the resource files.
+
+Verification:
+
+- `git fetch origin master && git rebase origin/master` passed; branch was already up to date.
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest=ActuatorHealthConfigurationTest` passed with 5 tests, 0 failures, 0 errors.
 - `git diff --check` passed.
 
 ### bo-8wz.11 - Run cumulative Phase 1-7 audit

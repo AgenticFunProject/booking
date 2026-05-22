@@ -1,6 +1,27 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/booking_db}
+    username: ${DB_USERNAME:booking_user}
+    password: ${DB_PASSWORD:booking_pass}
+
 app:
   security:
     enabled: true
+    jwt:
+      issuer: ${JWT_ISSUER:${AUTH_JWT_ISSUER:platform-auth}}
+      audience: ${JWT_AUDIENCE:${AUTH_JWT_AUDIENCE:equipments-service}}
+      secret: ${JWT_SECRET:${AUTH_JWT_SECRET:dev-secret-key-that-is-at-least-256-bits-long-for-hs256}}
+      expiration-ms: ${JWT_EXPIRATION:3600000}
+  integration:
+    schedule-api:
+      base-url: ${SCHEDULE_API_URL:https://schedule-api.dev.cargo.internal}
+      timeout-ms: ${SCHEDULE_API_TIMEOUT:5000}
+    equipment-api:
+      base-url: ${EQUIPMENT_API_URL:https://equipment-api.dev.cargo.internal}
+      timeout-ms: ${EQUIPMENT_API_TIMEOUT:5000}
+    quote-api:
+      base-url: ${QUOTE_API_URL:https://quote-api.dev.cargo.internal}
+      timeout-ms: ${QUOTE_API_TIMEOUT:5000}
 
 management:
   endpoints:
