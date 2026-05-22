@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 314 |
-| Passed | 250 |
+| Checks recorded | 324 |
+| Passed | 260 |
 | Failed | 15 |
 | Blocked/skipped | 51 |
 
@@ -15,6 +15,16 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `git fetch origin master && git rebase origin/master` | PR #71 rebase after PR #70 merge | Passed | Resolved conflicts in `BookingSecurityIntegrationTest.java`, `IMPLEMENTATION_LEDGER.md`, and `QUALITY_LOG.md`, preserving both `bo-8wz.6` and `bo-8wz.7` delivery evidence and keeping the security-disabled list test with the real-JWT security tests. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `./mvnw compile` | Post-rebase security integration test compile gate | Passed | Main compilation succeeded with the Maven wrapper after conflict resolution. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `./mvnw test -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Post-rebase focused security integration tests | Passed | 11 tests, 0 failures, 0 errors, 0 skipped. Includes the `bo-8wz.6` disabled-security list case plus `bo-8wz.7` real JWT/filter coverage. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `./mvnw test -Dgroups="integration" -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Post-rebase security integration tests through JUnit tag selector | Passed | 11 tests, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `git diff --check origin/master...HEAD` | Post-rebase security integration test branch whitespace check | Passed | No whitespace/diff errors after conflict resolution. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `git fetch origin master && git rebase origin/master` | Security integration test branch setup | Passed | Branch was already up to date with `origin/master` before edits. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `./mvnw compile` | Security integration test compile gate after Java test edits | Passed | Main compilation succeeded with the Maven wrapper. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `./mvnw test -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Focused security integration tests | Passed | 10 tests, 0 failures, 0 errors, 0 skipped. Covered real JWT filter/config behavior for invalid tokens, roles, ownership, public endpoints, protected metrics, disabled security, and status precedence. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `./mvnw test -Dgroups="integration" -Dtest="BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Security integration tests through JUnit tag selector | Passed | 10 tests, 0 failures, 0 errors, 0 skipped. Verified the security integration classes are selectable through the configured `integration` tag. |
+| 2026-05-22 | `bo-8wz.7` | https://github.com/AgenticFunProject/booking/pull/71 | `git diff --check origin/master...HEAD` | Security integration test branch whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `./mvnw compile` | Controller integration test compile gate after Java test edits | Passed | Main compilation succeeded with the Maven wrapper. |
 | 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `./mvnw test -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Focused controller, error-handling, and security-disabled MockMvc coverage | Passed | 33 tests, 0 failures, 0 errors, 0 skipped. Covered validation errors, structured error responses, pagination/filter parameters, status codes, and security-disabled controller behavior. |
 | 2026-05-22 | `bo-8wz.6` | https://github.com/AgenticFunProject/booking/pull/70 | `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` | Integration-tag selector for affected MockMvc tests | Passed | 33 tests, 0 failures, 0 errors, 0 skipped. Verified the affected MockMvc tests are selectable via the configured `integration` tag. |
