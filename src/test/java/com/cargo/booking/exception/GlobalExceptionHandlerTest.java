@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpInputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 class GlobalExceptionHandlerTest {
 
@@ -116,7 +117,7 @@ class GlobalExceptionHandlerTest {
         MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/v1/bookings");
 
         ResponseEntity<ErrorResponse> response = handler.handleHttpMessageNotReadable(
-                new HttpMessageNotReadableException("low-level parser detail"),
+                new HttpMessageNotReadableException("low-level parser detail", mock(HttpInputMessage.class)),
                 request);
 
         assertError(response, HttpStatus.BAD_REQUEST, "Malformed JSON request body");
@@ -158,8 +159,8 @@ class GlobalExceptionHandlerTest {
                         request),
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 "Content type 'text/plain' is not supported. Supported media types: application/json");
-        assertError(handler.handleNoHandlerFound(
-                        new NoHandlerFoundException("DELETE", "/api/v1/bookings/42", new HttpHeaders()),
+        assertError(handler.handleNoResourceFound(
+                        new NoResourceFoundException(HttpMethod.DELETE, "/api/v1/bookings/42"),
                         request),
                 HttpStatus.NOT_FOUND,
                 "No endpoint found for DELETE /api/v1/bookings/42");

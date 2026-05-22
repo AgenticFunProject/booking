@@ -15,9 +15,11 @@ import com.cargo.booking.model.enums.BookingStatus;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.AccessDeniedException;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 class ErrorHandlingMockMvcTest {
 
@@ -44,11 +47,9 @@ class ErrorHandlingMockMvcTest {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 .build();
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new ErrorProbeController())
+        mockMvc = MockMvcBuilders.standaloneSetup(new ErrorProbeController(), new ApiFallbackController())
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setMessageConverters(new MappingJackson2HttpMessageConverter(jsonMapper))
-                .addDispatcherServletCustomizer(dispatcherServlet ->
-                        dispatcherServlet.setThrowExceptionIfNoHandlerFound(true))
                 .build();
     }
 
@@ -206,6 +207,17 @@ class ErrorHandlingMockMvcTest {
         @PatchMapping("/state")
         void illegalTransition() {
             throw new IllegalStateTransitionException("Cannot transition booking from COMPLETED to CANCELLED");
+        }
+    }
+
+    @RestController
+    private static class ApiFallbackController {
+
+        @RequestMapping("/api/v1/{*path}")
+        void unknownApiPath(HttpServletRequest request) throws NoResourceFoundException {
+            throw new NoResourceFoundException(
+                    HttpMethod.valueOf(request.getMethod()),
+                    request.getRequestURI());
         }
     }
 }
