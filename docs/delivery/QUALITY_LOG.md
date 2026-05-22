@@ -380,6 +380,13 @@ This log records verification commands and outcomes during implementation.
 | 2026-05-22 | `bo-k7u.9` | https://github.com/AgenticFunProject/booking/pull/58 | `./mvnw compile` | Hibernate dialect cleanup compile gate | Passed | Compile completed successfully after removing explicit dialect settings from base and test configuration. |
 | 2026-05-22 | `bo-k7u.9` | https://github.com/AgenticFunProject/booking/pull/58 | `./mvnw test -Dtest="BookingRepositoryTest,BookingReferenceCounterRepositoryTest"` | Repository tests after Hibernate dialect cleanup | Passed | 17 tests, 0 failures, 0 errors. Captured output contained 0 `HHH90000025` warnings. |
 | 2026-05-22 | `bo-k7u.9` | https://github.com/AgenticFunProject/booking/pull/58 | `./mvnw test` | Full test gate after Hibernate dialect cleanup | Passed | 164 tests, 0 failures, 0 errors. Captured output contained 0 `HHH90000025` warnings. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `./mvnw compile` | JWT test helper compile gate | Passed | Main sources compiled successfully after adding test helper sources. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `./mvnw test -Dtest=JwtTestHelperTest` | JWT test helper token generation coverage | Passed | 6 tests, 0 failures, 0 errors. Covered customer, service, operator, Users-style admin, malformed, expired, wrong issuer, wrong audience, invalid signature, missing subject, and missing customer-claim tokens. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` | JWT helper/provider compatibility regression | Passed | 14 tests, 0 failures, 0 errors. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `git fetch origin master && git rebase origin/master` | Post-rebase sync | Passed | Branch was already up to date with latest `origin/master`. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `git diff --check origin/master...HEAD` | Post-rebase whitespace check | Passed | No whitespace/diff errors. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `./mvnw compile` | Post-rebase JWT test helper compile gate | Passed | Compile completed successfully. |
+| 2026-05-22 | `bo-8wz.2` | https://github.com/AgenticFunProject/booking/pull/66 | `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` | Post-rebase JWT helper/provider compatibility regression | Passed | 14 tests, 0 failures, 0 errors. |
 
 ## Entry Template
 

@@ -2496,6 +2496,42 @@ Notes:
 
 - Remaining repository-test logging, such as embedded PostgreSQL and SQL statement output, is outside this bead and remains available for follow-up log-noise cleanup.
 
+### bo-8wz.2 - Add JWT test helper utilities
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-8wz.2@mpgum9rl` |
+| PR | https://github.com/AgenticFunProject/booking/pull/66 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T11:41:21Z |
+| Completed UTC | 2026-05-22T11:48:29Z |
+| Elapsed wall time | 7m 08s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC evidence timestamp |
+| Files changed | `src/test/java/com/cargo/booking/testutil/JwtTestHelper.java`, `src/test/java/com/cargo/booking/testutil/JwtTestHelperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/009_testing.md`, `specs/006_security.md` |
+
+Delivered:
+
+- Added `JwtTestHelper` for reusable test JWT generation with platform-auth/equipments-service defaults and the test secret fallback from `application-test.yml`.
+- Added customer, service, operator, and Users-style admin happy-path tokens.
+- Added malformed, expired, wrong-issuer, wrong-audience, invalid-signature, missing-subject, and missing customer-claim variants for negative tests.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest=JwtTestHelperTest` passed with 6 tests, 0 failures, 0 errors.
+- `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` passed with 14 tests, 0 failures, 0 errors.
+- `git fetch origin master && git rebase origin/master` confirmed the branch was current with latest `origin/master`.
+- `git diff --check origin/master...HEAD` passed.
+- Post-rebase `./mvnw compile` passed.
+- Post-rebase `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` passed with 14 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Scope was kept to test utilities and focused helper coverage; security integration expansion remains out of scope for `bo-8wz.7`.
+
 ## Entry Template
 
 ```md
