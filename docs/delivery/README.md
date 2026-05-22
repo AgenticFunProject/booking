@@ -12,6 +12,8 @@ Agents should update these files as they complete beads:
 
 - `IMPLEMENTATION_LEDGER.md` records bead-level delivery evidence, including
   PRs, merge commits, changed files, UTC timing, elapsed wall time, and blockers.
+  Entries are ordered newest-first by `Started UTC`; keep the entry template at
+  the bottom.
 - `QUALITY_LOG.md` records verification commands, outcomes, skipped checks, and
   environment blockers.
 - Future files owned by reporting beads, such as a spec coverage matrix, demo

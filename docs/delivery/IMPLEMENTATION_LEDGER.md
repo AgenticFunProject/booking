@@ -158,37 +158,6 @@ Verification:
 - `./mvnw test -Dgroups="integration" -Dtest="BookingControllerTest,ErrorHandlingMockMvcTest,BookingSecurityIntegrationTest,BookingSecurityDisabledIntegrationTest"` passed with 33 tests, 0 failures, 0 errors, and 0 skipped.
 - `git diff --check origin/master...HEAD` passed.
 
-### bo-8wz.4 - Add repository integration tests
-
-| Field | Value |
-| --- | --- |
-| Status | Open GitHub PR |
-| Agent | obsidian |
-| Branch | `polecat/obsidian/bo-8wz.4@mpgvpsuv` |
-| PR | https://github.com/AgenticFunProject/booking/pull/68 |
-| Merge commit | Pending |
-| Started UTC | 2026-05-22T12:12:12Z |
-| Completed UTC | 2026-05-22T12:20:37Z |
-| Elapsed wall time | 8m 25s |
-| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
-| Files changed | `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingEquipmentLineRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
-
-Delivered:
-
-- Expanded embedded PostgreSQL `@DataJpaTest` coverage for booking repository persistence, reference lookup, customer/status/schedule queries, counts, eager equipment-line fetches, cascade behavior, null-safe specifications, created-at specifications, and Flyway-created booking/equipment schema shape.
-- Added `BookingEquipmentLineRepositoryTest` for `findByBookingId`, `deleteByBookingId`, and the lazy booking association.
-- Tagged repository slice tests with `@Tag("integration")` so Maven `-Dgroups="integration"` selects them.
-- Reused `TestDataBuilder` defaults for repository test entity setup instead of local duplicate field defaults.
-- Added counter repository coverage for persisted `next_value` after multiple allocations, alongside existing new-year, increment, independent-year, migration-shape, and concurrency coverage.
-
-Verification:
-
-- `./mvnw compile` passed.
-- `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped after fixing two test-only setup issues recorded in `QUALITY_LOG.md`.
-- `./mvnw test -Dgroups="integration" -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped.
-- `git diff --check origin/master...HEAD` passed.
-
 ### bo-8wz.5 - Add service behavior tests
 
 | Field | Value |
@@ -222,6 +191,109 @@ Verification:
 - Post-rebase `git diff --check origin/master...HEAD` passed.
 - Post-rebase `./mvnw test -Dtest="BookingServiceCreateTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest"` passed with 31 tests, 0 failures, 0 errors, and 0 skipped.
 - Post-rebase `./mvnw test -Dtest="BookingService*Test"` passed with 39 tests, 0 failures, 0 errors, and 0 skipped.
+
+### bo-8wz.4 - Add repository integration tests
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8wz.4@mpgvpsuv` |
+| PR | https://github.com/AgenticFunProject/booking/pull/68 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T12:12:12Z |
+| Completed UTC | 2026-05-22T12:20:37Z |
+| Elapsed wall time | 8m 25s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingEquipmentLineRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Expanded embedded PostgreSQL `@DataJpaTest` coverage for booking repository persistence, reference lookup, customer/status/schedule queries, counts, eager equipment-line fetches, cascade behavior, null-safe specifications, created-at specifications, and Flyway-created booking/equipment schema shape.
+- Added `BookingEquipmentLineRepositoryTest` for `findByBookingId`, `deleteByBookingId`, and the lazy booking association.
+- Tagged repository slice tests with `@Tag("integration")` so Maven `-Dgroups="integration"` selects them.
+- Reused `TestDataBuilder` defaults for repository test entity setup instead of local duplicate field defaults.
+- Added counter repository coverage for persisted `next_value` after multiple allocations, alongside existing new-year, increment, independent-year, migration-shape, and concurrency coverage.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped after fixing two test-only setup issues recorded in `QUALITY_LOG.md`.
+- `./mvnw test -Dgroups="integration" -Dtest="BookingRepositoryTest,BookingEquipmentLineRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 27 tests, 0 failures, 0 errors, and 0 skipped.
+- `git diff --check origin/master...HEAD` passed.
+
+### bo-8wz.3 - Add domain model tests
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending review/merge |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-8wz.3@mpgup7x6` |
+| PR | https://github.com/AgenticFunProject/booking/pull/67 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T11:43:38Z |
+| Completed UTC | 2026-05-22T12:08:16Z |
+| Elapsed wall time | 24m 38s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC PR evidence timestamp |
+| Files changed | `src/test/java/com/cargo/booking/model/entity/BookingEntityTest.java`, `src/test/java/com/cargo/booking/model/entity/BookingEquipmentLineEntityTest.java`, `src/test/java/com/cargo/booking/model/enums/BookingStatusTest.java`, `src/test/java/com/cargo/booking/model/enums/EquipmentTypeTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added focused EquipmentType tests for external API-code JSON values, parsing, trimming/case handling, and invalid-code rejection.
+- Added BookingStatus tests that pin lifecycle vocabulary and terminal status expectations without exercising the service state machine.
+- Added Booking and BookingEquipmentLine entity tests for Jakarta validation constraints, relationship setup, id-based equality, and toString circular-reference safeguards.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` passed with 20 tests, 0 failures, 0 errors.
+- `git fetch origin master && git rebase origin/master` completed after resolving delivery evidence conflicts from PR #66 by preserving both `bo-8wz.2` and `bo-8wz.3` entries.
+- `git diff --check origin/master...HEAD` passed after conflict resolution.
+- Post-rebase `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` passed with 20 tests, 0 failures, 0 errors.
+- Post-rebase `./mvnw test` passed with 198 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Scope stayed limited to domain model tests and delivery evidence; no production code or specs were changed.
+- Rebase follow-up preserved the merged `bo-8wz.2` delivery evidence and updated the full-suite count after PR #66 added `JwtTestHelperTest`.
+
+### bo-8wz.2 - Add JWT test helper utilities
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-8wz.2@mpgum9rl` |
+| PR | https://github.com/AgenticFunProject/booking/pull/66 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T11:41:21Z |
+| Completed UTC | 2026-05-22T11:48:29Z |
+| Elapsed wall time | 7m 08s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC evidence timestamp |
+| Files changed | `src/test/java/com/cargo/booking/testutil/JwtTestHelper.java`, `src/test/java/com/cargo/booking/testutil/JwtTestHelperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/009_testing.md`, `specs/006_security.md` |
+
+Delivered:
+
+- Added `JwtTestHelper` for reusable test JWT generation with platform-auth/equipments-service defaults and the test secret fallback from `application-test.yml`.
+- Added customer, service, operator, and Users-style admin happy-path tokens.
+- Added malformed, expired, wrong-issuer, wrong-audience, invalid-signature, missing-subject, and missing customer-claim variants for negative tests.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Dtest=JwtTestHelperTest` passed with 6 tests, 0 failures, 0 errors.
+- `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` passed with 14 tests, 0 failures, 0 errors.
+- `git fetch origin master && git rebase origin/master` confirmed the branch was current with latest `origin/master`.
+- `git diff --check origin/master...HEAD` passed.
+- Post-rebase `./mvnw compile` passed.
+- Post-rebase `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` passed with 14 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Scope was kept to test utilities and focused helper coverage; security integration expansion remains out of scope for `bo-8wz.7`.
 
 ### bo-8wz.1 - Add test data builder utilities
 
@@ -413,6 +485,73 @@ Verification:
 - `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
 - Final Surefire report scan for the original noisy WARN/ERROR, generated-password, stub-warning, JWT-warning, handler-log, Hibernate SQL, and BeanPostProcessor patterns returned no matches.
 
+### bo-k7u.9 - Remove explicit Hibernate dialect warning
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.9@mpgqnpxh` |
+| PR | https://github.com/AgenticFunProject/booking/pull/58 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T09:50:23Z |
+| Completed UTC | 2026-05-22T09:55:49Z |
+| Elapsed wall time | 5m 26s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC PR evidence timestamp |
+| Files changed | `src/main/resources/application.yml`, `src/test/resources/application-test.yml`, `specs/001_project_setup.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md`, `specs/003_data_access.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Removed explicit `hibernate.dialect` configuration from base and test YAML so Hibernate infers PostgreSQL from JDBC metadata.
+- Kept the existing Hibernate JDBC UTC time-zone configuration.
+- Updated the setup spec to require the UTC Hibernate JDBC setting instead of the explicit PostgreSQL dialect.
+
+Verification:
+
+- Baseline `./mvnw test -Dtest="BookingRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 17 tests and captured 2 `HHH90000025` warnings before the cleanup.
+- `./mvnw compile` passed.
+- Focused repository tests passed with 17 tests and captured 0 `HHH90000025` warnings after the cleanup.
+- Full `./mvnw test` passed with 164 tests, 0 failures, 0 errors, and captured 0 `HHH90000025` warnings.
+
+Notes:
+
+- Remaining repository-test logging, such as embedded PostgreSQL and SQL statement output, is outside this bead and remains available for follow-up log-noise cleanup.
+
+### bo-k7u.7 - Fix deprecated test API usage
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission via `gt done` |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.7@mpgq0wqh` |
+| PR | Pending merge queue |
+| Merge commit | Pending merge |
+| Started UTC | 2026-05-22T09:32:37Z |
+| Completed UTC | 2026-05-22T09:42:26Z |
+| Elapsed wall time | 9m 49s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/test/java/com/cargo/booking/exception/ErrorHandlingMockMvcTest.java`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/009_testing.md`, `specs/007_error_handling.md`, `specs/003_data_access.md` |
+
+Delivered:
+
+- Replaced deprecated no-handler testing through `DispatcherServlet#setThrowExceptionIfNoHandlerFound(boolean)` and `NoHandlerFoundException` with current `NoResourceFoundException` handling.
+- Removed deprecated `Specification.where(...)` usage from repository tests.
+- Replaced deprecated `HttpMessageNotReadableException` test construction with the current `HttpInputMessage` constructor.
+- Replaced deprecated embedded database provider enum usage from `ZONKY` to `EMBEDDED` in repository slice tests.
+
+Verification:
+
+- Baseline `./mvnw test` passed with 164 tests and showed the deprecated API warnings targeted by this bead.
+- `./mvnw compile` passed.
+- Focused `./mvnw test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,BookingRepositoryTest,BookingReferenceCounterRepositoryTest" -Dmaven.compiler.showDeprecation=true -Dmaven.compiler.showWarnings=true` passed with 31 tests and no compiler deprecation warnings.
+- Final `./mvnw test` passed with 164 tests, 0 failures, 0 errors; prior Java compiler deprecated API warnings were absent.
+
+Notes:
+
+- Full test output still includes existing runtime log noise such as Hibernate dialect deprecation logging; this bead removed Java compiler deprecated API warnings from the affected test paths.
+
 ### bo-k7u.8 - Configure Mockito Java agent for tests
 
 | Field | Value |
@@ -441,6 +580,72 @@ Verification:
 - `./mvnw compile` passed after the Surefire configuration change.
 - `./mvnw test -Dtest=BookingReferenceGeneratorTest` passed with 1 test, 0 failures, 0 errors, and the Mockito self-attach / dynamic-agent warning block did not appear.
 - `./mvnw test` passed with 164 tests, 0 failures, 0 errors, and the Mockito self-attach / dynamic-agent warning block no longer appeared.
+
+### bo-k7u.6 - Configure explicit annotation processing
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.6@mpgoytfw` |
+| PR | https://github.com/AgenticFunProject/booking/pull/55 |
+| Merge commit | Pending GitHub merge |
+| Started UTC | 2026-05-22T09:03:01Z |
+| Completed UTC | 2026-05-22T09:08:47Z |
+| Elapsed wall time | 5m 46s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added an explicit `maven-compiler-plugin` configuration with Lombok on the annotation processor path.
+- Preserved Lombok as a provided dependency while removing javac's implicit annotation-processing future-warning on clean compile.
+
+Verification:
+
+- `./mvnw -DskipTests clean compile` passed and no longer emitted the implicit annotation-processing warning.
+- `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- The worktree initially sat on a stale `bo-k7u.7` branch with no commits; it was reconciled to the existing `bo-k7u.6` branch from current `origin/master` before editing.
+- Existing Mockito dynamic-agent warnings remain out of scope for this bead and are tracked by follow-up `bo-k7u.8`.
+
+### bo-k7u.5 - Add Maven wrapper
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-k7u.5@mpgn8usw` |
+| PR | https://github.com/AgenticFunProject/booking/pull/54 |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-22T08:15:15Z |
+| Completed UTC | 2026-05-22T08:23:27Z |
+| Elapsed wall time | 8m 12s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `.mvn/wrapper/maven-wrapper.properties`, `mvnw`, `mvnw.cmd`, `MAVEN.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Generated the Maven wrapper with Maven Wrapper Plugin 3.3.4.
+- Configured the wrapper to download Apache Maven 3.9.16 from Maven Central.
+- Updated Maven usage docs to prefer `./mvnw`.
+- Resolved the prior delivery blocker where `./mvnw compile` could not run because wrapper files were missing.
+
+Verification:
+
+- `mvn -N wrapper:wrapper` passed and generated `mvnw`, `mvnw.cmd`, and `.mvn/wrapper/maven-wrapper.properties`.
+- `./mvnw -version` passed using Apache Maven 3.9.16 from the wrapper cache.
+- Post-rebase `./mvnw compile` passed.
+- Post-rebase `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Wrapper generation used the default `only-script` distribution type from Maven Wrapper Plugin 3.3.4; no wrapper JAR is required.
 
 ### bo-u5m - Run cumulative Phase 1-6 audit
 
@@ -605,6 +810,40 @@ Verification:
 - `git diff --check` passed.
 - Post-rebase `git fetch origin master && git rebase origin/master && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 158 tests, 0 failures, 0 errors.
 
+### bo-ww4.4 - Add Resilience4j defaults
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened; pending merge queue submission |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-ww4.4@mpfm7s2d` |
+| PR | https://github.com/AgenticFunProject/booking/pull/48 |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T14:58:13Z |
+| Completed UTC | 2026-05-21T15:03:43Z |
+| Elapsed wall time | 5m 30s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/008_integrations.md` |
+
+Delivered:
+
+- Added Resilience4j Spring Boot 3, circuit breaker, retry, and Spring AOP dependencies with a shared Resilience4j version property.
+- Added default circuit breaker and retry configuration in `application.yml`, including comments for future per-client overrides.
+- Added authorized health component/detail settings required by the integration health spec.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test` passed with 154 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Per-client Resilience4j instances remain intentionally empty until external API SLAs and client error contracts are known.
+- GitHub PR #48 was opened before Gas Town completion to satisfy the repository branch/PR rule.
+
 ### bo-ww4.1 - Add IntegrationProperties
 
 | Field | Value |
@@ -703,6 +942,41 @@ Verification:
 - `git diff --check` passed.
 - Post-rebase `git fetch origin master && git rebase origin/master && mvn compile && mvn test` passed; branch was already up to date, compile passed, and the full suite passed with 150 tests, 0 failures, 0 errors.
 
+### bo-m7w.8 - Wire ownership checks into controllers
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.8@mpfiqhro` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T13:20:46Z |
+| Completed UTC | 2026-05-21T13:26:07Z |
+| Elapsed wall time | 5m 21s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Wired `BookingAccessAuthorizer` into create, list, and get controller paths before the corresponding `BookingService` calls.
+- Preserved existing cancel authorization and kept lifecycle operator endpoints unchanged.
+- Updated controller tests to verify authorizer calls occur before service calls for create, list, numeric get, reference get, and cancel.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 10 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 143 tests, 0 failures, 0 errors.
+
+Notes:
+
+- No broad `@PreAuthorize` replacement was introduced; ownership checks remain explicit controller calls as specified.
+
 ### bo-m7w.7 - Add BookingAccessAuthorizer
 
 | Field | Value |
@@ -734,6 +1008,42 @@ Verification:
 - `mvn test -Dtest="BookingAccessAuthorizerTest"` passed with 16 tests, 0 failures, 0 errors.
 - `mvn compile` passed.
 - Post-rebase `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` passed; branch was already up to date, diff check and compile passed, and the full suite passed with 143 tests, 0 failures, 0 errors.
+
+### bo-m7w.6 - Add SecurityContextHelper
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.6@mpfgob4q` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T12:23:09Z |
+| Completed UTC | 2026-05-21T12:32:05Z |
+| Elapsed wall time | 8m 56s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/security/AuthenticatedRequester.java`, `src/main/java/com/cargo/booking/security/JwtTokenProvider.java`, `src/main/java/com/cargo/booking/security/SecurityContextHelper.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `src/test/java/com/cargo/booking/security/SecurityContextHelperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added `SecurityContextHelper` static accessors for the current subject, optional customer ID, username, normalized roles, `hasRole`, and `isOwnerOrPrivileged`.
+- Added `AuthenticatedRequester` as the JWT authentication principal so security/ownership code can read JWT subject, username/name, optional `customerId` or `customer_id`, and normalized roles from `SecurityContext`.
+- Updated `JwtTokenProvider` authentication creation to preserve requester details while keeping Spring authorities for existing endpoint role checks.
+- Added focused coverage for unauthenticated contexts, customer ownership matches/mismatches, privileged service/operator/admin callers, Users `role=admin` normalization, map-backed future token details, and JWT principal population.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest"` passed with 13 tests, 0 failures, 0 errors.
+- `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,SecurityConfig*Test"` passed with 26 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 127 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Existing `BookingAccessAuthorizer` implementation remains intentionally out of scope for dependent bead `bo-m7w.7`.
 
 ### bo-m7w.5 - Implement SecurityConfig
 
@@ -800,6 +1110,76 @@ Verification:
 - `mvn compile` passed.
 - `git diff --check` passed.
 - Post-rebase `git fetch origin master && git rebase origin/master && git diff --check origin/master...HEAD && mvn compile && mvn test` passed with 115 tests, 0 failures, 0 errors.
+
+### bo-m7w.3 - Implement JWT authentication filter
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.3@mpffbz4k` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T11:45:30Z |
+| Completed UTC | 2026-05-21T11:49:52Z |
+| Elapsed wall time | 4m 22s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/security/JwtAuthenticationFilter.java`, `src/test/java/com/cargo/booking/security/JwtAuthenticationFilterTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added `JwtAuthenticationFilter` as a `OncePerRequestFilter` that extracts `Authorization: Bearer ...`, validates tokens through `JwtTokenProvider`, and sets the Spring `SecurityContext` only for valid tokens.
+- Missing, non-Bearer, invalid, or provider-rejected tokens continue the chain unauthenticated.
+- JWT parsing/authentication extraction failures are caught without logging token contents or throwing raw JWT exceptions from the filter.
+- Added focused unit coverage for missing headers, non-Bearer headers, valid authentication population, invalid tokens, provider parsing failures, and preserving an existing authentication.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="JwtAuthenticationFilterTest,JwtTokenProviderTest,SecurityPropertiesTest"` passed with 19 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 113 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Security filter chain registration and enabled/disabled security behavior are intentionally left for `bo-m7w.5`; this bead only adds the filter class and its behavior.
+
+### bo-m7w.2 - Implement JwtTokenProvider
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-m7w.2@mpfexigu` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-21T11:34:17Z |
+| Completed UTC | 2026-05-21T11:41:00Z |
+| Elapsed wall time | 6m 43s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/security/JwtTokenProvider.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/006_security.md` |
+
+Delivered:
+
+- Added JJWT dependencies needed for local HS256 JWT validation.
+- Added `JwtTokenProvider` with issuer, audience, signature, expiration, and non-empty subject validation.
+- Extracted subject, username/name, `customerId`/`customer_id`, normalized `ROLE_*` roles, Users `role=admin`, and scope authorities without logging token contents or calling Users.
+- Added focused unit coverage for valid tokens, wrong issuer/audience, expired tokens, invalid signatures, missing subject, blank tokens, customer ID variants, roles, and scopes.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="JwtTokenProviderTest,SecurityPropertiesTest"` passed with 13 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 107 tests, 0 failures, 0 errors.
+
+Notes:
+
+- The provider creates its signing key lazily so local/security-disabled contexts can instantiate it when no JWT secret is configured; enabled deployments remain guarded by `JwtPropertiesValidator`.
 
 ### bo-m7w.1 - Add security and JWT properties
 
@@ -868,6 +1248,75 @@ Verification:
 - Post-rebase `mvn compile` passed.
 - Post-rebase `mvn test` passed with 94 tests, 0 failures, 0 errors.
 
+### bo-2tm.8 - Implement lifecycle endpoints
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/jasper |
+| Branch | `polecat/jasper/bo-2tm.8@mpdsqfn9` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-20T08:25:19Z |
+| Completed UTC | 2026-05-20T08:32:16Z |
+| Elapsed wall time | 6m 57s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `PATCH /api/v1/bookings/{id}/confirm`, `PATCH /api/v1/bookings/{id}/start`, and `PATCH /api/v1/bookings/{id}/complete`.
+- Delegated each endpoint to the matching `BookingService` lifecycle method.
+- Mapped lifecycle service results to `BookingResponse` through `BookingMapper`.
+- Added OpenAPI operation descriptions and response metadata for the lifecycle endpoints.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 6 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 85 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
+
+### bo-2tm.7 - Implement cancel booking endpoint
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2tm.7@mpdsooa7` |
+| PR | Pending merge queue submission via `gt done --pre-verified` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-20T08:23:44Z |
+| Completed UTC | 2026-05-20T08:31:12Z |
+| Elapsed wall time | 7m 28s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/main/java/com/cargo/booking/security/BookingAccessAuthorizer.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `PATCH /api/v1/bookings/{id}/cancel` to `BookingController`.
+- Authorized cancel access through `BookingAccessAuthorizer.authorizeBookingAccess(id)` before calling `BookingService.cancelBooking(id)`.
+- Returned the updated booking through `BookingMapper.toResponse`.
+- Added a minimal `BookingAccessAuthorizer` component so endpoint ownership checks have a concrete controller dependency until the full security phase fills in policy behavior.
+- Added standalone MockMvc coverage for the cancel endpoint response and authorizer-service-mapper call order.
+
+Verification:
+
+- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingControllerTest` passed with 7 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` passed.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 86 tests, 0 failures, 0 errors.
+
 ### bo-b0p.5 - Add error handling tests
 
 | Field | Value |
@@ -903,38 +1352,79 @@ Verification:
 - Post-rebase `mvn compile` passed.
 - Post-rebase `mvn test` passed with 90 tests, 0 failures, 0 errors.
 
-### bo-2tm.7 - Implement cancel booking endpoint
+### bo-2tm.6 - Implement list bookings endpoint
 
 | Field | Value |
 | --- | --- |
-| Status | Pending merge queue submission |
-| Agent | obsidian |
-| Branch | `polecat/obsidian/bo-2tm.7@mpdsooa7` |
-| PR | Pending merge queue submission via `gt done --pre-verified` |
-| Merge commit | Pending |
-| Started UTC | 2026-05-20T08:23:44Z |
-| Completed UTC | 2026-05-20T08:31:12Z |
-| Elapsed wall time | 7m 28s |
-| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/main/java/com/cargo/booking/security/BookingAccessAuthorizer.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Status | Submitted |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-2tm.6@mpcm6do7` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T12:33:50Z |
+| Completed UTC | 2026-05-19T12:48:59Z |
+| Elapsed wall time | 15m 09s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `specs/005_api_endpoints.md` |
 
 Delivered:
 
-- Added `PATCH /api/v1/bookings/{id}/cancel` to `BookingController`.
-- Authorized cancel access through `BookingAccessAuthorizer.authorizeBookingAccess(id)` before calling `BookingService.cancelBooking(id)`.
-- Returned the updated booking through `BookingMapper.toResponse`.
-- Added a minimal `BookingAccessAuthorizer` component so endpoint ownership checks have a concrete controller dependency until the full security phase fills in policy behavior.
-- Added standalone MockMvc coverage for the cancel endpoint response and authorizer-service-mapper call order.
+- Added `GET /api/v1/bookings` with optional `customerId` and `status` filters.
+- Applied pageable defaults using `@PageableDefault(size = 20, sort = "createdAt", direction = DESC)`.
+- Mapped the service `Page<Booking>` to `Page<BookingResponse>` through `BookingMapper` and wrapped it in `PagedResponse`.
+- Added controller tests for filtered list responses, page metadata, default sorting, and max page size behavior.
 
 Verification:
 
-- `./mvnw compile` was blocked because this checkout does not include a Maven wrapper.
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn test -Dtest=BookingControllerTest` initially failed during test-source compilation because the standalone pageable resolver test used an unavailable customizer type; the test setup was corrected.
+- `mvn test -Dtest=BookingControllerTest` then failed because the page fixture expected `last=false` for the final page; the fixture total was corrected.
+- `mvn test -Dtest=BookingControllerTest` passed with 3 tests, 0 failures, 0 errors.
 - `mvn compile` passed.
-- `mvn test -Dtest=BookingControllerTest` passed with 7 tests, 0 failures, 0 errors.
-- Post-rebase `git diff --check origin/master...HEAD` passed.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 86 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- Rebase onto the latest `origin/master` required resolving overlap with `bo-2tm.5` in controller, controller test, and delivery evidence files.
+- After conflict resolution, `mvn test -Dtest=BookingControllerTest` passed with 6 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD` and `mvn compile` passed.
+- Post-rebase `mvn test` passed with 85 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
+
+### bo-2tm.5 - Implement get booking endpoint
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-2tm.5@mpcm0igo` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T12:29:17Z |
+| Completed UTC | 2026-05-19T12:39:53Z |
+| Elapsed wall time | 10m 36s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `GET /api/v1/bookings/{id}` with numeric ID and `BKG-YYYY-NNNNN` reference dispatch.
+- Invalid identifiers now throw `BookingValidationException` with an explicit expected-format message.
+- Mapped successful reads to `BookingResponse` and documented OpenAPI response statuses.
+- Added focused controller tests for numeric ID lookup, reference lookup, and invalid identifier handling.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="BookingControllerTest"` passed with 4 tests, 0 failures, 0 errors.
+- Post-rebase `git diff --check origin/master...HEAD`, `mvn compile`, and `mvn test` passed with 83 tests, 0 failures, 0 errors.
+
+Notes:
+
+- `BookingAccessAuthorizer` is not present in this branch; ownership wiring is tracked separately by `bo-m7w.7` and `bo-m7w.8`.
 
 ### bo-b0p.3 - Map business exceptions
 
@@ -968,6 +1458,41 @@ Verification:
 - Post-rebase `git diff --check origin/master...HEAD` passed.
 - Post-rebase `mvn compile` passed.
 - Post-rebase `mvn test` passed with 78 tests, 0 failures, 0 errors.
+
+### bo-b0p.4 - Map framework validation and HTTP exceptions
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-b0p.4@mpcliuk8` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T12:15:34Z |
+| Completed UTC | 2026-05-19T12:25:34Z |
+| Elapsed wall time | 10m 00s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/main/resources/application.yml`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
+
+Delivered:
+
+- Mapped business, validation, malformed JSON, missing parameter, type mismatch, unsupported method/media, no-handler, access-denied fallback, equipment availability, and catch-all errors through `GlobalExceptionHandler`.
+- Added validation response generation with sorted field violations for `MethodArgumentNotValidException` and Jakarta `ConstraintViolationException`.
+- Configured Spring MVC to throw `NoHandlerFoundException` for missing handlers while preserving static resource mappings.
+- Added `spring-security-core` so the fallback Spring Security `AccessDeniedException` handler compiles without enabling web security auto-configuration.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=GlobalExceptionHandlerTest` initially failed during test-source compilation because of a missing test import and a private Spring constructor call; the test source was corrected.
+- `mvn test -Dtest=GlobalExceptionHandlerTest` passed with 9 tests, 0 failures, 0 errors.
+- After rebasing onto the latest `origin/master`, `git diff --check origin/master...HEAD`, `mvn compile`, and `mvn test` passed with 80 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Full gate output included expected application/test logging from exception handler and repository tests.
 
 ### bo-2tm.4 - Implement create booking endpoint
 
@@ -1073,6 +1598,41 @@ Verification:
 - Post-rebase `mvn compile` passed.
 - Post-rebase `mvn test` passed with 67 tests, 0 failures, 0 errors.
 
+### bo-2tm.2 - Add response DTO records
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-2tm.2@mpcfiff5` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T09:27:10Z |
+| Completed UTC | 2026-05-19T09:35:58Z |
+| Elapsed wall time | 8m 48s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/dto/response/BookingResponse.java`, `src/main/java/com/cargo/booking/dto/response/BookingCreatedResponse.java`, `src/main/java/com/cargo/booking/dto/response/CustomerResponse.java`, `src/main/java/com/cargo/booking/dto/response/CargoResponse.java`, `src/main/java/com/cargo/booking/dto/response/EquipmentResponse.java`, `src/main/java/com/cargo/booking/dto/response/PagedResponse.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `BookingResponse` with nested customer, cargo, equipment response fields and UTC timestamp fields.
+- Added slim `BookingCreatedResponse` for create-booking responses.
+- Added `CustomerResponse`, `CargoResponse`, and `EquipmentResponse` records for nested response data.
+- Added generic `PagedResponse<T>` with page metadata and a static `from(Page<T>)` factory.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- After rebasing onto the latest `origin/master`, `mvn compile` passed and `mvn test` passed with 61 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Mapper and controller behavior remain intentionally out of scope for follow-on API beads.
+
 ### bo-2tm.1 - Add request DTO records
 
 | Field | Value |
@@ -1103,119 +1663,590 @@ Verification:
 - Post-rebase `mvn test` passed with 61 tests, 0 failures, 0 errors.
 - `git diff --check` passed.
 
-### bo-u2r.1 - Scaffold Maven Spring Boot project
+### bo-b0p.1 - Add error response DTOs
 
 | Field | Value |
 | --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-u2r-1-scaffold-maven` |
-| PR | https://github.com/AgenticFunProject/booking/pull/6 |
-| Merge commit | `b23c9df` |
-| Started UTC | 2026-05-18T08:41:50Z |
-| Completed UTC | 2026-05-18T09:02:47Z |
-| Elapsed wall time | 20m 57s |
-| Timing source | Copied from bead `started_at` and `closed_at` fields for GitHub-readable reporting |
-| Files changed | `pom.xml`, `MAVEN.md` |
-| Spec | `specs/001_project_setup.md` |
+| Status | Submitted |
+| Agent | booking/polecats/jasper |
+| Branch | `polecat/jasper/bo-b0p.1@mpcfc8dd` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-19T09:22:22Z |
+| Completed UTC | 2026-05-19T09:36:26Z |
+| Elapsed wall time | 14m 04s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/exception/ErrorResponse.java`, `src/main/java/com/cargo/booking/exception/ValidationErrorResponse.java`, `src/main/java/com/cargo/booking/exception/FieldViolation.java`, `src/test/java/com/cargo/booking/exception/ErrorResponseTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/007_error_handling.md` |
 
 Delivered:
 
-- Added Maven `pom.xml` for `booking-service`.
-- Configured Java 21 and Spring Boot `3.5.14`.
-- Added core Spring Boot starters, PostgreSQL/Flyway, Lombok, SpringDoc, Spring Boot test, and embedded PostgreSQL test dependencies.
-- Added `MAVEN.md` documenting Maven commands and wrapper generation.
+- Added `ErrorResponse`, `ValidationErrorResponse`, and `FieldViolation` records in `com.cargo.booking.exception`.
+- Modeled the standard error fields: timestamp, status, error, message, path, and optional request ID.
+- Added field-level validation details with immutable violation list storage.
+- Annotated optional request ID components so absent request IDs are omitted from JSON responses.
 
 Verification:
 
-- `git diff --cached --check` passed.
-- `pom.xml` parsed successfully with Python `xml.etree.ElementTree`.
-- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="ErrorResponseTest"` passed with 2 tests, 0 failures, 0 errors.
+- Post-rebase `mvn compile` passed.
+- Post-rebase `mvn test` passed with 63 tests, 0 failures, 0 errors.
 
 Notes:
 
-- Maven wrapper was not generated in this environment. `MAVEN.md` documents `mvn -N wrapper:wrapper` for a Java 21/Maven machine.
+- `GlobalExceptionHandler` and `ErrorResponseBuilder` remain out of scope for this DTO bead and are covered by later error-handling beads.
 
-### bo-u2r.2 - Create base package structure
+### bo-2cu - Run cumulative Phase 1-4 audit
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-2cu@mpbdpigb` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:49:02Z |
+| Completed UTC | 2026-05-18T15:54:00Z |
+| Elapsed wall time | 4m 58s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/service/BookingService.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md` |
+
+Delivered:
+
+- Audited Phase 1 foundation, Phase 2 domain, Phase 3 data access, and Phase 4 service layer against the implementation guide and specs 001 through 004.
+- Confirmed the expected Maven/Spring Boot foundation, Java package tree, application and test configuration, domain enums/entities/migration, repositories/specifications/reference counter, service exceptions, client interfaces/stubs, reference generator, state machine, service flows, and focused tests are present.
+- Fixed the concrete Phase 1 dependency-scope gap by changing Lombok to Maven `provided` scope as specified.
+- Fixed the concrete Phase 4 logging gap by making start, complete, and cancel lifecycle success logs include booking reference plus `from` and `to` statuses.
+
+Verification:
+
+- Manual spec audit passed after the two fixes above; no remaining concrete Phase 1-4 spec gaps were found.
+- `mvn compile` passed.
+- `mvn test -Dtest="BookingServiceLifecycleTest,BookingServiceCancelTest"` passed with 11 tests, 0 failures, 0 errors.
+- `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper; installed `mvn` was used for the compile and test gates.
+
+Notes:
+
+- Later API, security, global error handling, real integrations, E2E testing, and deployment requirements remain out of scope for this Phase 1-4 audit and are covered by later specs.
+
+### bo-0wh.11 - Add service unit tests
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.11@mpbd8oxb` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:35:57Z |
+| Completed UTC | 2026-05-18T15:40:31Z |
+| Elapsed wall time | 4m 34s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `src/test/java/com/cargo/booking/service/BookingStateMachineTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Expanded create-flow unit coverage for validation-before-client behavior, null requests, null equipment lines, invalid equipment quantities, and no reference generation after schedule or quote rejection.
+- Added read-flow coverage for missing booking references.
+- Expanded state-machine coverage to reject every transition not allowed by the lifecycle rules.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest="BookingServiceCreateTest,BookingServiceReadTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest,BookingReferenceGeneratorTest,BookingStateMachineTest"` passed with 37 tests, 0 failures, 0 errors.
+- `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- After `git fetch origin master && git rebase origin/master`, `mvn compile` and `mvn test` passed with 58 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- The main service implementation was already present on `origin/master`; this bead adds focused edge-case tests without changing production service behavior.
+
+### bo-0wh.10 - Implement cancel booking flow
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.10@mpbcw7x9` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:26:13Z |
+| Completed UTC | 2026-05-18T15:31:10Z |
+| Elapsed wall time | 4m 57s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceCancelTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added transactional `BookingService.cancelBooking(Long)`.
+- Loaded bookings with equipment lines, validated transitions to `CANCELLED` through `BookingStateMachine`, released equipment only for `CONFIRMED` bookings, and saved the cancelled booking.
+- Made equipment release failures warning-only by catching the external client contract exception while still persisting cancellation.
+- Added focused cancel-flow unit tests for pending cancellation, confirmed cancellation with release, warning-only release failure, missing booking, and invalid transition rejection.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingServiceCancelTest` passed with 5 tests, 0 failures, 0 errors.
+- After `git fetch origin master && git rebase origin/master`, `mvn test` passed with 53 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Authorization and ownership checks remain outside the service method for later API/security beads.
+- Release failure handling catches `EquipmentReservationException` only; generic service exceptions still bubble to the global handler.
+
+### bo-0wh.9 - Implement start and complete booking flows
+
+| Field | Value |
+| --- | --- |
+| Status | Submitted |
+| Agent | booking/polecats/quartz |
+| Branch | `polecat/quartz/bo-0wh.9@mpbca64c` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending refinery merge |
+| Started UTC | 2026-05-18T15:09:05Z |
+| Completed UTC | 2026-05-18T15:17:42Z |
+| Elapsed wall time | 8m 37s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceLifecycleTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added transactional `BookingService.startBooking` and `BookingService.completeBooking` flows.
+- Loaded bookings by ID, validated `CONFIRMED -> IN_PROGRESS` and `IN_PROGRESS -> COMPLETED` transitions through `BookingStateMachine`, updated status only after validation, saved the booking, and returned the persisted result.
+- Added focused lifecycle unit tests covering success, missing bookings, and invalid transition rejection without persistence.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingServiceLifecycleTest` passed with 6 tests, 0 failures, 0 errors.
+- `mvn test` passed with 48 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Confirm and cancel flows were intentionally not changed; those remain separate lifecycle beads.
+
+### bo-0wh.8 - Implement confirm booking flow
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.8@mpbc87v2` |
+| PR | https://github.com/AgenticFunProject/booking/pull/45 |
+| Merge commit | `0b7eee5` |
+| Started UTC | 2026-05-18T15:07:32Z |
+| Completed UTC | 2026-05-18T15:13:09Z |
+| Elapsed wall time | 5m 37s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceConfirmTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Implemented transactional `BookingService.confirmBooking(Long)` for PENDING to CONFIRMED only.
+- Loaded bookings with equipment lines, validated the lifecycle transition before reservation, reserved equipment through `EquipmentClient`, then saved the CONFIRMED status.
+- Mapped booking equipment lines to external `EquipmentLineDTO` values using the public equipment type code.
+- Added focused confirm-flow unit tests for success, missing booking, invalid transition, and equipment reservation failure.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- Initial `mvn test -Dtest="BookingServiceConfirmTest"` failed because the new test mixed raw values and Mockito matchers; the test was corrected.
+- `mvn test -Dtest="BookingServiceConfirmTest"` passed with 4 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- The status is changed only after `reserveEquipment` returns successfully, so reservation failures leave the booking status unchanged.
+- This bead intentionally avoids `startBooking`, `completeBooking`, and `cancelBooking`; those lifecycle flows are owned by separate beads.
+
+### bo-0wh.6 - Implement create booking service flow
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | polecat/quartz |
+| Branch | `polecat/quartz/bo-0wh.6@mpbbr762` |
+| PR | https://github.com/AgenticFunProject/booking/pull/43 |
+| Merge commit | `9f82c28` |
+| Started UTC | 2026-05-18T14:54:20Z |
+| Completed UTC | 2026-05-18T14:59:39Z |
+| Elapsed wall time | 5m 19s |
+| Timing source | Started time copied from hook attachment; completed time captured by agent after focused verification passed |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/main/java/com/cargo/booking/service/CreateBookingRequest.java`, `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added a service-layer `CreateBookingRequest` command record for create orchestration.
+- Implemented transactional `BookingService.createBooking` validation, schedule validation, quote validation, reference generation, pending booking assembly, equipment-line association, and cascade persistence.
+- Added focused create-flow unit tests for the happy path, validation failures, unavailable schedules, and invalid quotes.
+- Updated existing read-service tests for the expanded constructor dependencies required by the service contract.
+
+Verification:
+
+- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingServiceCreateTest` passed with 6 tests, 0 failures, 0 errors.
+- `mvn test -Dtest=BookingServiceReadTest` passed with 7 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Authorization remains outside the service method for later API/security beads.
+- Local stub client files were not edited.
+
+### bo-0wh.3 - Add local stub client implementations
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-0wh.3@mpbbizq5` |
+| PR | https://github.com/AgenticFunProject/booking/pull/41 |
+| Merge commit | `0a5611f` |
+| Started UTC | 2026-05-18T14:47:59Z |
+| Completed UTC | 2026-05-18T14:51:26Z |
+| Elapsed wall time | 3m 27s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `src/main/java/com/cargo/booking/client/ScheduleClientStub.java`, `src/main/java/com/cargo/booking/client/EquipmentClientStub.java`, `src/main/java/com/cargo/booking/client/QuoteClientStub.java`, `src/test/java/com/cargo/booking/client/ClientStubTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `@Service` and `@Profile("local")` stub implementations for `ScheduleClient`, `EquipmentClient`, and `QuoteClient`.
+- Returned deterministic local schedule data and unconditional success for schedule and quote validation.
+- Logged local equipment reservation and release actions without external calls.
+- Added focused tests covering stub behavior and local-profile service annotations.
+
+Verification:
+
+- `./mvnw compile` blocked because the Maven wrapper is not present in this checkout.
+- `mvn compile` passed.
+- `mvn test -Dtest="ClientStubTest"` passed with 4 tests, 0 failures, 0 errors.
+
+Notes:
+
+- No `BookingService` or service-flow files were changed; this bead stayed within the assigned parallel write set.
+
+### bo-0wh.7 - Implement booking read service flows
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-u2r-2-package-structure` |
-| PR | https://github.com/AgenticFunProject/booking/pull/11 |
-| Merge commit | `f66c10b` |
-| Started UTC | 2026-05-18T09:46:28Z |
-| Completed UTC | 2026-05-18T09:46:54Z |
-| Elapsed wall time | 26s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/**/package-info.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md` |
+| Branch | `work/bo-0wh-7-booking-read-flows` |
+| PR | https://github.com/AgenticFunProject/booking/pull/39 |
+| Merge commit | `c77e745` |
+| Started UTC | 2026-05-18T12:52:42Z |
+| Completed UTC | 2026-05-18T14:49:04Z |
+| Elapsed wall time | 1h 56m 22s |
+| Timing source | Started time copied from bead `started_at`; completed time captured by agent when verification passed |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
 
 Delivered:
 
-- Added the base `com.cargo.booking` package tree.
-- Added Java package markers for controller, service, repository, model/entity, model/enums, DTO request/response, config, exception, client, client DTO, mapper, and security packages.
+- Added `BookingService` read orchestration with constructor injection and a service logger.
+- Implemented `getBookingById` and `getBookingByReference` using eager equipment-line repository queries.
+- Implemented pageable `getBookings` with optional customer and status filters.
+- Added focused unit tests for found/missing reads and all list filter combinations.
+
+Verification:
+
+- `mvn test -Dtest=BookingServiceReadTest` passed with 7 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+
+Notes:
+
+- Authorization and caller visibility remain at the later API/security boundary per `specs/004_business_rules.md`.
+
+### bo-0wh.4 - Add BookingStateMachine
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-0wh-4-state-machine` |
+| PR | https://github.com/AgenticFunProject/booking/pull/38 |
+| Merge commit | `431f137` |
+| Started UTC | 2026-05-18T12:49:00Z |
+| Completed UTC | 2026-05-18T12:50:39Z |
+| Elapsed wall time | 1m 39s |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingStateMachine.java`, `src/test/java/com/cargo/booking/service/BookingStateMachineTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `BookingStateMachine` as a Spring component.
+- Implemented the allowed lifecycle transitions from the domain model spec.
+- Added focused tests for allowed transitions, rejected transitions, and null status handling.
 
 Verification:
 
 - `git diff --check` passed.
-- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingStateMachineTest` passed with 3 tests, 0 failures, 0 errors.
 
 Notes:
 
-- Empty packages are represented with `package-info.java` files so the package structure is tracked by Git.
+- Rejected transition messages include the current and target statuses for downstream error handling.
 
-### bo-u2r.6 - Add project ignore and developer docs shell
+### bo-0wh.2 - Add external client interfaces and DTOs
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-u2r-6-ignore-docs-shell` |
-| PR | https://github.com/AgenticFunProject/booking/pull/12 |
-| Merge commit | `471e92c` |
-| Started UTC | 2026-05-18T09:49:38Z |
-| Completed UTC | 2026-05-18T09:50:36Z |
+| Branch | `work/bo-0wh-2-client-contracts` |
+| PR | https://github.com/AgenticFunProject/booking/pull/37 |
+| Merge commit | `b28b0dd` |
+| Started UTC | 2026-05-18T12:47:00Z |
+| Completed UTC | 2026-05-18T12:48:00Z |
+| Elapsed wall time | 1m |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/client/*.java`, `src/main/java/com/cargo/booking/client/dto/*.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added `ScheduleClient`, `EquipmentClient`, and `QuoteClient` interfaces.
+- Added immutable `ScheduleDTO` and `EquipmentLineDTO` records for external client contracts.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+
+Notes:
+
+- Real external integrations remain deferred to `specs/008_integrations.md`.
+
+### bo-0wh.5 - Add BookingReferenceGenerator
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-0wh-5-reference-generator` |
+| PR | https://github.com/AgenticFunProject/booking/pull/36 |
+| Merge commit | `b946bb0` |
+| Started UTC | 2026-05-18T12:42:00Z |
+| Completed UTC | 2026-05-18T12:44:37Z |
+| Elapsed wall time | 2m 37s |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/service/BookingReferenceGenerator.java`, `src/test/java/com/cargo/booking/service/BookingReferenceGeneratorTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added a Spring `BookingReferenceGenerator` service using constructor injection.
+- Generated references with the UTC year and zero-padded five-digit sequence values from `BookingReferenceCounterRepository`.
+- Added a focused unit test covering UTC year selection and sequence formatting.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+- `mvn test -Dtest=BookingReferenceGeneratorTest` passed with 1 test, 0 failures, 0 errors.
+
+Notes:
+
+- The database counter repository remains responsible for concurrent sequence allocation.
+
+### bo-0wh.1 - Add service exception classes
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-0wh-1-service-exceptions` |
+| PR | https://github.com/AgenticFunProject/booking/pull/35 |
+| Merge commit | `c9639b2` |
+| Started UTC | 2026-05-18T12:40:00Z |
+| Completed UTC | 2026-05-18T12:41:52Z |
+| Elapsed wall time | 1m 52s |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/exception/*.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added all six service/business exception classes required by the business-rules spec.
+- Provided String-message and String-message-plus-cause constructors on each exception.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+
+Notes:
+
+- No broad catch-all exception behavior was added.
+
+### bo-jyh - Prepare Phase 4 service execution plan
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-jyh-phase-4-plan` |
+| PR | https://github.com/AgenticFunProject/booking/pull/33 |
+| Merge commit | `74cca40` |
+| Started UTC | 2026-05-18T12:02:32Z |
+| Completed UTC | 2026-05-18T12:03:12Z |
+| Elapsed wall time | 40s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `IMPLEMENTATION.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/004_business_rules.md` |
+
+Delivered:
+
+- Added the Phase 4 service-layer execution waves to `IMPLEMENTATION.md`.
+- Documented controlled parallelism guidance for service work and the hot-file risk around `BookingService`.
+- Fixed local bead dependency metadata so `bo-0wh.7` read/list service work depends on `bo-0wh.1` exception classes before it starts.
+
+Verification:
+
+- `git diff --check` passed.
+
+Notes:
+
+- Bead dependency metadata is local Gas Town state; the GitHub-readable execution order is recorded in `IMPLEMENTATION.md`.
+
+### bo-1co - Use constructor injection in reference counter repository
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/reference-counter-constructor-injection` |
+| PR | https://github.com/AgenticFunProject/booking/pull/30 |
+| Merge commit | `b489335` |
+| Started UTC | 2026-05-18T11:09:00Z |
+| Completed UTC | 2026-05-18T11:09:58Z |
 | Elapsed wall time | 58s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `.gitignore`, `README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md` |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingReferenceCounterRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md`, `specs/003_data_access.md` |
 
 Delivered:
 
-- Added project ignore rules for build output, IDE/editor files, environment files, logs, OS files, and test/coverage output.
-- Updated the README to describe the generated service status, implementation plan, delivery evidence files, and current Maven commands.
+- Audited Phase 1, Phase 2, and Phase 3 implementation against the setup, domain model, and data access specs.
+- Replaced `EntityManager` field injection in `BookingReferenceCounterRepository` with constructor injection to satisfy the Phase 1 Spring bean convention.
+- Preserved the native PostgreSQL upsert sequence behavior.
 
 Verification:
 
+- Manual Phase 1-3 spec audit found this as the only concrete implementation mismatch.
 - `git diff --check` passed.
-- Portable absolute-path scan passed.
+- `mvn compile` passed.
+- `mvn test` passed with 17 tests, 0 failures, 0 errors.
 
 Notes:
 
-- Maven wrapper artifacts are not ignored so a future wrapper-generation bead can commit them if needed.
+- Existing historical ledger entries still record their original Java-environment blockers; current verification now passes after the WSL Java/Maven setup was fixed.
 
-### bo-u2r.3 - Add BookingServiceApplication entry point
+### bo-7yn - Use native embedded PostgreSQL provider for repository tests
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-u2r-3-application-entrypoint` |
-| PR | https://github.com/AgenticFunProject/booking/pull/13 |
-| Merge commit | `05d4331` |
-| Started UTC | 2026-05-18T09:58:14Z |
-| Completed UTC | 2026-05-18T09:58:34Z |
+| Branch | `work/native-embedded-postgres-tests` |
+| PR | https://github.com/AgenticFunProject/booking/pull/29 |
+| Merge commit | `903c393` |
+| Started UTC | 2026-05-18T11:03:00Z |
+| Completed UTC | 2026-05-18T11:05:00Z |
+| Elapsed wall time | 2m |
+| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `pom.xml`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java` |
+| Spec | `specs/003_data_access.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added the native `io.zonky.test:embedded-postgres` test dependency.
+- Configured repository slice tests to use `AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY` instead of the default Docker provider.
+- Enabled repository tests to run in WSL without a Docker socket.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` passed.
+- `mvn test` passed with 17 tests, 0 failures, 0 errors.
+
+Notes:
+
+- Java and Maven were installed user-locally in WSL before this PR; those machine-local tool installs are not repository files.
+
+### bo-eyx.6 - Add data access slice tests
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-eyx-6-data-access-tests` |
+| PR | https://github.com/AgenticFunProject/booking/pull/27 |
+| Merge commit | `8299fd0` |
+| Started UTC | 2026-05-18T10:51:12Z |
+| Completed UTC | 2026-05-18T10:53:02Z |
+| Elapsed wall time | 1m 50s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added embedded PostgreSQL `@DataJpaTest` coverage for booking repository persistence and derived queries.
+- Covered eager equipment-line fetch queries, cascade save/delete behavior, and composable specifications.
+- Added counter repository tests for new year allocation, existing year increments, independent yearly counters, migration shape, and concurrent allocation.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn test` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Runtime execution of the new tests requires a Java 21 environment with Maven dependency resolution available.
+
+### bo-eyx.4 - Add BookingSpecification
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-eyx-4-booking-specification` |
+| PR | https://github.com/AgenticFunProject/booking/pull/26 |
+| Merge commit | `7335b8d` |
+| Started UTC | 2026-05-18T10:48:37Z |
+| Completed UTC | 2026-05-18T10:48:57Z |
 | Elapsed wall time | 20s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/BookingServiceApplication.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md` |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingSpecification.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
 
 Delivered:
 
-- Added the `BookingServiceApplication` Spring Boot main class in the base package.
-- Added a standard `main` method calling `SpringApplication.run`.
+- Added `BookingSpecification` in the repository package.
+- Added null-safe `hasCustomerId`, `hasStatus`, `hasScheduleId`, `createdAfter`, and `createdBefore` helpers.
+- Used entity field names for criteria paths so the specifications compose with Spring Data JPA filtering.
 
 Verification:
 
@@ -1224,28 +2255,29 @@ Verification:
 
 Notes:
 
-- Compile verification remains environment-blocked until Java 21 is available in this workspace.
+- Specification query behavior is covered by the later data-access slice test bead.
 
-### bo-u2r.4 - Add base application configuration
+### bo-eyx.3 - Add eager booking fetch queries
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-u2r-4-base-application-config` |
-| PR | https://github.com/AgenticFunProject/booking/pull/14 |
-| Merge commit | `cb898b5` |
-| Started UTC | 2026-05-18T10:00:33Z |
-| Completed UTC | 2026-05-18T10:00:52Z |
-| Elapsed wall time | 19s |
+| Branch | `work/bo-eyx-3-eager-fetch-queries` |
+| PR | https://github.com/AgenticFunProject/booking/pull/25 |
+| Merge commit | `e17de8d` |
+| Started UTC | 2026-05-18T10:46:57Z |
+| Completed UTC | 2026-05-18T10:47:10Z |
+| Elapsed wall time | 13s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md` |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
 
 Delivered:
 
-- Added base Spring application configuration for port, app name, datasource defaults, JPA, Flyway, OpenAPI, actuator exposure, pagination, and API base path.
-- Kept messaging/event streaming configuration out of scope.
+- Added `findWithEquipmentLinesById(Long id)` to `BookingRepository`.
+- Added `findWithEquipmentLinesByBookingReference(String reference)` to `BookingRepository`.
+- Used JPQL `LEFT JOIN FETCH` queries so equipment lines can be loaded explicitly while the entity relationship stays lazy by default.
 
 Verification:
 
@@ -1254,58 +2286,30 @@ Verification:
 
 Notes:
 
-- Profile-specific overrides remain in later foundation/deployment tasks.
+- Fetch-query behavior is covered by the later data-access slice test bead.
 
-### bo-u2r.5 - Add test profile configuration
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-u2r-5-test-profile-config` |
-| PR | https://github.com/AgenticFunProject/booking/pull/15 |
-| Merge commit | `346c36c` |
-| Started UTC | 2026-05-18T10:02:47Z |
-| Completed UTC | 2026-05-18T10:03:05Z |
-| Elapsed wall time | 18s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md` |
-
-Delivered:
-
-- Added test profile configuration for PostgreSQL-oriented tests.
-- Configured PostgreSQL driver expectations, JPA validation, Flyway validation, and test JWT/security defaults for later specs.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
-
-Notes:
-
-- Embedded PostgreSQL test bootstrap code is planned in later test/integration beads; this profile provides the expected configuration surface.
-
-### bo-7or.1 - Add BookingStatus enum
+### bo-eyx.5 - Add BookingReferenceCounterRepository
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-7or-1-booking-status` |
-| PR | https://github.com/AgenticFunProject/booking/pull/16 |
-| Merge commit | `1881bd8` |
-| Started UTC | 2026-05-18T10:09:09Z |
-| Completed UTC | 2026-05-18T10:09:26Z |
+| Branch | `work/bo-eyx-5-reference-counter-repository` |
+| PR | https://github.com/AgenticFunProject/booking/pull/24 |
+| Merge commit | `9a666ae` |
+| Started UTC | 2026-05-18T10:45:03Z |
+| Completed UTC | 2026-05-18T10:45:20Z |
 | Elapsed wall time | 17s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/model/enums/BookingStatus.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/002_domain_model.md` |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingReferenceCounterRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
 
 Delivered:
 
-- Added the `BookingStatus` enum in the domain enum package.
-- Added lifecycle values in the exact spec order: `PENDING`, `CONFIRMED`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`.
+- Added `BookingReferenceCounterRepository` as a custom repository component.
+- Implemented `getNextReferenceSeqForYear(int year)` with a native PostgreSQL upsert.
+- Used `INSERT ... ON CONFLICT ... DO UPDATE ... RETURNING` so a new year stores `next_value = 2` and returns `1`, while existing years increment and return the previous value.
+- Wrapped the counter method in `@Transactional`.
 
 Verification:
 
@@ -1314,28 +2318,30 @@ Verification:
 
 Notes:
 
-- Transition validation remains in the later service-layer state machine task.
+- Runtime validation of the upsert behavior is deferred to the data-access slice test bead.
 
-### bo-7or.2 - Add EquipmentType enum with API codes
+### bo-eyx.2 - Add BookingEquipmentLineRepository
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-7or-2-equipment-type` |
-| PR | https://github.com/AgenticFunProject/booking/pull/17 |
-| Merge commit | `012ad52` |
-| Started UTC | 2026-05-18T10:11:23Z |
-| Completed UTC | 2026-05-18T10:11:48Z |
-| Elapsed wall time | 25s |
+| Branch | `work/bo-eyx-2-equipment-line-repository` |
+| PR | https://github.com/AgenticFunProject/booking/pull/23 |
+| Merge commit | `c94a53e` |
+| Started UTC | 2026-05-18T10:43:21Z |
+| Completed UTC | 2026-05-18T10:43:36Z |
+| Elapsed wall time | 15s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/model/enums/EquipmentType.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/002_domain_model.md` |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingEquipmentLineRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
 
 Delivered:
 
-- Added Java-safe `EquipmentType` constants for `20FT`, `40FT`, `40HC`, and `REEFER`.
-- Added `@JsonValue` code output and `fromCode(String)` parsing for request input.
+- Added `BookingEquipmentLineRepository` in the repository package.
+- Extended `JpaRepository<BookingEquipmentLine, Long>`.
+- Added `findByBookingId(Long bookingId)` and `deleteByBookingId(Long bookingId)`.
+- Annotated the delete method with `@Modifying` and `@Transactional` as required by the data-access transaction rules.
 
 Verification:
 
@@ -1344,7 +2350,129 @@ Verification:
 
 Notes:
 
-- Invalid or blank codes currently throw `IllegalArgumentException`; API-level error mapping is handled in later error/API tasks.
+- The delete transaction is scoped to the modifying repository method, matching the explicit exception in `specs/003_data_access.md`.
+
+### bo-eyx.1 - Add BookingRepository
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-eyx-1-booking-repository` |
+| PR | https://github.com/AgenticFunProject/booking/pull/22 |
+| Merge commit | `9983dc8` |
+| Started UTC | 2026-05-18T10:40:59Z |
+| Completed UTC | 2026-05-18T10:41:28Z |
+| Elapsed wall time | 29s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/repository/BookingRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `BookingRepository` in the repository package.
+- Extended `JpaRepository<Booking, Long>` and `JpaSpecificationExecutor<Booking>`.
+- Added derived query methods for booking reference, customer, status, customer/status, schedule, reference existence, and customer/status counts.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Eager equipment-line fetch methods are intentionally left for the separate `bo-eyx.3` bead.
+
+### bo-43o - Audit and fix Phase 1-2 implementation
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-43o-phase-1-2-audit` |
+| PR | https://github.com/AgenticFunProject/booking/pull/21 |
+| Merge commit | `6a7fcd6` |
+| Started UTC | 2026-05-18T10:30:42Z |
+| Completed UTC | 2026-05-18T10:31:03Z |
+| Elapsed wall time | 21s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md`, `specs/002_domain_model.md` |
+
+Delivered:
+
+- Audited Phase 1 and Phase 2 implementation against the project setup and domain model specs.
+- Removed fallback test datasource URL and credentials from `application-test.yml` so the datasource can be provided by the embedded PostgreSQL test bootstrap as specified.
+
+Verification:
+
+- Manual spec audit found the remaining Phase 1 and Phase 2 implementation aligned after the test-profile fix.
+- `git diff --check` passed.
+- Portable absolute-path scan passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Compile and runtime validation still require Java 21 on the machine.
+
+### bo-7or.5 - Add booking reference counter migration
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-7or-5-booking-migration` |
+| PR | https://github.com/AgenticFunProject/booking/pull/19 |
+| Merge commit | `7ed0265` |
+| Started UTC | 2026-05-18T10:18:18Z |
+| Completed UTC | 2026-05-18T10:18:50Z |
+| Elapsed wall time | 32s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/resources/db/migration/V1__create_booking_tables.sql`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Added the initial Flyway migration for `bookings`, `booking_equipment_lines`, and `booking_reference_counters`.
+- Added indexes, constraints, PostgreSQL column types, foreign key behavior, and reference counter shape.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- The migration stores enum values using Java enum names, matching `@Enumerated(EnumType.STRING)`.
+
+### bo-7or.6 - Add entity equality and serialization safeguards
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-7or-entities` |
+| PR | https://github.com/AgenticFunProject/booking/pull/18 |
+| Merge commit | `94fefad` |
+| Started UTC | 2026-05-18T10:17:25Z |
+| Completed UTC | 2026-05-18T10:17:25Z |
+| Elapsed wall time | 0s |
+| Timing source | Closed as verification of safeguards delivered by PR #18 |
+| Files changed | `src/main/java/com/cargo/booking/model/entity/Booking.java`, `src/main/java/com/cargo/booking/model/entity/BookingEquipmentLine.java` |
+| Spec | `specs/002_domain_model.md` |
+
+Delivered:
+
+- Verified both entities use ID-only Lombok equality configuration.
+- Verified relationship fields avoid recursive `toString`, and the equipment-line back-reference is ignored for JSON serialization.
+
+Verification:
+
+- `rg` annotation scan confirmed `@EqualsAndHashCode`, `@EqualsAndHashCode.Include`, `@ToString.Exclude`, and `@JsonIgnore` placement.
+
+Notes:
+
+- No additional code PR was required after PR #18.
 
 ### bo-7or.3 - Add Booking entity
 
@@ -1406,55 +2534,26 @@ Notes:
 
 - Entity safeguards are present here; the dedicated safeguards bead will verify and close any remaining gaps.
 
-### bo-7or.6 - Add entity equality and serialization safeguards
+### bo-7or.2 - Add EquipmentType enum with API codes
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-7or-entities` |
-| PR | https://github.com/AgenticFunProject/booking/pull/18 |
-| Merge commit | `94fefad` |
-| Started UTC | 2026-05-18T10:17:25Z |
-| Completed UTC | 2026-05-18T10:17:25Z |
-| Elapsed wall time | 0s |
-| Timing source | Closed as verification of safeguards delivered by PR #18 |
-| Files changed | `src/main/java/com/cargo/booking/model/entity/Booking.java`, `src/main/java/com/cargo/booking/model/entity/BookingEquipmentLine.java` |
+| Branch | `work/bo-7or-2-equipment-type` |
+| PR | https://github.com/AgenticFunProject/booking/pull/17 |
+| Merge commit | `012ad52` |
+| Started UTC | 2026-05-18T10:11:23Z |
+| Completed UTC | 2026-05-18T10:11:48Z |
+| Elapsed wall time | 25s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/java/com/cargo/booking/model/enums/EquipmentType.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `specs/002_domain_model.md` |
 
 Delivered:
 
-- Verified both entities use ID-only Lombok equality configuration.
-- Verified relationship fields avoid recursive `toString`, and the equipment-line back-reference is ignored for JSON serialization.
-
-Verification:
-
-- `rg` annotation scan confirmed `@EqualsAndHashCode`, `@EqualsAndHashCode.Include`, `@ToString.Exclude`, and `@JsonIgnore` placement.
-
-Notes:
-
-- No additional code PR was required after PR #18.
-
-### bo-7or.5 - Add booking reference counter migration
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-7or-5-booking-migration` |
-| PR | https://github.com/AgenticFunProject/booking/pull/19 |
-| Merge commit | `7ed0265` |
-| Started UTC | 2026-05-18T10:18:18Z |
-| Completed UTC | 2026-05-18T10:18:50Z |
-| Elapsed wall time | 32s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/resources/db/migration/V1__create_booking_tables.sql`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/002_domain_model.md` |
-
-Delivered:
-
-- Added the initial Flyway migration for `bookings`, `booking_equipment_lines`, and `booking_reference_counters`.
-- Added indexes, constraints, PostgreSQL column types, foreign key behavior, and reference counter shape.
+- Added Java-safe `EquipmentType` constants for `20FT`, `40FT`, `40HC`, and `REEFER`.
+- Added `@JsonValue` code output and `fromCode(String)` parsing for request input.
 
 Verification:
 
@@ -1463,125 +2562,28 @@ Verification:
 
 Notes:
 
-- The migration stores enum values using Java enum names, matching `@Enumerated(EnumType.STRING)`.
+- Invalid or blank codes currently throw `IllegalArgumentException`; API-level error mapping is handled in later error/API tasks.
 
-### bo-43o - Audit and fix Phase 1-2 implementation
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-43o-phase-1-2-audit` |
-| PR | https://github.com/AgenticFunProject/booking/pull/21 |
-| Merge commit | `6a7fcd6` |
-| Started UTC | 2026-05-18T10:30:42Z |
-| Completed UTC | 2026-05-18T10:31:03Z |
-| Elapsed wall time | 21s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md`, `specs/002_domain_model.md` |
-
-Delivered:
-
-- Audited Phase 1 and Phase 2 implementation against the project setup and domain model specs.
-- Removed fallback test datasource URL and credentials from `application-test.yml` so the datasource can be provided by the embedded PostgreSQL test bootstrap as specified.
-
-Verification:
-
-- Manual spec audit found the remaining Phase 1 and Phase 2 implementation aligned after the test-profile fix.
-- `git diff --check` passed.
-- Portable absolute-path scan passed.
-- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
-
-Notes:
-
-- Compile and runtime validation still require Java 21 on the machine.
-
-### bo-eyx.1 - Add BookingRepository
+### bo-7or.1 - Add BookingStatus enum
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-eyx-1-booking-repository` |
-| PR | https://github.com/AgenticFunProject/booking/pull/22 |
-| Merge commit | `9983dc8` |
-| Started UTC | 2026-05-18T10:40:59Z |
-| Completed UTC | 2026-05-18T10:41:28Z |
-| Elapsed wall time | 29s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/repository/BookingRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/003_data_access.md` |
-
-Delivered:
-
-- Added `BookingRepository` in the repository package.
-- Extended `JpaRepository<Booking, Long>` and `JpaSpecificationExecutor<Booking>`.
-- Added derived query methods for booking reference, customer, status, customer/status, schedule, reference existence, and customer/status counts.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
-
-Notes:
-
-- Eager equipment-line fetch methods are intentionally left for the separate `bo-eyx.3` bead.
-
-### bo-eyx.2 - Add BookingEquipmentLineRepository
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-eyx-2-equipment-line-repository` |
-| PR | https://github.com/AgenticFunProject/booking/pull/23 |
-| Merge commit | `c94a53e` |
-| Started UTC | 2026-05-18T10:43:21Z |
-| Completed UTC | 2026-05-18T10:43:36Z |
-| Elapsed wall time | 15s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/repository/BookingEquipmentLineRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/003_data_access.md` |
-
-Delivered:
-
-- Added `BookingEquipmentLineRepository` in the repository package.
-- Extended `JpaRepository<BookingEquipmentLine, Long>`.
-- Added `findByBookingId(Long bookingId)` and `deleteByBookingId(Long bookingId)`.
-- Annotated the delete method with `@Modifying` and `@Transactional` as required by the data-access transaction rules.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
-
-Notes:
-
-- The delete transaction is scoped to the modifying repository method, matching the explicit exception in `specs/003_data_access.md`.
-
-### bo-eyx.5 - Add BookingReferenceCounterRepository
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-eyx-5-reference-counter-repository` |
-| PR | https://github.com/AgenticFunProject/booking/pull/24 |
-| Merge commit | `9a666ae` |
-| Started UTC | 2026-05-18T10:45:03Z |
-| Completed UTC | 2026-05-18T10:45:20Z |
+| Branch | `work/bo-7or-1-booking-status` |
+| PR | https://github.com/AgenticFunProject/booking/pull/16 |
+| Merge commit | `1881bd8` |
+| Started UTC | 2026-05-18T10:09:09Z |
+| Completed UTC | 2026-05-18T10:09:26Z |
 | Elapsed wall time | 17s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/repository/BookingReferenceCounterRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/003_data_access.md` |
+| Files changed | `src/main/java/com/cargo/booking/model/enums/BookingStatus.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/002_domain_model.md` |
 
 Delivered:
 
-- Added `BookingReferenceCounterRepository` as a custom repository component.
-- Implemented `getNextReferenceSeqForYear(int year)` with a native PostgreSQL upsert.
-- Used `INSERT ... ON CONFLICT ... DO UPDATE ... RETURNING` so a new year stores `next_value = 2` and returns `1`, while existing years increment and return the previous value.
-- Wrapped the counter method in `@Transactional`.
+- Added the `BookingStatus` enum in the domain enum package.
+- Added lifecycle values in the exact spec order: `PENDING`, `CONFIRMED`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED`.
 
 Verification:
 
@@ -1590,29 +2592,28 @@ Verification:
 
 Notes:
 
-- Runtime validation of the upsert behavior is deferred to the data-access slice test bead.
+- Transition validation remains in the later service-layer state machine task.
 
-### bo-eyx.3 - Add eager booking fetch queries
+### bo-u2r.5 - Add test profile configuration
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-eyx-3-eager-fetch-queries` |
-| PR | https://github.com/AgenticFunProject/booking/pull/25 |
-| Merge commit | `e17de8d` |
-| Started UTC | 2026-05-18T10:46:57Z |
-| Completed UTC | 2026-05-18T10:47:10Z |
-| Elapsed wall time | 13s |
+| Branch | `work/bo-u2r-5-test-profile-config` |
+| PR | https://github.com/AgenticFunProject/booking/pull/15 |
+| Merge commit | `346c36c` |
+| Started UTC | 2026-05-18T10:02:47Z |
+| Completed UTC | 2026-05-18T10:03:05Z |
+| Elapsed wall time | 18s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/repository/BookingRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/003_data_access.md` |
+| Files changed | `src/test/resources/application-test.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
 
 Delivered:
 
-- Added `findWithEquipmentLinesById(Long id)` to `BookingRepository`.
-- Added `findWithEquipmentLinesByBookingReference(String reference)` to `BookingRepository`.
-- Used JPQL `LEFT JOIN FETCH` queries so equipment lines can be loaded explicitly while the entity relationship stays lazy by default.
+- Added test profile configuration for PostgreSQL-oriented tests.
+- Configured PostgreSQL driver expectations, JPA validation, Flyway validation, and test JWT/security defaults for later specs.
 
 Verification:
 
@@ -1621,29 +2622,58 @@ Verification:
 
 Notes:
 
-- Fetch-query behavior is covered by the later data-access slice test bead.
+- Embedded PostgreSQL test bootstrap code is planned in later test/integration beads; this profile provides the expected configuration surface.
 
-### bo-eyx.4 - Add BookingSpecification
+### bo-u2r.4 - Add base application configuration
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-eyx-4-booking-specification` |
-| PR | https://github.com/AgenticFunProject/booking/pull/26 |
-| Merge commit | `7335b8d` |
-| Started UTC | 2026-05-18T10:48:37Z |
-| Completed UTC | 2026-05-18T10:48:57Z |
+| Branch | `work/bo-u2r-4-base-application-config` |
+| PR | https://github.com/AgenticFunProject/booking/pull/14 |
+| Merge commit | `cb898b5` |
+| Started UTC | 2026-05-18T10:00:33Z |
+| Completed UTC | 2026-05-18T10:00:52Z |
+| Elapsed wall time | 19s |
+| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
+| Files changed | `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
+
+Delivered:
+
+- Added base Spring application configuration for port, app name, datasource defaults, JPA, Flyway, OpenAPI, actuator exposure, pagination, and API base path.
+- Kept messaging/event streaming configuration out of scope.
+
+Verification:
+
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
+
+Notes:
+
+- Profile-specific overrides remain in later foundation/deployment tasks.
+
+### bo-u2r.3 - Add BookingServiceApplication entry point
+
+| Field | Value |
+| --- | --- |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-u2r-3-application-entrypoint` |
+| PR | https://github.com/AgenticFunProject/booking/pull/13 |
+| Merge commit | `05d4331` |
+| Started UTC | 2026-05-18T09:58:14Z |
+| Completed UTC | 2026-05-18T09:58:34Z |
 | Elapsed wall time | 20s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/repository/BookingSpecification.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/003_data_access.md` |
+| Files changed | `src/main/java/com/cargo/booking/BookingServiceApplication.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
 
 Delivered:
 
-- Added `BookingSpecification` in the repository package.
-- Added null-safe `hasCustomerId`, `hasStatus`, `hasScheduleId`, `createdAfter`, and `createdBefore` helpers.
-- Used entity field names for criteria paths so the specifications compose with Spring Data JPA filtering.
+- Added the `BookingServiceApplication` Spring Boot main class in the base package.
+- Added a standard `main` method calling `SpringApplication.run`.
 
 Verification:
 
@@ -1652,1130 +2682,100 @@ Verification:
 
 Notes:
 
-- Specification query behavior is covered by the later data-access slice test bead.
+- Compile verification remains environment-blocked until Java 21 is available in this workspace.
 
-### bo-eyx.6 - Add data access slice tests
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-eyx-6-data-access-tests` |
-| PR | https://github.com/AgenticFunProject/booking/pull/27 |
-| Merge commit | `8299fd0` |
-| Started UTC | 2026-05-18T10:51:12Z |
-| Completed UTC | 2026-05-18T10:53:02Z |
-| Elapsed wall time | 1m 50s |
-| Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/003_data_access.md`, `specs/009_testing.md` |
-
-Delivered:
-
-- Added embedded PostgreSQL `@DataJpaTest` coverage for booking repository persistence and derived queries.
-- Covered eager equipment-line fetch queries, cascade save/delete behavior, and composable specifications.
-- Added counter repository tests for new year allocation, existing year increments, independent yearly counters, migration shape, and concurrent allocation.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn test` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
-
-Notes:
-
-- Runtime execution of the new tests requires a Java 21 environment with Maven dependency resolution available.
-
-### bo-7yn - Use native embedded PostgreSQL provider for repository tests
+### bo-u2r.6 - Add project ignore and developer docs shell
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/native-embedded-postgres-tests` |
-| PR | https://github.com/AgenticFunProject/booking/pull/29 |
-| Merge commit | `903c393` |
-| Started UTC | 2026-05-18T11:03:00Z |
-| Completed UTC | 2026-05-18T11:05:00Z |
-| Elapsed wall time | 2m |
-| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `pom.xml`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java` |
-| Spec | `specs/003_data_access.md`, `specs/009_testing.md` |
-
-Delivered:
-
-- Added the native `io.zonky.test:embedded-postgres` test dependency.
-- Configured repository slice tests to use `AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY` instead of the default Docker provider.
-- Enabled repository tests to run in WSL without a Docker socket.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` passed.
-- `mvn test` passed with 17 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Java and Maven were installed user-locally in WSL before this PR; those machine-local tool installs are not repository files.
-
-### bo-1co - Use constructor injection in reference counter repository
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/reference-counter-constructor-injection` |
-| PR | https://github.com/AgenticFunProject/booking/pull/30 |
-| Merge commit | `b489335` |
-| Started UTC | 2026-05-18T11:09:00Z |
-| Completed UTC | 2026-05-18T11:09:58Z |
+| Branch | `work/bo-u2r-6-ignore-docs-shell` |
+| PR | https://github.com/AgenticFunProject/booking/pull/12 |
+| Merge commit | `471e92c` |
+| Started UTC | 2026-05-18T09:49:38Z |
+| Completed UTC | 2026-05-18T09:50:36Z |
 | Elapsed wall time | 58s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/repository/BookingReferenceCounterRepository.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md`, `specs/003_data_access.md` |
+| Files changed | `.gitignore`, `README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `specs/001_project_setup.md` |
 
 Delivered:
 
-- Audited Phase 1, Phase 2, and Phase 3 implementation against the setup, domain model, and data access specs.
-- Replaced `EntityManager` field injection in `BookingReferenceCounterRepository` with constructor injection to satisfy the Phase 1 Spring bean convention.
-- Preserved the native PostgreSQL upsert sequence behavior.
+- Added project ignore rules for build output, IDE/editor files, environment files, logs, OS files, and test/coverage output.
+- Updated the README to describe the generated service status, implementation plan, delivery evidence files, and current Maven commands.
 
 Verification:
 
-- Manual Phase 1-3 spec audit found this as the only concrete implementation mismatch.
 - `git diff --check` passed.
-- `mvn compile` passed.
-- `mvn test` passed with 17 tests, 0 failures, 0 errors.
+- Portable absolute-path scan passed.
 
 Notes:
 
-- Existing historical ledger entries still record their original Java-environment blockers; current verification now passes after the WSL Java/Maven setup was fixed.
+- Maven wrapper artifacts are not ignored so a future wrapper-generation bead can commit them if needed.
 
-### bo-jyh - Prepare Phase 4 service execution plan
+### bo-u2r.2 - Create base package structure
 
 | Field | Value |
 | --- | --- |
 | Status | Closed |
 | Agent | mayor |
-| Branch | `work/bo-jyh-phase-4-plan` |
-| PR | https://github.com/AgenticFunProject/booking/pull/33 |
-| Merge commit | `74cca40` |
-| Started UTC | 2026-05-18T12:02:32Z |
-| Completed UTC | 2026-05-18T12:03:12Z |
-| Elapsed wall time | 40s |
+| Branch | `work/bo-u2r-2-package-structure` |
+| PR | https://github.com/AgenticFunProject/booking/pull/11 |
+| Merge commit | `f66c10b` |
+| Started UTC | 2026-05-18T09:46:28Z |
+| Completed UTC | 2026-05-18T09:46:54Z |
+| Elapsed wall time | 26s |
 | Timing source | Agent-recorded UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `IMPLEMENTATION.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added the Phase 4 service-layer execution waves to `IMPLEMENTATION.md`.
-- Documented controlled parallelism guidance for service work and the hot-file risk around `BookingService`.
-- Fixed local bead dependency metadata so `bo-0wh.7` read/list service work depends on `bo-0wh.1` exception classes before it starts.
-
-Verification:
-
-- `git diff --check` passed.
-
-Notes:
-
-- Bead dependency metadata is local Gas Town state; the GitHub-readable execution order is recorded in `IMPLEMENTATION.md`.
-
-### bo-0wh.1 - Add service exception classes
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-0wh-1-service-exceptions` |
-| PR | https://github.com/AgenticFunProject/booking/pull/35 |
-| Merge commit | `c9639b2` |
-| Started UTC | 2026-05-18T12:40:00Z |
-| Completed UTC | 2026-05-18T12:41:52Z |
-| Elapsed wall time | 1m 52s |
-| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/exception/*.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added all six service/business exception classes required by the business-rules spec.
-- Provided String-message and String-message-plus-cause constructors on each exception.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` passed.
-
-Notes:
-
-- No broad catch-all exception behavior was added.
-
-### bo-0wh.5 - Add BookingReferenceGenerator
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-0wh-5-reference-generator` |
-| PR | https://github.com/AgenticFunProject/booking/pull/36 |
-| Merge commit | `b946bb0` |
-| Started UTC | 2026-05-18T12:42:00Z |
-| Completed UTC | 2026-05-18T12:44:37Z |
-| Elapsed wall time | 2m 37s |
-| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingReferenceGenerator.java`, `src/test/java/com/cargo/booking/service/BookingReferenceGeneratorTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added a Spring `BookingReferenceGenerator` service using constructor injection.
-- Generated references with the UTC year and zero-padded five-digit sequence values from `BookingReferenceCounterRepository`.
-- Added a focused unit test covering UTC year selection and sequence formatting.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingReferenceGeneratorTest` passed with 1 test, 0 failures, 0 errors.
-
-Notes:
-
-- The database counter repository remains responsible for concurrent sequence allocation.
-
-### bo-0wh.2 - Add external client interfaces and DTOs
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-0wh-2-client-contracts` |
-| PR | https://github.com/AgenticFunProject/booking/pull/37 |
-| Merge commit | `b28b0dd` |
-| Started UTC | 2026-05-18T12:47:00Z |
-| Completed UTC | 2026-05-18T12:48:00Z |
-| Elapsed wall time | 1m |
-| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/client/*.java`, `src/main/java/com/cargo/booking/client/dto/*.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added `ScheduleClient`, `EquipmentClient`, and `QuoteClient` interfaces.
-- Added immutable `ScheduleDTO` and `EquipmentLineDTO` records for external client contracts.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` passed.
-
-Notes:
-
-- Real external integrations remain deferred to `specs/008_integrations.md`.
-
-### bo-0wh.4 - Add BookingStateMachine
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-0wh-4-state-machine` |
-| PR | https://github.com/AgenticFunProject/booking/pull/38 |
-| Merge commit | `431f137` |
-| Started UTC | 2026-05-18T12:49:00Z |
-| Completed UTC | 2026-05-18T12:50:39Z |
-| Elapsed wall time | 1m 39s |
-| Timing source | Agent-recorded approximate UTC timestamps copied into this file for GitHub-readable reporting |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingStateMachine.java`, `src/test/java/com/cargo/booking/service/BookingStateMachineTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added `BookingStateMachine` as a Spring component.
-- Implemented the allowed lifecycle transitions from the domain model spec.
-- Added focused tests for allowed transitions, rejected transitions, and null status handling.
-
-Verification:
-
-- `git diff --check` passed.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingStateMachineTest` passed with 3 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Rejected transition messages include the current and target statuses for downstream error handling.
-
-### bo-0wh.7 - Implement booking read service flows
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | mayor |
-| Branch | `work/bo-0wh-7-booking-read-flows` |
-| PR | https://github.com/AgenticFunProject/booking/pull/39 |
-| Merge commit | `c77e745` |
-| Started UTC | 2026-05-18T12:52:42Z |
-| Completed UTC | 2026-05-18T14:49:04Z |
-| Elapsed wall time | 1h 56m 22s |
-| Timing source | Started time copied from bead `started_at`; completed time captured by agent when verification passed |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added `BookingService` read orchestration with constructor injection and a service logger.
-- Implemented `getBookingById` and `getBookingByReference` using eager equipment-line repository queries.
-- Implemented pageable `getBookings` with optional customer and status filters.
-- Added focused unit tests for found/missing reads and all list filter combinations.
-
-Verification:
-
-- `mvn test -Dtest=BookingServiceReadTest` passed with 7 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- Authorization and caller visibility remain at the later API/security boundary per `specs/004_business_rules.md`.
-
-### bo-0wh.3 - Add local stub client implementations
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-0wh.3@mpbbizq5` |
-| PR | https://github.com/AgenticFunProject/booking/pull/41 |
-| Merge commit | `0a5611f` |
-| Started UTC | 2026-05-18T14:47:59Z |
-| Completed UTC | 2026-05-18T14:51:26Z |
-| Elapsed wall time | 3m 27s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/client/ScheduleClientStub.java`, `src/main/java/com/cargo/booking/client/EquipmentClientStub.java`, `src/main/java/com/cargo/booking/client/QuoteClientStub.java`, `src/test/java/com/cargo/booking/client/ClientStubTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added `@Service` and `@Profile("local")` stub implementations for `ScheduleClient`, `EquipmentClient`, and `QuoteClient`.
-- Returned deterministic local schedule data and unconditional success for schedule and quote validation.
-- Logged local equipment reservation and release actions without external calls.
-- Added focused tests covering stub behavior and local-profile service annotations.
-
-Verification:
-
-- `./mvnw compile` blocked because the Maven wrapper is not present in this checkout.
-- `mvn compile` passed.
-- `mvn test -Dtest="ClientStubTest"` passed with 4 tests, 0 failures, 0 errors.
-
-Notes:
-
-- No `BookingService` or service-flow files were changed; this bead stayed within the assigned parallel write set.
-
-### bo-0wh.6 - Implement create booking service flow
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | polecat/quartz |
-| Branch | `polecat/quartz/bo-0wh.6@mpbbr762` |
-| PR | https://github.com/AgenticFunProject/booking/pull/43 |
-| Merge commit | `9f82c28` |
-| Started UTC | 2026-05-18T14:54:20Z |
-| Completed UTC | 2026-05-18T14:59:39Z |
-| Elapsed wall time | 5m 19s |
-| Timing source | Started time copied from hook attachment; completed time captured by agent after focused verification passed |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/main/java/com/cargo/booking/service/CreateBookingRequest.java`, `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added a service-layer `CreateBookingRequest` command record for create orchestration.
-- Implemented transactional `BookingService.createBooking` validation, schedule validation, quote validation, reference generation, pending booking assembly, equipment-line association, and cascade persistence.
-- Added focused create-flow unit tests for the happy path, validation failures, unavailable schedules, and invalid quotes.
-- Updated existing read-service tests for the expanded constructor dependencies required by the service contract.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingServiceCreateTest` passed with 6 tests, 0 failures, 0 errors.
-- `mvn test -Dtest=BookingServiceReadTest` passed with 7 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- Authorization remains outside the service method for later API/security beads.
-- Local stub client files were not edited.
-
-### bo-0wh.8 - Implement confirm booking flow
-
-| Field | Value |
-| --- | --- |
-| Status | Closed |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-0wh.8@mpbc87v2` |
-| PR | https://github.com/AgenticFunProject/booking/pull/45 |
-| Merge commit | `0b7eee5` |
-| Started UTC | 2026-05-18T15:07:32Z |
-| Completed UTC | 2026-05-18T15:13:09Z |
-| Elapsed wall time | 5m 37s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceConfirmTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Implemented transactional `BookingService.confirmBooking(Long)` for PENDING to CONFIRMED only.
-- Loaded bookings with equipment lines, validated the lifecycle transition before reservation, reserved equipment through `EquipmentClient`, then saved the CONFIRMED status.
-- Mapped booking equipment lines to external `EquipmentLineDTO` values using the public equipment type code.
-- Added focused confirm-flow unit tests for success, missing booking, invalid transition, and equipment reservation failure.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- Initial `mvn test -Dtest="BookingServiceConfirmTest"` failed because the new test mixed raw values and Mockito matchers; the test was corrected.
-- `mvn test -Dtest="BookingServiceConfirmTest"` passed with 4 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- The status is changed only after `reserveEquipment` returns successfully, so reservation failures leave the booking status unchanged.
-- This bead intentionally avoids `startBooking`, `completeBooking`, and `cancelBooking`; those lifecycle flows are owned by separate beads.
-
-### bo-0wh.9 - Implement start and complete booking flows
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/quartz |
-| Branch | `polecat/quartz/bo-0wh.9@mpbca64c` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-18T15:09:05Z |
-| Completed UTC | 2026-05-18T15:17:42Z |
-| Elapsed wall time | 8m 37s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceLifecycleTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added transactional `BookingService.startBooking` and `BookingService.completeBooking` flows.
-- Loaded bookings by ID, validated `CONFIRMED -> IN_PROGRESS` and `IN_PROGRESS -> COMPLETED` transitions through `BookingStateMachine`, updated status only after validation, saved the booking, and returned the persisted result.
-- Added focused lifecycle unit tests covering success, missing bookings, and invalid transition rejection without persistence.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingServiceLifecycleTest` passed with 6 tests, 0 failures, 0 errors.
-- `mvn test` passed with 48 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- Confirm and cancel flows were intentionally not changed; those remain separate lifecycle beads.
-
-### bo-0wh.10 - Implement cancel booking flow
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-0wh.10@mpbcw7x9` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-18T15:26:13Z |
-| Completed UTC | 2026-05-18T15:31:10Z |
-| Elapsed wall time | 4m 57s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/service/BookingService.java`, `src/test/java/com/cargo/booking/service/BookingServiceCancelTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Added transactional `BookingService.cancelBooking(Long)`.
-- Loaded bookings with equipment lines, validated transitions to `CANCELLED` through `BookingStateMachine`, released equipment only for `CONFIRMED` bookings, and saved the cancelled booking.
-- Made equipment release failures warning-only by catching the external client contract exception while still persisting cancellation.
-- Added focused cancel-flow unit tests for pending cancellation, confirmed cancellation with release, warning-only release failure, missing booking, and invalid transition rejection.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingServiceCancelTest` passed with 5 tests, 0 failures, 0 errors.
-- After `git fetch origin master && git rebase origin/master`, `mvn test` passed with 53 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- Authorization and ownership checks remain outside the service method for later API/security beads.
-- Release failure handling catches `EquipmentReservationException` only; generic service exceptions still bubble to the global handler.
-
-### bo-0wh.11 - Add service unit tests
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-0wh.11@mpbd8oxb` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-18T15:35:57Z |
-| Completed UTC | 2026-05-18T15:40:31Z |
-| Elapsed wall time | 4m 34s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/test/java/com/cargo/booking/service/BookingServiceCreateTest.java`, `src/test/java/com/cargo/booking/service/BookingServiceReadTest.java`, `src/test/java/com/cargo/booking/service/BookingStateMachineTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/004_business_rules.md` |
-
-Delivered:
-
-- Expanded create-flow unit coverage for validation-before-client behavior, null requests, null equipment lines, invalid equipment quantities, and no reference generation after schedule or quote rejection.
-- Added read-flow coverage for missing booking references.
-- Expanded state-machine coverage to reject every transition not allowed by the lifecycle rules.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest="BookingServiceCreateTest,BookingServiceReadTest,BookingServiceConfirmTest,BookingServiceLifecycleTest,BookingServiceCancelTest,BookingReferenceGeneratorTest,BookingStateMachineTest"` passed with 37 tests, 0 failures, 0 errors.
-- `mvn test` passed with 58 tests, 0 failures, 0 errors.
-- After `git fetch origin master && git rebase origin/master`, `mvn compile` and `mvn test` passed with 58 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- The main service implementation was already present on `origin/master`; this bead adds focused edge-case tests without changing production service behavior.
-
-### bo-2cu - Run cumulative Phase 1-4 audit
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-2cu@mpbdpigb` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-18T15:49:02Z |
-| Completed UTC | 2026-05-18T15:54:00Z |
-| Elapsed wall time | 4m 58s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/service/BookingService.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `IMPLEMENTATION.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md` |
-
-Delivered:
-
-- Audited Phase 1 foundation, Phase 2 domain, Phase 3 data access, and Phase 4 service layer against the implementation guide and specs 001 through 004.
-- Confirmed the expected Maven/Spring Boot foundation, Java package tree, application and test configuration, domain enums/entities/migration, repositories/specifications/reference counter, service exceptions, client interfaces/stubs, reference generator, state machine, service flows, and focused tests are present.
-- Fixed the concrete Phase 1 dependency-scope gap by changing Lombok to Maven `provided` scope as specified.
-- Fixed the concrete Phase 4 logging gap by making start, complete, and cancel lifecycle success logs include booking reference plus `from` and `to` statuses.
-
-Verification:
-
-- Manual spec audit passed after the two fixes above; no remaining concrete Phase 1-4 spec gaps were found.
-- `mvn compile` passed.
-- `mvn test -Dtest="BookingServiceLifecycleTest,BookingServiceCancelTest"` passed with 11 tests, 0 failures, 0 errors.
-- `mvn test` passed with 58 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper; installed `mvn` was used for the compile and test gates.
-
-Notes:
-
-- Later API, security, global error handling, real integrations, E2E testing, and deployment requirements remain out of scope for this Phase 1-4 audit and are covered by later specs.
-
-### bo-2tm.2 - Add response DTO records
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/quartz |
-| Branch | `polecat/quartz/bo-2tm.2@mpcfiff5` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-19T09:27:10Z |
-| Completed UTC | 2026-05-19T09:35:58Z |
-| Elapsed wall time | 8m 48s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/dto/response/BookingResponse.java`, `src/main/java/com/cargo/booking/dto/response/BookingCreatedResponse.java`, `src/main/java/com/cargo/booking/dto/response/CustomerResponse.java`, `src/main/java/com/cargo/booking/dto/response/CargoResponse.java`, `src/main/java/com/cargo/booking/dto/response/EquipmentResponse.java`, `src/main/java/com/cargo/booking/dto/response/PagedResponse.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/005_api_endpoints.md` |
-
-Delivered:
-
-- Added `BookingResponse` with nested customer, cargo, equipment response fields and UTC timestamp fields.
-- Added slim `BookingCreatedResponse` for create-booking responses.
-- Added `CustomerResponse`, `CargoResponse`, and `EquipmentResponse` records for nested response data.
-- Added generic `PagedResponse<T>` with page metadata and a static `from(Page<T>)` factory.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test` passed with 58 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-- After rebasing onto the latest `origin/master`, `mvn compile` passed and `mvn test` passed with 61 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Mapper and controller behavior remain intentionally out of scope for follow-on API beads.
-
-### bo-b0p.1 - Add error response DTOs
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/jasper |
-| Branch | `polecat/jasper/bo-b0p.1@mpcfc8dd` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-19T09:22:22Z |
-| Completed UTC | 2026-05-19T09:36:26Z |
-| Elapsed wall time | 14m 04s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/exception/ErrorResponse.java`, `src/main/java/com/cargo/booking/exception/ValidationErrorResponse.java`, `src/main/java/com/cargo/booking/exception/FieldViolation.java`, `src/test/java/com/cargo/booking/exception/ErrorResponseTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/007_error_handling.md` |
-
-Delivered:
-
-- Added `ErrorResponse`, `ValidationErrorResponse`, and `FieldViolation` records in `com.cargo.booking.exception`.
-- Modeled the standard error fields: timestamp, status, error, message, path, and optional request ID.
-- Added field-level validation details with immutable violation list storage.
-- Annotated optional request ID components so absent request IDs are omitted from JSON responses.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest="ErrorResponseTest"` passed with 2 tests, 0 failures, 0 errors.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 63 tests, 0 failures, 0 errors.
-
-Notes:
-
-- `GlobalExceptionHandler` and `ErrorResponseBuilder` remain out of scope for this DTO bead and are covered by later error-handling beads.
-
-### bo-b0p.4 - Map framework validation and HTTP exceptions
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-b0p.4@mpcliuk8` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-19T12:15:34Z |
-| Completed UTC | 2026-05-19T12:25:34Z |
-| Elapsed wall time | 10m 00s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/main/resources/application.yml`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/007_error_handling.md` |
-
-Delivered:
-
-- Mapped business, validation, malformed JSON, missing parameter, type mismatch, unsupported method/media, no-handler, access-denied fallback, equipment availability, and catch-all errors through `GlobalExceptionHandler`.
-- Added validation response generation with sorted field violations for `MethodArgumentNotValidException` and Jakarta `ConstraintViolationException`.
-- Configured Spring MVC to throw `NoHandlerFoundException` for missing handlers while preserving static resource mappings.
-- Added `spring-security-core` so the fallback Spring Security `AccessDeniedException` handler compiles without enabling web security auto-configuration.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest=GlobalExceptionHandlerTest` initially failed during test-source compilation because of a missing test import and a private Spring constructor call; the test source was corrected.
-- `mvn test -Dtest=GlobalExceptionHandlerTest` passed with 9 tests, 0 failures, 0 errors.
-- After rebasing onto the latest `origin/master`, `git diff --check origin/master...HEAD`, `mvn compile`, and `mvn test` passed with 80 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Full gate output included expected application/test logging from exception handler and repository tests.
-
-### bo-2tm.5 - Implement get booking endpoint
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-2tm.5@mpcm0igo` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-19T12:29:17Z |
-| Completed UTC | 2026-05-19T12:39:53Z |
-| Elapsed wall time | 10m 36s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/005_api_endpoints.md` |
-
-Delivered:
-
-- Added `GET /api/v1/bookings/{id}` with numeric ID and `BKG-YYYY-NNNNN` reference dispatch.
-- Invalid identifiers now throw `BookingValidationException` with an explicit expected-format message.
-- Mapped successful reads to `BookingResponse` and documented OpenAPI response statuses.
-- Added focused controller tests for numeric ID lookup, reference lookup, and invalid identifier handling.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest="BookingControllerTest"` passed with 4 tests, 0 failures, 0 errors.
-- Post-rebase `git diff --check origin/master...HEAD`, `mvn compile`, and `mvn test` passed with 83 tests, 0 failures, 0 errors.
-
-Notes:
-
-- `BookingAccessAuthorizer` is not present in this branch; ownership wiring is tracked separately by `bo-m7w.7` and `bo-m7w.8`.
-
-### bo-2tm.6 - Implement list bookings endpoint
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/quartz |
-| Branch | `polecat/quartz/bo-2tm.6@mpcm6do7` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-19T12:33:50Z |
-| Completed UTC | 2026-05-19T12:48:59Z |
-| Elapsed wall time | 15m 09s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/005_api_endpoints.md` |
-
-Delivered:
-
-- Added `GET /api/v1/bookings` with optional `customerId` and `status` filters.
-- Applied pageable defaults using `@PageableDefault(size = 20, sort = "createdAt", direction = DESC)`.
-- Mapped the service `Page<Booking>` to `Page<BookingResponse>` through `BookingMapper` and wrapped it in `PagedResponse`.
-- Added controller tests for filtered list responses, page metadata, default sorting, and max page size behavior.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn test -Dtest=BookingControllerTest` initially failed during test-source compilation because the standalone pageable resolver test used an unavailable customizer type; the test setup was corrected.
-- `mvn test -Dtest=BookingControllerTest` then failed because the page fixture expected `last=false` for the final page; the fixture total was corrected.
-- `mvn test -Dtest=BookingControllerTest` passed with 3 tests, 0 failures, 0 errors.
-- `mvn compile` passed.
-- `git diff --check` passed.
-- Rebase onto the latest `origin/master` required resolving overlap with `bo-2tm.5` in controller, controller test, and delivery evidence files.
-- After conflict resolution, `mvn test -Dtest=BookingControllerTest` passed with 6 tests, 0 failures, 0 errors.
-- Post-rebase `git diff --check origin/master...HEAD` and `mvn compile` passed.
-- Post-rebase `mvn test` passed with 85 tests, 0 failures, 0 errors.
-
-Notes:
-
-- `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
-
-### bo-2tm.8 - Implement lifecycle endpoints
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/jasper |
-| Branch | `polecat/jasper/bo-2tm.8@mpdsqfn9` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-20T08:25:19Z |
-| Completed UTC | 2026-05-20T08:32:16Z |
-| Elapsed wall time | 6m 57s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/005_api_endpoints.md` |
-
-Delivered:
-
-- Added `PATCH /api/v1/bookings/{id}/confirm`, `PATCH /api/v1/bookings/{id}/start`, and `PATCH /api/v1/bookings/{id}/complete`.
-- Delegated each endpoint to the matching `BookingService` lifecycle method.
-- Mapped lifecycle service results to `BookingResponse` through `BookingMapper`.
-- Added OpenAPI operation descriptions and response metadata for the lifecycle endpoints.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingControllerTest` passed with 6 tests, 0 failures, 0 errors.
-- Post-rebase `git diff --check origin/master...HEAD` passed.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 85 tests, 0 failures, 0 errors.
-
-Notes:
-
-- `BookingAccessAuthorizer` is intentionally not wired in this bead because `bo-m7w.7` adds the authorizer and `bo-m7w.8` wires ownership checks after controller endpoints exist.
-
-### bo-m7w.2 - Implement JwtTokenProvider
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-m7w.2@mpfexigu` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-21T11:34:17Z |
-| Completed UTC | 2026-05-21T11:41:00Z |
-| Elapsed wall time | 6m 43s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `pom.xml`, `src/main/java/com/cargo/booking/security/JwtTokenProvider.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/006_security.md` |
-
-Delivered:
-
-- Added JJWT dependencies needed for local HS256 JWT validation.
-- Added `JwtTokenProvider` with issuer, audience, signature, expiration, and non-empty subject validation.
-- Extracted subject, username/name, `customerId`/`customer_id`, normalized `ROLE_*` roles, Users `role=admin`, and scope authorities without logging token contents or calling Users.
-- Added focused unit coverage for valid tokens, wrong issuer/audience, expired tokens, invalid signatures, missing subject, blank tokens, customer ID variants, roles, and scopes.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest="JwtTokenProviderTest,SecurityPropertiesTest"` passed with 13 tests, 0 failures, 0 errors.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 107 tests, 0 failures, 0 errors.
-
-Notes:
-
-- The provider creates its signing key lazily so local/security-disabled contexts can instantiate it when no JWT secret is configured; enabled deployments remain guarded by `JwtPropertiesValidator`.
-
-### bo-m7w.3 - Implement JWT authentication filter
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-m7w.3@mpffbz4k` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-21T11:45:30Z |
-| Completed UTC | 2026-05-21T11:49:52Z |
-| Elapsed wall time | 4m 22s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/security/JwtAuthenticationFilter.java`, `src/test/java/com/cargo/booking/security/JwtAuthenticationFilterTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/006_security.md` |
-
-Delivered:
-
-- Added `JwtAuthenticationFilter` as a `OncePerRequestFilter` that extracts `Authorization: Bearer ...`, validates tokens through `JwtTokenProvider`, and sets the Spring `SecurityContext` only for valid tokens.
-- Missing, non-Bearer, invalid, or provider-rejected tokens continue the chain unauthenticated.
-- JWT parsing/authentication extraction failures are caught without logging token contents or throwing raw JWT exceptions from the filter.
-- Added focused unit coverage for missing headers, non-Bearer headers, valid authentication population, invalid tokens, provider parsing failures, and preserving an existing authentication.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest="JwtAuthenticationFilterTest,JwtTokenProviderTest,SecurityPropertiesTest"` passed with 19 tests, 0 failures, 0 errors.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 113 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Security filter chain registration and enabled/disabled security behavior are intentionally left for `bo-m7w.5`; this bead only adds the filter class and its behavior.
-
-### bo-m7w.6 - Add SecurityContextHelper
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-m7w.6@mpfgob4q` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-21T12:23:09Z |
-| Completed UTC | 2026-05-21T12:32:05Z |
-| Elapsed wall time | 8m 56s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/security/AuthenticatedRequester.java`, `src/main/java/com/cargo/booking/security/JwtTokenProvider.java`, `src/main/java/com/cargo/booking/security/SecurityContextHelper.java`, `src/test/java/com/cargo/booking/security/JwtTokenProviderTest.java`, `src/test/java/com/cargo/booking/security/SecurityContextHelperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/006_security.md` |
-
-Delivered:
-
-- Added `SecurityContextHelper` static accessors for the current subject, optional customer ID, username, normalized roles, `hasRole`, and `isOwnerOrPrivileged`.
-- Added `AuthenticatedRequester` as the JWT authentication principal so security/ownership code can read JWT subject, username/name, optional `customerId` or `customer_id`, and normalized roles from `SecurityContext`.
-- Updated `JwtTokenProvider` authentication creation to preserve requester details while keeping Spring authorities for existing endpoint role checks.
-- Added focused coverage for unauthenticated contexts, customer ownership matches/mismatches, privileged service/operator/admin callers, Users `role=admin` normalization, map-backed future token details, and JWT principal population.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest"` passed with 13 tests, 0 failures, 0 errors.
-- `mvn test -Dtest="SecurityContextHelperTest,JwtTokenProviderTest,JwtAuthenticationFilterTest,SecurityConfig*Test"` passed with 26 tests, 0 failures, 0 errors.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 127 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Existing `BookingAccessAuthorizer` implementation remains intentionally out of scope for dependent bead `bo-m7w.7`.
-
-### bo-m7w.8 - Wire ownership checks into controllers
-
-| Field | Value |
-| --- | --- |
-| Status | Submitted |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-m7w.8@mpfiqhro` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-21T13:20:46Z |
-| Completed UTC | 2026-05-21T13:26:07Z |
-| Elapsed wall time | 5m 21s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/controller/BookingController.java`, `src/test/java/com/cargo/booking/controller/BookingControllerTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/006_security.md` |
-
-Delivered:
-
-- Wired `BookingAccessAuthorizer` into create, list, and get controller paths before the corresponding `BookingService` calls.
-- Preserved existing cancel authorization and kept lifecycle operator endpoints unchanged.
-- Updated controller tests to verify authorizer calls occur before service calls for create, list, numeric get, reference get, and cancel.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test -Dtest=BookingControllerTest` passed with 10 tests, 0 failures, 0 errors.
-- Post-rebase `git diff --check origin/master...HEAD` passed.
-- Post-rebase `mvn compile` passed.
-- Post-rebase `mvn test` passed with 143 tests, 0 failures, 0 errors.
-
-Notes:
-
-- No broad `@PreAuthorize` replacement was introduced; ownership checks remain explicit controller calls as specified.
-
-### bo-ww4.4 - Add Resilience4j defaults
-
-| Field | Value |
-| --- | --- |
-| Status | GitHub PR opened; pending merge queue submission |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-ww4.4@mpfm7s2d` |
-| PR | https://github.com/AgenticFunProject/booking/pull/48 |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-21T14:58:13Z |
-| Completed UTC | 2026-05-21T15:03:43Z |
-| Elapsed wall time | 5m 30s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `pom.xml`, `src/main/resources/application.yml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/008_integrations.md` |
-
-Delivered:
-
-- Added Resilience4j Spring Boot 3, circuit breaker, retry, and Spring AOP dependencies with a shared Resilience4j version property.
-- Added default circuit breaker and retry configuration in `application.yml`, including comments for future per-client overrides.
-- Added authorized health component/detail settings required by the integration health spec.
-
-Verification:
-
-- `./mvnw compile` was attempted but blocked because this checkout does not include a Maven wrapper.
-- `mvn compile` passed.
-- `mvn test` passed with 154 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
-
-Notes:
-
-- Per-client Resilience4j instances remain intentionally empty until external API SLAs and client error contracts are known.
-- GitHub PR #48 was opened before Gas Town completion to satisfy the repository branch/PR rule.
-
-### bo-k7u.5 - Add Maven wrapper
-
-| Field | Value |
-| --- | --- |
-| Status | GitHub PR opened; pending merge |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-k7u.5@mpgn8usw` |
-| PR | https://github.com/AgenticFunProject/booking/pull/54 |
-| Merge commit | Pending refinery merge |
-| Started UTC | 2026-05-22T08:15:15Z |
-| Completed UTC | 2026-05-22T08:23:27Z |
-| Elapsed wall time | 8m 12s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `.mvn/wrapper/maven-wrapper.properties`, `mvnw`, `mvnw.cmd`, `MAVEN.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Files changed | `src/main/java/com/cargo/booking/**/package-info.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
 | Spec | `specs/001_project_setup.md` |
 
 Delivered:
 
-- Generated the Maven wrapper with Maven Wrapper Plugin 3.3.4.
-- Configured the wrapper to download Apache Maven 3.9.16 from Maven Central.
-- Updated Maven usage docs to prefer `./mvnw`.
-- Resolved the prior delivery blocker where `./mvnw compile` could not run because wrapper files were missing.
+- Added the base `com.cargo.booking` package tree.
+- Added Java package markers for controller, service, repository, model/entity, model/enums, DTO request/response, config, exception, client, client DTO, mapper, and security packages.
 
 Verification:
 
-- `mvn -N wrapper:wrapper` passed and generated `mvnw`, `mvnw.cmd`, and `.mvn/wrapper/maven-wrapper.properties`.
-- `./mvnw -version` passed using Apache Maven 3.9.16 from the wrapper cache.
-- Post-rebase `./mvnw compile` passed.
-- Post-rebase `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
+- `git diff --check` passed.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
 
 Notes:
 
-- Wrapper generation used the default `only-script` distribution type from Maven Wrapper Plugin 3.3.4; no wrapper JAR is required.
+- Empty packages are represented with `package-info.java` files so the package structure is tracked by Git.
 
-### bo-k7u.6 - Configure explicit annotation processing
+### bo-u2r.1 - Scaffold Maven Spring Boot project
 
 | Field | Value |
 | --- | --- |
-| Status | GitHub PR opened; pending merge |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-k7u.6@mpgoytfw` |
-| PR | https://github.com/AgenticFunProject/booking/pull/55 |
-| Merge commit | Pending GitHub merge |
-| Started UTC | 2026-05-22T09:03:01Z |
-| Completed UTC | 2026-05-22T09:08:47Z |
-| Elapsed wall time | 5m 46s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `pom.xml`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Status | Closed |
+| Agent | mayor |
+| Branch | `work/bo-u2r-1-scaffold-maven` |
+| PR | https://github.com/AgenticFunProject/booking/pull/6 |
+| Merge commit | `b23c9df` |
+| Started UTC | 2026-05-18T08:41:50Z |
+| Completed UTC | 2026-05-18T09:02:47Z |
+| Elapsed wall time | 20m 57s |
+| Timing source | Copied from bead `started_at` and `closed_at` fields for GitHub-readable reporting |
+| Files changed | `pom.xml`, `MAVEN.md` |
 | Spec | `specs/001_project_setup.md` |
 
 Delivered:
 
-- Added an explicit `maven-compiler-plugin` configuration with Lombok on the annotation processor path.
-- Preserved Lombok as a provided dependency while removing javac's implicit annotation-processing future-warning on clean compile.
+- Added Maven `pom.xml` for `booking-service`.
+- Configured Java 21 and Spring Boot `3.5.14`.
+- Added core Spring Boot starters, PostgreSQL/Flyway, Lombok, SpringDoc, Spring Boot test, and embedded PostgreSQL test dependencies.
+- Added `MAVEN.md` documenting Maven commands and wrapper generation.
 
 Verification:
 
-- `./mvnw -DskipTests clean compile` passed and no longer emitted the implicit annotation-processing warning.
-- `./mvnw test` passed with 164 tests, 0 failures, 0 errors.
-- `git diff --check` passed.
+- `git diff --cached --check` passed.
+- `pom.xml` parsed successfully with Python `xml.etree.ElementTree`.
+- `mvn compile` was attempted but blocked because no Java runtime was available and Maven reported `JAVA_HOME` was not defined correctly.
 
 Notes:
 
-- The worktree initially sat on a stale `bo-k7u.7` branch with no commits; it was reconciled to the existing `bo-k7u.6` branch from current `origin/master` before editing.
-- Existing Mockito dynamic-agent warnings remain out of scope for this bead and are tracked by follow-up `bo-k7u.8`.
-
-### bo-k7u.7 - Fix deprecated test API usage
-
-| Field | Value |
-| --- | --- |
-| Status | Pending merge queue submission via `gt done` |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-k7u.7@mpgq0wqh` |
-| PR | Pending merge queue |
-| Merge commit | Pending merge |
-| Started UTC | 2026-05-22T09:32:37Z |
-| Completed UTC | 2026-05-22T09:42:26Z |
-| Elapsed wall time | 9m 49s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
-| Files changed | `src/main/java/com/cargo/booking/exception/GlobalExceptionHandler.java`, `src/test/java/com/cargo/booking/exception/ErrorHandlingMockMvcTest.java`, `src/test/java/com/cargo/booking/exception/GlobalExceptionHandlerTest.java`, `src/test/java/com/cargo/booking/repository/BookingRepositoryTest.java`, `src/test/java/com/cargo/booking/repository/BookingReferenceCounterRepositoryTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/009_testing.md`, `specs/007_error_handling.md`, `specs/003_data_access.md` |
-
-Delivered:
-
-- Replaced deprecated no-handler testing through `DispatcherServlet#setThrowExceptionIfNoHandlerFound(boolean)` and `NoHandlerFoundException` with current `NoResourceFoundException` handling.
-- Removed deprecated `Specification.where(...)` usage from repository tests.
-- Replaced deprecated `HttpMessageNotReadableException` test construction with the current `HttpInputMessage` constructor.
-- Replaced deprecated embedded database provider enum usage from `ZONKY` to `EMBEDDED` in repository slice tests.
-
-Verification:
-
-- Baseline `./mvnw test` passed with 164 tests and showed the deprecated API warnings targeted by this bead.
-- `./mvnw compile` passed.
-- Focused `./mvnw test -Dtest="GlobalExceptionHandlerTest,ErrorHandlingMockMvcTest,BookingRepositoryTest,BookingReferenceCounterRepositoryTest" -Dmaven.compiler.showDeprecation=true -Dmaven.compiler.showWarnings=true` passed with 31 tests and no compiler deprecation warnings.
-- Final `./mvnw test` passed with 164 tests, 0 failures, 0 errors; prior Java compiler deprecated API warnings were absent.
-
-Notes:
-
-- Full test output still includes existing runtime log noise such as Hibernate dialect deprecation logging; this bead removed Java compiler deprecated API warnings from the affected test paths.
-
-### bo-k7u.9 - Remove explicit Hibernate dialect warning
-
-| Field | Value |
-| --- | --- |
-| Status | GitHub PR opened; pending merge |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-k7u.9@mpgqnpxh` |
-| PR | https://github.com/AgenticFunProject/booking/pull/58 |
-| Merge commit | Pending GitHub merge |
-| Started UTC | 2026-05-22T09:50:23Z |
-| Completed UTC | 2026-05-22T09:55:49Z |
-| Elapsed wall time | 5m 26s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC PR evidence timestamp |
-| Files changed | `src/main/resources/application.yml`, `src/test/resources/application-test.yml`, `specs/001_project_setup.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/001_project_setup.md`, `specs/003_data_access.md`, `specs/009_testing.md` |
-
-Delivered:
-
-- Removed explicit `hibernate.dialect` configuration from base and test YAML so Hibernate infers PostgreSQL from JDBC metadata.
-- Kept the existing Hibernate JDBC UTC time-zone configuration.
-- Updated the setup spec to require the UTC Hibernate JDBC setting instead of the explicit PostgreSQL dialect.
-
-Verification:
-
-- Baseline `./mvnw test -Dtest="BookingRepositoryTest,BookingReferenceCounterRepositoryTest"` passed with 17 tests and captured 2 `HHH90000025` warnings before the cleanup.
-- `./mvnw compile` passed.
-- Focused repository tests passed with 17 tests and captured 0 `HHH90000025` warnings after the cleanup.
-- Full `./mvnw test` passed with 164 tests, 0 failures, 0 errors, and captured 0 `HHH90000025` warnings.
-
-Notes:
-
-- Remaining repository-test logging, such as embedded PostgreSQL and SQL statement output, is outside this bead and remains available for follow-up log-noise cleanup.
-
-### bo-8wz.2 - Add JWT test helper utilities
-
-| Field | Value |
-| --- | --- |
-| Status | GitHub PR opened; pending merge |
-| Agent | booking/polecats/obsidian |
-| Branch | `polecat/obsidian/bo-8wz.2@mpgum9rl` |
-| PR | https://github.com/AgenticFunProject/booking/pull/66 |
-| Merge commit | Pending GitHub merge |
-| Started UTC | 2026-05-22T11:41:21Z |
-| Completed UTC | 2026-05-22T11:48:29Z |
-| Elapsed wall time | 7m 08s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC evidence timestamp |
-| Files changed | `src/test/java/com/cargo/booking/testutil/JwtTestHelper.java`, `src/test/java/com/cargo/booking/testutil/JwtTestHelperTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/009_testing.md`, `specs/006_security.md` |
-
-Delivered:
-
-- Added `JwtTestHelper` for reusable test JWT generation with platform-auth/equipments-service defaults and the test secret fallback from `application-test.yml`.
-- Added customer, service, operator, and Users-style admin happy-path tokens.
-- Added malformed, expired, wrong-issuer, wrong-audience, invalid-signature, missing-subject, and missing customer-claim variants for negative tests.
-
-Verification:
-
-- `./mvnw compile` passed.
-- `./mvnw test -Dtest=JwtTestHelperTest` passed with 6 tests, 0 failures, 0 errors.
-- `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` passed with 14 tests, 0 failures, 0 errors.
-- `git fetch origin master && git rebase origin/master` confirmed the branch was current with latest `origin/master`.
-- `git diff --check origin/master...HEAD` passed.
-- Post-rebase `./mvnw compile` passed.
-- Post-rebase `./mvnw test -Dtest="JwtTestHelperTest,JwtTokenProviderTest"` passed with 14 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Scope was kept to test utilities and focused helper coverage; security integration expansion remains out of scope for `bo-8wz.7`.
-
-### bo-8wz.3 - Add domain model tests
-
-| Field | Value |
-| --- | --- |
-| Status | GitHub PR opened; pending review/merge |
-| Agent | booking/polecats/quartz |
-| Branch | `polecat/quartz/bo-8wz.3@mpgup7x6` |
-| PR | https://github.com/AgenticFunProject/booking/pull/67 |
-| Merge commit | Pending GitHub merge |
-| Started UTC | 2026-05-22T11:43:38Z |
-| Completed UTC | 2026-05-22T12:08:16Z |
-| Elapsed wall time | 24m 38s |
-| Timing source | Hook attachment timestamp and agent-recorded UTC PR evidence timestamp |
-| Files changed | `src/test/java/com/cargo/booking/model/entity/BookingEntityTest.java`, `src/test/java/com/cargo/booking/model/entity/BookingEquipmentLineEntityTest.java`, `src/test/java/com/cargo/booking/model/enums/BookingStatusTest.java`, `src/test/java/com/cargo/booking/model/enums/EquipmentTypeTest.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `specs/002_domain_model.md`, `specs/009_testing.md` |
-
-Delivered:
-
-- Added focused EquipmentType tests for external API-code JSON values, parsing, trimming/case handling, and invalid-code rejection.
-- Added BookingStatus tests that pin lifecycle vocabulary and terminal status expectations without exercising the service state machine.
-- Added Booking and BookingEquipmentLine entity tests for Jakarta validation constraints, relationship setup, id-based equality, and toString circular-reference safeguards.
-
-Verification:
-
-- `./mvnw compile` passed.
-- `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` passed with 20 tests, 0 failures, 0 errors.
-- `git fetch origin master && git rebase origin/master` completed after resolving delivery evidence conflicts from PR #66 by preserving both `bo-8wz.2` and `bo-8wz.3` entries.
-- `git diff --check origin/master...HEAD` passed after conflict resolution.
-- Post-rebase `./mvnw test -Dtest="EquipmentTypeTest,BookingStatusTest,BookingEntityTest,BookingEquipmentLineEntityTest"` passed with 20 tests, 0 failures, 0 errors.
-- Post-rebase `./mvnw test` passed with 198 tests, 0 failures, 0 errors.
-
-Notes:
-
-- Scope stayed limited to domain model tests and delivery evidence; no production code or specs were changed.
-- Rebase follow-up preserved the merged `bo-8wz.2` delivery evidence and updated the full-suite count after PR #66 added `JwtTestHelperTest`.
+- Maven wrapper was not generated in this environment. `MAVEN.md` documents `mvn -N wrapper:wrapper` for a Java 21/Maven machine.
 
 ## Entry Template
 
