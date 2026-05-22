@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 403 |
-| Passed | 328 |
+| Checks recorded | 405 |
+| Passed | 330 |
 | Failed | 21 |
 | Blocked/skipped | 56 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-8z3.5` | https://github.com/AgenticFunProject/booking/pull/89 | Final report source review | Final delivery report against current `origin/master` at `1a5daa810567`, implementation ledger, quality log, spec coverage matrix, demo/API runbook, PR/commit history, known limitations, and follow-up bead `bo-1v4` | Passed | Verified the report summarizes completed specs, beads, PRs, commits, tests, quality gates, demo instructions, known limitations, and follow-up beads. |
+| 2026-05-22 | `bo-8z3.5` | https://github.com/AgenticFunProject/booking/pull/89 | `git diff --check` | Final report and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the final report and evidence updates. |
 | 2026-05-22 | `bo-8z3.3` | https://github.com/AgenticFunProject/booking/pull/88 | Matrix source review | Spec coverage matrix against current `master` after PR #87, delivery ledger, quality log, and demo/API runbook | Passed | Verified the matrix covers specs 001 through 010 with implementation beads, PR links where recorded, quality evidence, status, and gaps/deferred scope. |
 | 2026-05-22 | `bo-8z3.3` | https://github.com/AgenticFunProject/booking/pull/88 | `git diff --check` | Spec coverage matrix and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the matrix and delivery evidence updates. |
 | 2026-05-22 | `bo-ot8.12` | https://github.com/AgenticFunProject/booking/pull/87 | Manual spec audit | Cumulative Phase 1-8 implementation against `IMPLEMENTATION.md`, `AGENTS.md`, delivery evidence, and specs 001-010 | Passed | Reviewed current `origin/master` coverage for foundation, domain, data access, services, API/error handling, security/integration, testing, and deployment/runtime/docs evidence. Fixed graceful shutdown config, `.env.example` copy guidance, test JWT issuer alignment, and missing E2E cancellation coverage. Confirmed `bo-1v4` tracks Docker-only verification, `bo-8z3.3` is the pending spec coverage matrix, `bo-8z3.4` is the hooked demo/API runbook, and `bo-8z3.5` is the final delivery report. |

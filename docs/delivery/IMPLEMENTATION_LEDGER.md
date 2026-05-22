@@ -6,23 +6,54 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 80 |
-| PRs merged | 28 |
-| Merge commits recorded | 30 |
+| Beads recorded | 81 |
+| PRs merged | 29 |
+| Merge commits recorded | 31 |
 | Verification blockers recorded | 44 |
-| Entries with elapsed time | 79 |
+| Entries with elapsed time | 80 |
 
 ## Entries
 
-### bo-8z3.3 - Add spec coverage matrix
+### bo-8z3.5 - Generate final delivery report
 
 | Field | Value |
 | --- | --- |
 | Status | Open GitHub PR |
 | Agent | obsidian |
+| Branch | `polecat/obsidian/bo-8z3.5@mph4q588` |
+| PR | https://github.com/AgenticFunProject/booking/pull/89 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T16:24:17Z |
+| Completed UTC | 2026-05-22T16:27:53Z |
+| Elapsed wall time | 3m 36s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `docs/delivery/FINAL_DELIVERY_REPORT.md`, `docs/delivery/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md`, `docs/delivery/SPEC_COVERAGE_MATRIX.md`, `docs/delivery/DEMO_API_RUNBOOK.md` |
+
+Delivered:
+
+- Added a coworker-facing final delivery report generated from current
+  `origin/master` at `1a5daa810567` after PR #88 merged.
+- Summarized completed specs, bead/PR/commit evidence, quality gates, demo
+  instructions, known limitations, and follow-up bead `bo-1v4`.
+- Linked the final report from the delivery evidence README.
+
+Verification:
+
+- Source review passed against the implementation ledger, quality log, spec
+  coverage matrix, demo/API runbook, current `origin/master` Git history, and
+  `bd show bo-1v4`.
+- `git diff --check` passed.
+
+### bo-8z3.3 - Add spec coverage matrix
+
+| Field | Value |
+| --- | --- |
+| Status | Merged |
+| Agent | obsidian |
 | Branch | `polecat/obsidian/bo-8z3.3@mph4ahuv` |
 | PR | https://github.com/AgenticFunProject/booking/pull/88 |
-| Merge commit | Pending |
+| Merge commit | 1a5daa81056742586c029928551f3b2d5fc511b9 |
 | Started UTC | 2026-05-22T16:12:10Z |
 | Completed UTC | 2026-05-22T16:17:37Z |
 | Elapsed wall time | 5m 27s |

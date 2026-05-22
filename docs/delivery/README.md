@@ -20,8 +20,8 @@ Agents should update these files as they complete beads:
   and lifecycle demo workflow.
 - `SPEC_COVERAGE_MATRIX.md` maps specs 001 through 010 to implementation beads,
   PR links, verification evidence, status, and deferred scope.
-- Future files owned by reporting beads, such as a final delivery report, should
-  be linked here when they are added.
+- `FINAL_DELIVERY_REPORT.md` summarizes completed specs, beads, PRs, commits,
+  verification, demo instructions, known limitations, and follow-up beads.
 
 When a phase is completed, record a cumulative phase audit. The audit should
 cover Phase 1 through the phase that just completed, compare implementation
