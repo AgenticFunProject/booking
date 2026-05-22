@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 371 |
-| Passed | 299 |
+| Checks recorded | 374 |
+| Passed | 302 |
 | Failed | 20 |
 | Blocked/skipped | 54 |
 
@@ -15,6 +15,9 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.6` | https://github.com/AgenticFunProject/booking/pull/82 | `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.6 origin/master` | Environment example branch setup | Passed | Created a fresh obsidian branch from current `origin/master`. |
+| 2026-05-22 | `bo-ot8.6` | https://github.com/AgenticFunProject/booking/pull/82 | `python3 - <<'PY' ...` | Static environment example and ignore-rule coverage check | Passed | Verified `.env.example` documents profile, DB, security, JWT, CORS, and integration URL/timeout variables, and `.gitignore` ignores real `.env` files while allowing `.env.example`. |
+| 2026-05-22 | `bo-ot8.6` | https://github.com/AgenticFunProject/booking/pull/82 | `git diff --check` | Environment example whitespace check | Passed | No whitespace/diff errors after adding `.env.example` and delivery evidence. |
 | 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.5 origin/master` | Request tracing MDC branch setup | Passed | Created a fresh obsidian branch from current `origin/master` for the hooked bead. |
 | 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `git fetch origin master && git rebase origin/master` | Request tracing MDC branch sync | Passed | Rebased onto current `origin/master` after PR #80/`bo-ot8.7`; resolved delivery evidence conflicts by preserving both `bo-ot8.5` and `bo-ot8.7` entries and combined counts. |
 | 2026-05-22 | `bo-ot8.5` | https://github.com/AgenticFunProject/booking/pull/81 | `./mvnw compile` | Request tracing MDC compile gate | Passed | Main compilation succeeded after adding request tracing filters, security-chain wiring, and service-layer `bookingRef` MDC support. |
