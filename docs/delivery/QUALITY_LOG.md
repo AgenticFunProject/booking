@@ -6,15 +6,19 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 352 |
-| Passed | 283 |
+| Checks recorded | 356 |
+| Passed | 286 |
 | Failed | 19 |
-| Blocked/skipped | 52 |
+| Blocked/skipped | 53 |
 
 ## Checks
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.2 origin/master` | Docker Compose branch setup | Passed | Created the compose branch from current `origin/master` after Dockerfile PR #76 had merged. |
+| 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `python3 - <<'PY' ...` | Static docker-compose content check | Passed | Verified expected PostgreSQL and booking-service entries, local profile, DB env/defaults, health dependency, named volume, and no Kafka entry. |
+| 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `docker compose config` | Docker Compose syntax/config validation | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Compose CLI validation could not run locally. |
+| 2026-05-22 | `bo-ot8.2` | https://github.com/AgenticFunProject/booking/pull/78 | `git diff --check` | Docker Compose whitespace check | Passed | No whitespace/diff errors. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `git fetch origin master && git switch -c polecat/quartz/bo-ot8.1 origin/master` | Dockerfile branch setup | Passed | Created a fresh quartz branch from current `origin/master` after the hook was empty but the user explicitly assigned `bo-ot8.1`. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `./mvnw package -DskipTests` | Maven package step used by the Docker build stage | Passed | Built `target/booking-service-0.0.1-SNAPSHOT.jar`; tests intentionally skipped to match the Dockerfile build command. |
 | 2026-05-22 | `bo-ot8.1` | https://github.com/AgenticFunProject/booking/pull/76 | `docker version --format '{{.Server.Version}}'` | Docker image build feasibility check | Blocked | Docker is not installed in this environment: `/bin/bash: line 1: docker: command not found`. Docker build verification could not run locally. |
