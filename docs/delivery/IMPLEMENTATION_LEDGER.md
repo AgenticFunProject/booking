@@ -6,13 +6,41 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 75 |
+| Beads recorded | 76 |
 | PRs merged | 28 |
 | Merge commits recorded | 30 |
 | Verification blockers recorded | 43 |
-| Entries with elapsed time | 74 |
+| Entries with elapsed time | 75 |
 
 ## Entries
+
+### bo-ot8.9 - Final generated README pass
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-ot8.9` |
+| PR | https://github.com/AgenticFunProject/booking/pull/84 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-22T15:18:29Z |
+| Completed UTC | 2026-05-22T15:21:04Z |
+| Elapsed wall time | 2m 35s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Replaced the placeholder/spec-era README with an operations-focused README reflecting the actual current Maven wrapper, Makefile, Docker Compose, Dockerfile, `.env.example`, Swagger/OpenAPI paths, actuator endpoints, tests, CI workflow, project structure, architecture, deployment assets, delivery evidence, and PR workflow.
+- Documented prerequisites, quick start, local development commands, API overview, environment variables, profile behavior, testing, CI, architecture, and contributing guidance.
+- Kept the README aligned with finalized local assets instead of aspirational placeholders.
+
+Verification:
+
+- `git fetch origin master && git switch -c polecat/obsidian/bo-ot8.9 origin/master` passed.
+- Static README topic coverage check with `python3` passed for prerequisites, quick start, local development, API docs, environment variables, `.env.example`, tests, Makefile, CI, project structure, architecture, Swagger, and contributing topics.
+- `git diff --check` passed.
 
 ### bo-ot8.8 - Add Makefile developer commands
 

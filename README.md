@@ -1,151 +1,236 @@
 # Booking Service
 
-## What is this?
+Cargo Booking Service is a Spring Boot 3.5 microservice for creating booking
+requests and managing the shipment lifecycle:
 
-This repository contains the Cargo Booking Service implementation and the
-sequential specification files used to build it. The service accepts and manages
-cargo booking requests and coordinates a shipment lifecycle. Messaging/event
-streaming is intentionally out of scope for v1.
-
-The generated Spring Boot application is being built in small implementation
-phases. See `IMPLEMENTATION.md` for the current phase plan, branch policy,
-verification rules, and delivery evidence workflow.
-
-## How it works
-
-The AI agent reads the specification files **in order** (001 → 010). Each file builds on concepts introduced in earlier files, forming a dependency chain:
-
-```
-001 Project Setup
- └─▶ 002 Domain Model
-      └─▶ 003 Data Access
-           └─▶ 004 Business Rules
-                └─▶ 005 API Endpoints
-                     └─▶ 006 Security
-                          └─▶ 007 Error Handling
-                               └─▶ 008 Integrations
-                                    └─▶ 009 Testing
-                                         └─▶ 010 Deployment
+```text
+PENDING -> CONFIRMED -> IN_PROGRESS -> COMPLETED
+   |           |
+   v           v
+CANCELLED   CANCELLED
 ```
 
-After processing all files, the result should be a runnable Spring Boot
-microservice with Docker support, tests, and CI configuration.
+The service exposes REST endpoints under `/api/v1`, persists bookings in
+PostgreSQL, validates schema with Flyway, supports optional JWT security, and
+uses local stub clients for schedule, equipment, and quote integrations. Real
+external client implementations are intentionally deferred until those API
+contracts are finalized.
 
-## Current Implementation Status
+## Prerequisites
 
-The repository currently has the Maven project baseline and foundation package
-structure. Later phases add application configuration, domain model, data access,
-service logic, REST API, security, tests, and deployment assets.
+- Java 21
+- Maven wrapper from this repository (`./mvnw`)
+- Docker and Docker Compose for containerized local runs
+- PostgreSQL 16 when running outside Docker Compose
 
-For implementation progress and verification evidence, see:
+## Quick Start
+
+```bash
+# Build the application jar without running tests
+make build
+
+# Run all tests
+make test
+
+# Start PostgreSQL and the app with the local profile
+make docker-up
+
+# Follow application logs
+make docker-logs
+```
+
+The app listens on port `8081` by default. Docker Compose starts PostgreSQL on
+`5432`, runs the application with `SPRING_PROFILES_ACTIVE=local`, disables
+security, and uses the local stub clients.
+
+To run the app directly from the Maven wrapper:
+
+```bash
+make run
+```
+
+## Local Development
+
+Useful Make targets:
+
+| Target | Command |
+| --- | --- |
+| `make build` | `./mvnw clean package -DskipTests` |
+| `make test` | `./mvnw test` |
+| `make test-unit` | `./mvnw test -Dgroups="!integration,!e2e"` |
+| `make test-integration` | `./mvnw test -Dgroups="integration"` |
+| `make test-e2e` | `./mvnw test -Dgroups="e2e"` |
+| `make run` | `./mvnw spring-boot:run -Dspring-boot.run.profiles=local` |
+| `make docker-build` | `docker build -t booking-service .` |
+| `make docker-up` | `docker-compose up -d` |
+| `make docker-down` | `docker-compose down` |
+| `make docker-logs` | `docker-compose logs -f booking-service` |
+| `make clean` | `./mvnw clean` and `docker-compose down -v` |
+| `make swagger` | Opens or prints the Swagger UI URL |
+
+Equivalent direct commands are documented in `AGENTS.md` for implementation
+agents and CI debugging.
+
+## API Docs
+
+When the service is running:
+
+- Swagger UI: `http://localhost:8081/swagger-ui`
+- OpenAPI JSON: `http://localhost:8081/api-docs`
+- Health: `http://localhost:8081/actuator/health`
+- Info: `http://localhost:8081/actuator/info`
+
+`/actuator/health`, `/actuator/info`, Swagger UI, and API docs are public.
+`/actuator/metrics` requires `ADMIN` when security is enabled.
+
+## API Overview
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/api/v1/bookings` | Create a booking in `PENDING` status |
+| `GET` | `/api/v1/bookings` | List bookings with optional `customerId` and `status` filters |
+| `GET` | `/api/v1/bookings/{id}` | Get by numeric ID or `BKG-YYYY-NNNNN` reference |
+| `PATCH` | `/api/v1/bookings/{id}/cancel` | Cancel a booking |
+| `PATCH` | `/api/v1/bookings/{id}/confirm` | Confirm a booking and reserve equipment |
+| `PATCH` | `/api/v1/bookings/{id}/start` | Mark a confirmed booking as in progress |
+| `PATCH` | `/api/v1/bookings/{id}/complete` | Complete an in-progress booking |
+
+Errors use the shared response shape with `timestamp`, `status`, `error`,
+`message`, `path`, and optional `requestId`. Validation errors add field-level
+violations.
+
+## Environment Variables
+
+Use `.env.example` as the safe template for local or deployed environment
+values. Real `.env` files are ignored by Git.
+
+| Variable | Purpose |
+| --- | --- |
+| `SPRING_PROFILES_ACTIVE` | Active Spring profile, normally `local`, `dev`, or `prod` |
+| `SPRING_DATASOURCE_URL` | PostgreSQL JDBC URL |
+| `DB_USERNAME` | Database username |
+| `DB_PASSWORD` | Database password |
+| `SECURITY_ENABLED` | Enables JWT authentication and authorization |
+| `JWT_ISSUER` / `AUTH_JWT_ISSUER` | Expected JWT issuer |
+| `JWT_AUDIENCE` / `AUTH_JWT_AUDIENCE` | Expected JWT audience |
+| `JWT_SECRET` / `AUTH_JWT_SECRET` | HMAC signing secret; use a real 256-bit-or-stronger secret outside local development |
+| `JWT_EXPIRATION` | Token lifetime in milliseconds |
+| `CORS_ALLOWED_ORIGINS` | Comma-separated allowed browser origins |
+| `SCHEDULE_API_URL` / `SCHEDULE_API_TIMEOUT` | Schedule API placeholder URL and timeout |
+| `EQUIPMENT_API_URL` / `EQUIPMENT_API_TIMEOUT` | Equipment API placeholder URL and timeout |
+| `QUOTE_API_URL` / `QUOTE_API_TIMEOUT` | Quote API placeholder URL and timeout |
+
+Profile notes:
+
+- `local`: stub clients, readable console logs, security disabled by default in
+  Compose.
+- `dev`: deployed-environment placeholders, JSON logs, security enabled.
+- `prod`: strict security, hidden error and health details, reduced actuator
+  exposure, JSON logs.
+- `test`: embedded PostgreSQL support and test JWT defaults.
+
+## Testing And CI
+
+Run focused checks locally:
+
+```bash
+./mvnw compile
+./mvnw test -Dgroups="!integration,!e2e"
+./mvnw test -Dgroups="integration"
+./mvnw test -Dgroups="e2e"
+./mvnw test -Dtest=BookingServiceCreateTest
+```
+
+GitHub Actions runs on pushes and pull requests targeting `master` and
+`develop`. The CI workflow:
+
+1. Sets up Java 21.
+2. Runs unit, integration, and E2E Maven group selectors.
+3. Uploads Surefire reports.
+4. Packages the jar.
+5. Builds the Docker image.
+
+## Project Structure
+
+```text
+src/main/java/com/cargo/booking/
+├── BookingServiceApplication.java
+├── client/          # External service client interfaces and local stubs
+├── config/          # Spring, security, integration, logging, and tracing config
+├── controller/      # REST controllers
+├── dto/             # Request and response records
+├── exception/       # Business exceptions and structured error handling
+├── mapper/          # Entity to DTO mapping
+├── model/           # JPA entities and enums
+├── repository/      # Spring Data JPA repositories and specifications
+├── security/        # JWT, requester context, and access authorization helpers
+└── service/         # Booking lifecycle and business orchestration
+
+src/main/resources/
+├── application.yml
+├── application-local.yml
+├── application-dev.yml
+├── application-prod.yml
+├── db/migration/
+└── logback-spring.xml
+
+src/test/java/com/cargo/booking/
+├── client/
+├── config/
+├── controller/
+├── exception/
+├── repository/
+├── security/
+├── service/
+├── testutil/
+└── BookingLifecycleE2ETest.java
+```
+
+## Architecture
+
+The application follows a layered Spring architecture:
+
+```text
+Controller -> BookingAccessAuthorizer -> BookingService -> Repository
+                                      -> ScheduleClient / QuoteClient / EquipmentClient
+```
+
+- Controllers accept and return DTO records; JPA entities are not exposed in API
+  responses.
+- `BookingService` owns business rules and state transitions.
+- `BookingStateMachine` rejects invalid lifecycle transitions before status
+  changes.
+- `BookingAccessAuthorizer` enforces customer ownership checks when security is
+  enabled.
+- Local integration stubs are activated with the `local` profile.
+- Request tracing uses MDC keys for `requestId`, authenticated `principal`,
+  `customerId`, and `bookingRef`; dev/prod logs emit MDC in JSON.
+
+## Deployment Assets
+
+- `Dockerfile`: multi-stage Java 21 Alpine build/runtime image with non-root
+  execution and actuator healthcheck.
+- `docker-compose.yml`: local PostgreSQL plus booking-service stack.
+- `.env.example`: safe environment variable template.
+- `.github/workflows/ci.yml`: Maven and Docker build workflow.
+- `Makefile`: common local build, test, Docker, and Swagger commands.
+
+## Specifications And Delivery Evidence
+
+The implementation is built from sequential specs in `specs/001_project_setup.md`
+through `specs/010_deployment.md`. Delivery evidence is tracked in:
 
 - `docs/delivery/IMPLEMENTATION_LEDGER.md`
 - `docs/delivery/QUALITY_LOG.md`
 - `docs/delivery/README.md`
 
-## Specification Files
-
-| File | Purpose |
-|------|---------|
-| `001_project_setup.md` | Maven project, Java 21, dependencies, package structure, coding conventions |
-| `002_domain_model.md` | JPA entities, enums, validations, state machine, Flyway migrations |
-| `003_data_access.md` | Repository interfaces, custom queries, pagination, specifications |
-| `004_business_rules.md` | Service layer, booking lifecycle, external client interfaces |
-| `005_api_endpoints.md` | REST controllers, request/response DTOs, mappers, OpenAPI documentation |
-| `006_security.md` | JWT authentication, role-based authorization, ownership checks, CORS |
-| `007_error_handling.md` | Global exception handler, error response structure, validation errors |
-| `008_integrations.md` | External API clients (Schedule, Equipment, Quote), Resilience4j, health config |
-| `009_testing.md` | Unit tests, integration tests, E2E tests, WireMock, embedded PostgreSQL, test utilities |
-| `010_deployment.md` | Dockerfile, Docker Compose, Spring profiles, logging, CI pipeline, README |
-
-## File format
-
-Each file uses a **Gherkin-inspired structure** with `Feature`, `Scenario`, `Given/When/Then`, data tables, and tags. This is not strict Cucumber-compliant Gherkin — it's a structured specification format that gives the AI agent unambiguous, sequentially readable instructions.
-
-Key elements in each file:
-
-- **Header block** — file name, dependencies, what it produces, and context
-- **Tags** (e.g. `@domain @entity`, `@api @endpoint`) — categorize scenarios for filtering
-- **Data tables** — specify fields, types, validation rules, and configuration
-- **Out-of-scope section** — tells the agent what is NOT covered and where to find it
-
-## Tech Stack
-
-| Component | Technology |
-|-----------|-----------|
-| Language | Java 21 (LTS) |
-| Framework | Spring Boot 3.5.x |
-| Build Tool | Maven |
-| Database | PostgreSQL 16 |
-| Auth | Optional JWT (stateless) |
-| Resilience | Resilience4j (circuit breaker, retry) |
-| API Docs | SpringDoc OpenAPI (Swagger UI) |
-| Migrations | Flyway |
-| Testing | JUnit 5, Mockito, embedded PostgreSQL, WireMock |
-| Containerization | Docker, Docker Compose |
-| CI | GitHub Actions |
-
-## Booking Lifecycle
-
-```
-PENDING ──▶ CONFIRMED ──▶ IN_PROGRESS ──▶ COMPLETED
-   │             │
-   ▼             ▼
-CANCELLED    CANCELLED
-```
-
-## API Overview
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | /api/v1/bookings | Create a new booking |
-| GET | /api/v1/bookings/{id} | Get booking by ID or reference |
-| GET | /api/v1/bookings?customerId= | List bookings, optionally filtered by customer |
-| PATCH | /api/v1/bookings/{id}/cancel | Cancel a booking |
-| PATCH | /api/v1/bookings/{id}/confirm | Confirm a booking |
-| PATCH | /api/v1/bookings/{id}/start | Mark booking as in progress |
-| PATCH | /api/v1/bookings/{id}/complete | Mark booking as completed |
-
-## External Dependencies
-
-| Service | Purpose |
-|---------|---------|
-| Schedules API | Validate schedule availability |
-| Equipment API | Reserve/release containers |
-| Quotes API | Validate quote validity |
-
-Stub implementations are provided for local development (`@Profile("local")`).
-
-## Getting Started
-
-Use these commands as the implementation matures:
-
-```bash
-# Compile the service when Java 21 and Maven are available
-mvn compile
-
-# Run tests once test code exists
-mvn test
-```
-
-Once Docker and runtime configuration have been generated:
-
-```bash
-# Start infrastructure (PostgreSQL and app)
-docker-compose up -d
-
-# Run the application locally with stubs
-mvn spring-boot:run -Dspring-boot.run.profiles=local
-
-# Open Swagger UI
-open http://localhost:8081/swagger-ui
-```
-
-`MAVEN.md` documents the current Maven invocation and wrapper generation notes.
-
 ## Contributing
 
-1. Specification changes go through PR review like code
-2. When modifying a spec file, check downstream files for impacts (follow the dependency chain)
-3. Each spec file has an "Out of Scope" section — use it to understand boundaries between files
-4. Keep the numbering and naming convention consistent: `NNN_description.md`
+- Work on a branch, not `master`.
+- Open a GitHub pull request for repository changes.
+- Run `./mvnw compile` after Java changes and the relevant focused tests for
+  the area touched.
+- For docs-only changes, run `git diff --check`.
+- Keep changes scoped to the bead or issue; file separate work for unrelated
+  findings.
+- Update delivery evidence for implementation beads.
