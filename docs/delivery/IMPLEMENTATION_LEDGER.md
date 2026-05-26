@@ -18,11 +18,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | GitHub PR opened |
+| Status | Merged via GitHub PR |
 | Agent | obsidian |
 | Branch | `polecat/obsidian/bo-2ju.5-booking-read-list` |
 | PR | https://github.com/AgenticFunProject/booking/pull/97 |
-| Merge commit | Pending |
+| Merge commit | `731db64239f97bde978534df0be6ea8346931319` |
 | Started UTC | 2026-05-26T10:31:07Z |
 | Completed UTC | 2026-05-26T10:35:18Z |
 | Elapsed wall time | 4m 11s |
@@ -52,11 +52,11 @@ Verification:
 
 | Field | Value |
 | --- | --- |
-| Status | Open GitHub PR |
+| Status | Merged via GitHub PR |
 | Agent | jasper |
 | Branch | `polecat/jasper/bo-2ju.8@mpmi3ae8` |
 | PR | https://github.com/AgenticFunProject/booking/pull/99 |
-| Merge commit | Pending |
+| Merge commit | `d580598e452a5ec47351ed5cfc684eec8a47cb8f` |
 | Started UTC | 2026-05-26T10:37:19Z |
 | Completed UTC | 2026-05-26T10:45:54Z |
 | Elapsed wall time | 8m 35s |
@@ -88,11 +88,11 @@ Verification:
 
 | Field | Value |
 | --- | --- |
-| Status | Pending merge queue submission via `gt done` |
+| Status | Landed on `master` by polecat completion |
 | Agent | quartz |
 | Branch | `polecat/quartz/bo-2ju.9@mpmhztr3` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending |
+| PR | None |
+| Merge commit | `12eea61a065b8cc4974acad8792ed1a3ceca14f7` |
 | Started UTC | 2026-05-26T10:34:33Z |
 | Completed UTC | 2026-05-26T10:39:27Z |
 | Elapsed wall time | 4m 54s |
