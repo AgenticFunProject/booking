@@ -6,23 +6,56 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 90 |
+| Beads recorded | 91 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 89 |
+| Entries with elapsed time | 90 |
 
 ## Entries
+
+### bo-2ju.7 - Define booking cancellation contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Pull request opened |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-2ju.7@mpmk1195` |
+| PR | https://github.com/AgenticFunProject/booking/pull/103 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T11:31:39Z |
+| Completed UTC | 2026-05-26T11:35:18Z |
+| Elapsed wall time | 3m 39s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/booking-cancellation.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `test/features/booking-cancellation.feature` as the Phase 3 black-box
+  cancellation contract.
+- Covered customer, service, and admin cancellation permissions; customer
+  cross-ownership rejection; confirmed cancellation returning `CANCELLED`; and
+  terminal/ineligible cancellation conflict responses.
+- Captured local equipment release behavior for pending bookings, confirmed
+  bookings, and non-blocking release failure on confirmed cancellation.
+
+Verification:
+
+- Manual source review passed against `AGENTS.md`, `IMPLEMENTATION.md`,
+  `test/features/README.md`, and specs 001, 002, 003, 004, 005, 006, 008, and
+  009.
+- `git diff --check` passed.
 
 ### bo-2ju.11 - Define booking persistence runtime contract feature
 
 | Field | Value |
 | --- | --- |
-| Status | Open GitHub PR |
+| Status | Merged via GitHub PR |
 | Agent | obsidian |
 | Branch | `polecat/obsidian/bo-2ju.11@mpmjxa6a` |
 | PR | https://github.com/AgenticFunProject/booking/pull/102 |
-| Merge commit | Pending |
+| Merge commit | `668924d5dd206781c09dcd233bda4f8bb0d867a3` |
 | Started UTC | 2026-05-26T11:28:38Z |
 | Completed UTC | 2026-05-26T11:32:31Z |
 | Elapsed wall time | 3m 53s |
