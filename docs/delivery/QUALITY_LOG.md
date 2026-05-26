@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 423 |
-| Passed | 346 |
+| Checks recorded | 425 |
+| Passed | 348 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.10` | Pending merge queue | Manual source review | Local external clients Gherkin contract against bead acceptance criteria, `test/features/README.md`, and specs 001 through 009 | Passed | Confirmed `test/features/local-clients.feature` covers local-profile operation without required Schedule, Quote, or Equipment HTTP services, schedule/quote stub acceptance for valid booking creation, equipment reservation behavior during confirm, equipment release behavior during confirmed cancellation, and explicit deferral of real external HTTP endpoint contracts. |
+| 2026-05-26 | `bo-2ju.10` | Pending merge queue | `git diff --check` | Local clients feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.5` | https://github.com/AgenticFunProject/booking/pull/97 | Manual source review | Booking read/list Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, `test/features/README.md`, and specs 001, 002, 003, 004, and 005 | Passed | Confirmed `test/features/booking-read-list.feature` covers numeric-id lookup, booking-reference lookup, missing booking 404 responses, invalid identifier 400 responses, customerId filtering, status filtering, combined customer/status filtering, empty lists, invalid status filtering, and stable list pagination metadata. |
 | 2026-05-26 | `bo-2ju.5` | https://github.com/AgenticFunProject/booking/pull/97 | `git diff --check` | Booking read/list feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.8` | https://github.com/AgenticFunProject/booking/pull/99 | Manual source review | Auth and ownership Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, specs 001, 002, 005, 006, existing security integration tests, and surrounding feature style | Passed | Confirmed `test/features/auth-ownership.feature` covers JWT validation failures, anonymous/non-Bearer/malformed/expired/wrong issuer/wrong audience 401s, customer ownership allow/deny behavior, customer list `customerId` requirement, missing customer claims, snake_case customer claims, operator lifecycle permissions, admin full access, service role permissions, and disabled-security local mode. |
