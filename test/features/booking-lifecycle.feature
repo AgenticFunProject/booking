@@ -17,7 +17,7 @@ Feature: Booking lifecycle contract
       | cargo.description | Test cargo                      |
       | cargo.weightKg    | 1000.00                         |
       | equipment[0].type | 20FT                            |
-      | equipment[0].qty  | 1                               |
+      | equipment[0].quantity | 1                               |
 
   Scenario: Complete a booking through the valid lifecycle path
     When the caller creates a booking with the default booking fixture
