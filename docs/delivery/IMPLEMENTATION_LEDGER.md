@@ -18,11 +18,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | Pull request opened |
+| Status | Merged via GitHub PR |
 | Agent | quartz |
 | Branch | `polecat/quartz/bo-2ju.7@mpmk1195` |
 | PR | https://github.com/AgenticFunProject/booking/pull/103 |
-| Merge commit | Pending |
+| Merge commit | `04ba1561f4cefd20f571ecd6c5b4af3f180116d1` |
 | Started UTC | 2026-05-26T11:31:39Z |
 | Completed UTC | 2026-05-26T11:35:18Z |
 | Elapsed wall time | 3m 39s |
