@@ -18,11 +18,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | Open GitHub PR |
+| Status | Merged |
 | Agent | obsidian |
 | Branch | `polecat/obsidian/bo-1v4@mph56rj7` |
 | PR | https://github.com/AgenticFunProject/booking/pull/90 |
-| Merge commit | Pending |
+| Merge commit | `310987b0035eda8da45bcc336022213a79360707` |
 | Started UTC | 2026-05-22T16:37:13Z |
 | Completed UTC | 2026-05-22T16:42:09Z |
 | Elapsed wall time | 4m 56s |
@@ -43,6 +43,8 @@ Delivered:
 - Updated the final delivery report, spec coverage matrix, implementation
   ledger, and quality log to point `bo-1v4` at PR #90 CI as the Docker/Compose
   evidence path.
+- PR #90 was merged after GitHub Actions run `26300333724` passed `Build and
+  test` and `Docker build`, including `docker compose config`.
 
 Verification:
 
@@ -56,6 +58,8 @@ Verification:
   `booking-service:${{ github.sha }}` and `booking-service:bo-ot8.10`, then
   runs `docker compose config`.
 - `git diff --check` passed after recording the CI verification path.
+- GitHub Actions run `26300333724` passed `Build and test` and `Docker build`;
+  the `Docker build` job included `docker compose config`.
 
 ### bo-8z3.5 - Generate final delivery report
 
