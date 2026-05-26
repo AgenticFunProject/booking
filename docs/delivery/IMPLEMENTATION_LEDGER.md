@@ -6,13 +6,50 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 84 |
+| Beads recorded | 85 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 83 |
+| Entries with elapsed time | 84 |
 
 ## Entries
+
+### bo-2ju.4 - Define booking creation contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-2ju.4@mpmfue1w` |
+| PR | https://github.com/AgenticFunProject/booking/pull/95 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T09:34:37Z |
+| Completed UTC | 2026-05-26T09:38:10Z |
+| Elapsed wall time | 3m 33s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/booking-create.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `test/features/booking-create.feature` as the Phase 1 black-box
+  booking creation contract.
+- Covered valid creation with multiple equipment lines, generated
+  `BKG-YYYY-NNNNN` references, initial `PENDING` status, preserved
+  customer/cargo/equipment details retrieved by booking reference, missing
+  required fields, unsupported equipment type, empty equipment list, and local
+  schedule/quote stub acceptance.
+- Recorded the latest booking reference scenario state for the scenario that
+  creates or retrieves the booking.
+
+Verification:
+
+- Manual source review passed against `AGENTS.md`, `IMPLEMENTATION.md`,
+  `specs/001_project_setup.md`, `specs/002_domain_model.md`,
+  `specs/004_business_rules.md`, `specs/005_api_endpoints.md`,
+  `specs/007_error_handling.md`, `specs/008_integrations.md`, and
+  `specs/009_testing.md`.
+- `git diff --cached --check` passed.
 
 ### bo-2ju.3 - Define public routes Booking contract feature
 
