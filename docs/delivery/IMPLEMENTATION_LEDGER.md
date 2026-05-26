@@ -6,13 +6,47 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 88 |
+| Beads recorded | 89 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 87 |
+| Entries with elapsed time | 88 |
 
 ## Entries
+
+### bo-2ju.10 - Define local external clients contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission via `gt done` |
+| Agent | booking/polecats/jasper |
+| Branch | `polecat/jasper/bo-2ju.10@mpmjusqy` |
+| PR | Pending merge queue |
+| Merge commit | Pending merge |
+| Started UTC | 2026-05-26T11:26:34Z |
+| Completed UTC | 2026-05-26T11:30:29Z |
+| Elapsed wall time | 3m 55s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/local-clients.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `test/features/README.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `test/features/local-clients.feature` as the Phase 3 black-box local
+  external client contract.
+- Covered local-profile startup without required Schedule, Quote, or Equipment
+  HTTP services, valid create behavior with arbitrary schedule/quote IDs,
+  confirmation through local equipment reservation behavior, confirmed-booking
+  cancellation through local equipment release behavior, and explicit deferral
+  of real external HTTP endpoint contracts.
+- Kept scenarios black-box by asserting only public Booking API outcomes and the
+  absence of required external HTTP services for local acceptance runs.
+
+Verification:
+
+- Manual source review passed against the bead acceptance criteria,
+  `test/features/README.md`, and specs 001 through 009.
+- `git diff --check` passed.
 
 ### bo-2ju.5 - Define booking read and list contract feature
 
