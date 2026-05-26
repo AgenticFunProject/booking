@@ -18,11 +18,11 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Field | Value |
 | --- | --- |
-| Status | GitHub PR opened |
+| Status | Merged via GitHub PR |
 | Agent | booking/polecats/jasper |
 | Branch | `polecat/jasper/bo-2ju.12@mpmkw51n` |
 | PR | https://github.com/AgenticFunProject/booking/pull/105 |
-| Merge commit | Pending |
+| Merge commit | `7e4c0caf4a9c12129f173213338fde31d6c96af1` |
 | Started UTC | 2026-05-26T11:55:42Z |
 | Completed UTC | 2026-05-26T11:59:54Z |
 | Elapsed wall time | 4m 12s |
