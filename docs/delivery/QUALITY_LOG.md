@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 421 |
-| Passed | 344 |
+| Checks recorded | 423 |
+| Passed | 346 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.5` | https://github.com/AgenticFunProject/booking/pull/97 | Manual source review | Booking read/list Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, `test/features/README.md`, and specs 001, 002, 003, 004, and 005 | Passed | Confirmed `test/features/booking-read-list.feature` covers numeric-id lookup, booking-reference lookup, missing booking 404 responses, invalid identifier 400 responses, customerId filtering, status filtering, combined customer/status filtering, empty lists, invalid status filtering, and stable list pagination metadata. |
+| 2026-05-26 | `bo-2ju.5` | https://github.com/AgenticFunProject/booking/pull/97 | `git diff --check` | Booking read/list feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.8` | https://github.com/AgenticFunProject/booking/pull/99 | Manual source review | Auth and ownership Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, specs 001, 002, 005, 006, existing security integration tests, and surrounding feature style | Passed | Confirmed `test/features/auth-ownership.feature` covers JWT validation failures, anonymous/non-Bearer/malformed/expired/wrong issuer/wrong audience 401s, customer ownership allow/deny behavior, customer list `customerId` requirement, missing customer claims, snake_case customer claims, operator lifecycle permissions, admin full access, service role permissions, and disabled-security local mode. |
 | 2026-05-26 | `bo-2ju.8` | https://github.com/AgenticFunProject/booking/pull/99 | `git diff --check` | Auth and ownership feature plus delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.9` | Pending merge queue submission via `gt done` | Manual source review | Error handling Gherkin contract against bead acceptance criteria, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, and `specs/007_error_handling.md` | Passed | Confirmed `test/features/error-handling.feature` covers stable status/body fields, request IDs, validation violations, business validation 400s, invalid query parameters, malformed JSON, not found 404s, illegal transition 409s, 401/403 security errors, 405 unsupported method, unknown API path 404, business/integration statuses, and sanitized 500s. |

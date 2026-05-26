@@ -6,13 +6,47 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 87 |
+| Beads recorded | 88 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 86 |
+| Entries with elapsed time | 87 |
 
 ## Entries
+
+### bo-2ju.5 - Define booking read and list contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2ju.5-booking-read-list` |
+| PR | https://github.com/AgenticFunProject/booking/pull/97 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T10:31:07Z |
+| Completed UTC | 2026-05-26T10:35:18Z |
+| Elapsed wall time | 4m 11s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/booking-read-list.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md` |
+
+Delivered:
+
+- Added `test/features/booking-read-list.feature` as the Phase 2 black-box
+  booking read/list contract.
+- Covered `GET /api/v1/bookings/{id}` by numeric id and
+  `BKG-YYYY-NNNNN` reference, missing booking 404 responses, invalid
+  identifier 400 responses, customer/status list filters, combined
+  customer/status filtering, empty result lists, invalid status filtering, and
+  stable pagination metadata.
+- Kept scenarios black-box by asserting only public HTTP routes, response
+  fields, structured errors, and observable list contents.
+
+Verification:
+
+- Manual source review passed against `AGENTS.md`, `IMPLEMENTATION.md`,
+  `test/features/README.md`, and specs 001 through 005.
+- `git diff --check` passed.
 
 ### bo-2ju.8 - Define booking auth and ownership contract feature
 
