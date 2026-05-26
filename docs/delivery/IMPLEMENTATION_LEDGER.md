@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 82 |
+| Beads recorded | 83 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 81 |
+| Entries with elapsed time | 82 |
 
 ## Entries
+
+### bo-2ju.2 - Add Booking Gherkin contract README
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2ju.2` |
+| PR | https://github.com/AgenticFunProject/booking/pull/94 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T09:33:13Z |
+| Completed UTC | 2026-05-26T09:36:59Z |
+| Elapsed wall time | 3m 46s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `test/features/README.md` as the black-box acceptance contract index
+  for the Booking Gherkin suite.
+- Mapped the planned feature files from epic `bo-2ju` to externally meaningful
+  behavior so later feature beads use consistent wording.
+- Documented replacement-implementation rules, explicit exclusions for
+  implementation internals, local external client scope, and runner
+  expectations.
+
+Verification:
+
+- Manual docs review passed against `bo-2ju`, `bo-2ju.2`, the implementation
+  workflow, delivery evidence instructions, and specs 001-009.
+- `git diff --check` passed.
 
 ### bo-1v4 - Verify bo-ot8.10 Docker build and Compose config in Docker-capable environment
 
