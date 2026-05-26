@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 429 |
-| Passed | 352 |
+| Checks recorded | 431 |
+| Passed | 354 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.12` | https://github.com/AgenticFunProject/booking/pull/105 | Manual source review | Demo Gherkin contract against bead acceptance criteria, `test/features/README.md`, and specs 001 through 009 | Passed | Confirmed `test/features/demo.feature` covers local startup expectations, Swagger/OpenAPI inspection, empty customer-scoped listing, valid booking creation, fetch by reference, list by customer, confirm/start/complete lifecycle actions, final `COMPLETED` status, and stable customer/cargo/equipment details. |
+| 2026-05-26 | `bo-2ju.12` | https://github.com/AgenticFunProject/booking/pull/105 | `git diff --check` | Demo feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.7` | https://github.com/AgenticFunProject/booking/pull/103 | Manual source review | Booking cancellation Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, `test/features/README.md`, and specs 001, 002, 003, 004, 005, 006, 008, and 009 | Passed | Confirmed `test/features/booking-cancellation.feature` covers customer/admin/service cancellation, customer cross-ownership rejection, confirmed cancellation returning `CANCELLED`, pending cancellation without equipment release, confirmed cancellation with equipment release, non-blocking release failure, and conflict responses for ineligible statuses. |
 | 2026-05-26 | `bo-2ju.7` | https://github.com/AgenticFunProject/booking/pull/103 | `git diff --check` | Booking cancellation feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.11` | https://github.com/AgenticFunProject/booking/pull/102 | Manual source review | Persistence runtime Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, `test/features/README.md`, and specs 001, 002, and 003 | Passed | Confirmed `test/features/persistence-runtime.feature` covers empty durable service behavior after restart, created booking visibility after restart, confirmed/in-progress/completed/cancelled lifecycle status visibility after restart, unique generated references after restart, and customer/status list filtering after restart without asserting database or schema internals. |

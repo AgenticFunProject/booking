@@ -6,13 +6,46 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 91 |
+| Beads recorded | 92 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 90 |
+| Entries with elapsed time | 91 |
 
 ## Entries
+
+### bo-2ju.12 - Define booking demo contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | GitHub PR opened |
+| Agent | booking/polecats/jasper |
+| Branch | `polecat/jasper/bo-2ju.12@mpmkw51n` |
+| PR | https://github.com/AgenticFunProject/booking/pull/105 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T11:55:42Z |
+| Completed UTC | 2026-05-26T11:59:54Z |
+| Elapsed wall time | 4m 12s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/demo.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `test/features/README.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `test/features/demo.feature` as the Phase 4 coworker-facing
+  black-box demo contract.
+- Covered local startup expectations, Swagger/OpenAPI inspection, empty
+  customer-scoped listing, valid booking creation, fetch by reference,
+  customer-scoped listing, confirm/start/complete lifecycle actions, final
+  `COMPLETED` status, and stable customer/cargo/equipment details.
+- Reused established Gherkin wording from the existing contract feature files
+  and kept the demo limited to public HTTP-observable behavior.
+
+Verification:
+
+- Manual source review passed against the bead acceptance criteria,
+  `test/features/README.md`, and specs 001 through 009.
+- `git diff --check` passed.
 
 ### bo-2ju.7 - Define booking cancellation contract feature
 
