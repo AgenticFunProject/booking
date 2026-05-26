@@ -6,23 +6,58 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 89 |
+| Beads recorded | 90 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 88 |
+| Entries with elapsed time | 89 |
 
 ## Entries
+
+### bo-2ju.11 - Define booking persistence runtime contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | obsidian |
+| Branch | `polecat/obsidian/bo-2ju.11@mpmjxa6a` |
+| PR | https://github.com/AgenticFunProject/booking/pull/102 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T11:28:38Z |
+| Completed UTC | 2026-05-26T11:32:31Z |
+| Elapsed wall time | 3m 53s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/persistence-runtime.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md` |
+
+Delivered:
+
+- Added `test/features/persistence-runtime.feature` as the Phase 3 black-box
+  persistence runtime contract.
+- Covered empty durable service behavior after restart, created booking
+  visibility after restart, lifecycle state visibility after restart for
+  `CONFIRMED`, `IN_PROGRESS`, `COMPLETED`, and `CANCELLED` bookings, unique
+  generated booking references after restart, and customer/status list filtering
+  after restart.
+- Kept scenarios storage-agnostic by asserting only public HTTP-visible state,
+  response fields, generated references, lifecycle statuses, and filtered list
+  contents.
+
+Verification:
+
+- Manual source review passed against `AGENTS.md`, `IMPLEMENTATION.md`,
+  `test/features/README.md`, and specs 001 through 003.
+- `git diff --check` passed.
 
 ### bo-2ju.10 - Define local external clients contract feature
 
 | Field | Value |
 | --- | --- |
-| Status | Pending merge queue submission via `gt done` |
+| Status | Merged via GitHub PR |
 | Agent | booking/polecats/jasper |
 | Branch | `polecat/jasper/bo-2ju.10@mpmjusqy` |
-| PR | Pending merge queue |
-| Merge commit | Pending merge |
+| PR | https://github.com/AgenticFunProject/booking/pull/101 |
+| Merge commit | `a686a6c1116df60e0c9e9892056385962bf960b0` |
 | Started UTC | 2026-05-26T11:26:34Z |
 | Completed UTC | 2026-05-26T11:30:29Z |
 | Elapsed wall time | 3m 55s |
