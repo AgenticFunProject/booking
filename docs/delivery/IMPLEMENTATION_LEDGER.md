@@ -6,46 +6,14 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 86 |
+| Beads recorded | 87 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 85 |
+| Entries with elapsed time | 86 |
 
 ## Entries
 
-<<<<<<< HEAD
-### bo-2ju.9 - Define booking error handling contract feature
-
-| Field | Value |
-| --- | --- |
-| Status | Pending merge queue submission via `gt done` |
-| Agent | quartz |
-| Branch | `polecat/quartz/bo-2ju.9@mpmhztr3` |
-| PR | Pending merge queue submission via `gt done` |
-| Merge commit | Pending |
-| Started UTC | 2026-05-26T10:34:33Z |
-| Completed UTC | 2026-05-26T10:39:27Z |
-| Elapsed wall time | 4m 54s |
-| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
-| Files changed | `test/features/error-handling.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
-| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md` |
-
-Delivered:
-
-- Added `test/features/error-handling.feature` as the Phase 2 black-box error
-  handling contract.
-- Covered stable structured error fields, request ID propagation, validation
-  violations, business validation 400s, invalid query parameters, malformed
-  JSON, business/integration exception statuses, 404 not found, 409 lifecycle
-  conflicts, 401/403 security errors, 405 unsupported methods, unknown API
-  paths, and sanitized 500s.
-
-Verification:
-
-- Manual source review passed against the bead acceptance criteria and relevant
-  setup, business, API, security, and error handling specs.
-=======
 ### bo-2ju.8 - Define booking auth and ownership contract feature
 
 | Field | Value |
@@ -80,7 +48,38 @@ Verification:
   `specs/001_project_setup.md`, `specs/002_domain_model.md`,
   `specs/005_api_endpoints.md`, `specs/006_security.md`, existing security
   integration tests, and surrounding Gherkin contract feature style.
->>>>>>> 2fc9ce5 (test: add auth ownership contract (bo-2ju.8))
+- `git diff --check` passed.
+
+### bo-2ju.9 - Define booking error handling contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission via `gt done` |
+| Agent | quartz |
+| Branch | `polecat/quartz/bo-2ju.9@mpmhztr3` |
+| PR | Pending merge queue submission via `gt done` |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T10:34:33Z |
+| Completed UTC | 2026-05-26T10:39:27Z |
+| Elapsed wall time | 4m 54s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/error-handling.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md` |
+
+Delivered:
+
+- Added `test/features/error-handling.feature` as the Phase 2 black-box error
+  handling contract.
+- Covered stable structured error fields, request ID propagation, validation
+  violations, business validation 400s, invalid query parameters, malformed
+  JSON, business/integration exception statuses, 404 not found, 409 lifecycle
+  conflicts, 401/403 security errors, 405 unsupported methods, unknown API
+  paths, and sanitized 500s.
+
+Verification:
+
+- Manual source review passed against the bead acceptance criteria and relevant
+  setup, business, API, security, and error handling specs.
 - `git diff --check` passed.
 
 ### bo-2ju.4 - Define booking creation contract feature
