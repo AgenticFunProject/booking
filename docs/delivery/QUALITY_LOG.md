@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 413 |
-| Passed | 336 |
+| Checks recorded | 415 |
+| Passed | 338 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.3` | https://github.com/AgenticFunProject/booking/pull/93 | Source review | Public routes contract against bead acceptance criteria, `specs/001_project_setup.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, and `specs/009_testing.md` | Passed | Verified `test/features/public-routes.feature` covers anonymous health, OpenAPI, optional Swagger UI access, anonymous 401 responses for protected Booking API routes, and structured unknown `/api/**` 404 behavior. |
+| 2026-05-26 | `bo-2ju.3` | https://github.com/AgenticFunProject/booking/pull/93 | `git diff --check` | Public routes contract feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence updates. |
 | 2026-05-26 | `bo-2ju.2` | https://github.com/AgenticFunProject/booking/pull/94 | Manual docs review | Booking Gherkin contract README against `bo-2ju` epic, `bo-2ju.2`, `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, and specs 001-009 | Passed | Added `test/features/README.md` as the black-box acceptance contract index, mapped planned feature files from the epic, documented replacement-implementation rules, internal exclusions, local external client scope, and runner expectations. |
 | 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `git fetch origin master` | Docker verification branch sync | Passed | Local branch `polecat/obsidian/bo-1v4@mph56rj7` was already at current `origin/master` commit `6301051`. |
 | 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `docker build -t booking-service:bo-ot8.10 .` | Local Docker image build retry from current `master` | Blocked | Local Docker remains unavailable in this workspace: `/bin/bash: line 1: docker: command not found`. No local Docker-compatible fallback (`podman`) is installed. PR #90 moved final Docker image build verification to GitHub Actions on `ubuntu-latest`; run `26300333724` passed. |

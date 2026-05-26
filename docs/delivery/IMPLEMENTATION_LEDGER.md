@@ -6,13 +6,47 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 83 |
+| Beads recorded | 84 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 82 |
+| Entries with elapsed time | 83 |
 
 ## Entries
+
+### bo-2ju.3 - Define public routes Booking contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | onyx |
+| Branch | `polecat/onyx/bo-2ju.3@mpmg2wo7` |
+| PR | https://github.com/AgenticFunProject/booking/pull/93 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T09:41:16Z |
+| Completed UTC | 2026-05-26T09:46:27Z |
+| Elapsed wall time | 5m 11s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/public-routes.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added the first black-box Gherkin contract feature for Booking public and
+  anonymous route behavior.
+- Covered unauthenticated access to `/actuator/health`,
+  `/api-docs/openapi.json`, and the optional packaged Swagger UI route.
+- Covered anonymous 401 responses for protected Booking API routes and the
+  standard structured 404 response for unknown `/api/**` paths.
+
+Verification:
+
+- Source review against the bead acceptance criteria and relevant route,
+  security, error, and testing specs passed.
+- `git diff --check` passed.
+- Java compilation and automated Gherkin execution were not run because this
+  bead only adds a non-executable contract feature; bead `bo-2ju.13` is the
+  dependent executable Gherkin runner design.
 
 ### bo-2ju.2 - Add Booking Gherkin contract README
 
