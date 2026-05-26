@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 415 |
-| Passed | 338 |
+| Checks recorded | 417 |
+| Passed | 340 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.4` | https://github.com/AgenticFunProject/booking/pull/95 | Manual source review | Booking creation Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, specs 001, 002, 004, 005, 007, 008, and 009 | Passed | Confirmed `test/features/booking-create.feature` covers valid create, generated `BKG-YYYY-NNNNN` reference, `PENDING` initial status, persisted customer/cargo/equipment details through get-by-reference, multiple equipment lines, missing required fields, unsupported equipment type, empty equipment list, and local schedule/quote stub acceptance. |
+| 2026-05-26 | `bo-2ju.4` | https://github.com/AgenticFunProject/booking/pull/95 | `git diff --cached --check` | Booking creation feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.3` | https://github.com/AgenticFunProject/booking/pull/93 | Source review | Public routes contract against bead acceptance criteria, `specs/001_project_setup.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, and `specs/009_testing.md` | Passed | Verified `test/features/public-routes.feature` covers anonymous health, OpenAPI, optional Swagger UI access, anonymous 401 responses for protected Booking API routes, and structured unknown `/api/**` 404 behavior. |
 | 2026-05-26 | `bo-2ju.3` | https://github.com/AgenticFunProject/booking/pull/93 | `git diff --check` | Public routes contract feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence updates. |
 | 2026-05-26 | `bo-2ju.2` | https://github.com/AgenticFunProject/booking/pull/94 | Manual docs review | Booking Gherkin contract README against `bo-2ju` epic, `bo-2ju.2`, `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, and specs 001-009 | Passed | Added `test/features/README.md` as the black-box acceptance contract index, mapped planned feature files from the epic, documented replacement-implementation rules, internal exclusions, local external client scope, and runner expectations. |
