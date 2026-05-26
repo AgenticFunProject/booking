@@ -6,13 +6,49 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 85 |
+| Beads recorded | 87 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 84 |
+| Entries with elapsed time | 86 |
 
 ## Entries
+
+### bo-2ju.8 - Define booking auth and ownership contract feature
+
+| Field | Value |
+| --- | --- |
+| Status | Open GitHub PR |
+| Agent | jasper |
+| Branch | `polecat/jasper/bo-2ju.8@mpmi3ae8` |
+| PR | https://github.com/AgenticFunProject/booking/pull/99 |
+| Merge commit | Pending |
+| Started UTC | 2026-05-26T10:37:19Z |
+| Completed UTC | 2026-05-26T10:45:54Z |
+| Elapsed wall time | 8m 35s |
+| Timing source | Hook attachment time and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/auth-ownership.feature`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/005_api_endpoints.md`, `specs/006_security.md` |
+
+Delivered:
+
+- Added `test/features/auth-ownership.feature` as the Phase 2 black-box
+  authentication and ownership contract.
+- Covered anonymous, non-Bearer, malformed, expired, invalid-signature, wrong
+  issuer, and wrong audience JWT rejection with 401 structured errors.
+- Covered customer own-vs-other create/list/read/cancel behavior, the required
+  customer list `customerId` query parameter, missing customer identity claims,
+  snake_case `customer_id` claims, operator lifecycle permissions, admin full
+  booking and protected actuator access, service role permissions, and local
+  disabled-security behavior.
+
+Verification:
+
+- Manual source review passed against `AGENTS.md`, `IMPLEMENTATION.md`,
+  `specs/001_project_setup.md`, `specs/002_domain_model.md`,
+  `specs/005_api_endpoints.md`, `specs/006_security.md`, existing security
+  integration tests, and surrounding Gherkin contract feature style.
+- `git diff --check` passed.
 
 ### bo-2ju.9 - Define booking error handling contract feature
 
