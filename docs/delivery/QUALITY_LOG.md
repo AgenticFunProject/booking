@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 427 |
-| Passed | 350 |
+| Checks recorded | 429 |
+| Passed | 352 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.7` | https://github.com/AgenticFunProject/booking/pull/103 | Manual source review | Booking cancellation Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, `test/features/README.md`, and specs 001, 002, 003, 004, 005, 006, 008, and 009 | Passed | Confirmed `test/features/booking-cancellation.feature` covers customer/admin/service cancellation, customer cross-ownership rejection, confirmed cancellation returning `CANCELLED`, pending cancellation without equipment release, confirmed cancellation with equipment release, non-blocking release failure, and conflict responses for ineligible statuses. |
+| 2026-05-26 | `bo-2ju.7` | https://github.com/AgenticFunProject/booking/pull/103 | `git diff --check` | Booking cancellation feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.11` | https://github.com/AgenticFunProject/booking/pull/102 | Manual source review | Persistence runtime Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, `test/features/README.md`, and specs 001, 002, and 003 | Passed | Confirmed `test/features/persistence-runtime.feature` covers empty durable service behavior after restart, created booking visibility after restart, confirmed/in-progress/completed/cancelled lifecycle status visibility after restart, unique generated references after restart, and customer/status list filtering after restart without asserting database or schema internals. |
 | 2026-05-26 | `bo-2ju.11` | https://github.com/AgenticFunProject/booking/pull/102 | `git diff --check` | Persistence runtime feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-26 | `bo-2ju.10` | https://github.com/AgenticFunProject/booking/pull/101 | Manual source review | Local external clients Gherkin contract against bead acceptance criteria, `test/features/README.md`, and specs 001 through 009 | Passed | Confirmed `test/features/local-clients.feature` covers local-profile operation without required Schedule, Quote, or Equipment HTTP services, schedule/quote stub acceptance for valid booking creation, equipment reservation behavior during confirm, equipment release behavior during confirmed cancellation, and explicit deferral of real external HTTP endpoint contracts. |
