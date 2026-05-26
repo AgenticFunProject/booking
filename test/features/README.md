@@ -14,16 +14,16 @@ structured errors, local stub behavior, and observable runtime persistence.
 
 | Feature file | Externally meaningful behavior |
 | --- | --- |
-| `public_routes.feature` | Public API surface, health/docs routes, HTTP methods, path conventions, and unsupported-route behavior. |
-| `booking_creation.feature` | Booking creation through `POST /api/v1/bookings`, required request data, customer/cargo/equipment validation, generated references, and `PENDING` creation responses. |
-| `booking_read_list.feature` | Lookup by numeric ID or `BKG-YYYY-NNNNN` reference, paginated listing, customer/status filters, and empty-result behavior. |
-| `booking_lifecycle.feature` | Operator-managed `PENDING -> CONFIRMED -> IN_PROGRESS -> COMPLETED` lifecycle behavior and rejection of invalid forward or terminal transitions. |
-| `booking_cancellation.feature` | Customer/service cancellation for `PENDING` and `CONFIRMED` bookings, terminal cancellation behavior, and cancellation outcomes when local equipment release fails. |
-| `booking_auth_ownership.feature` | JWT role behavior, customer ownership checks, service/operator/admin visibility, disabled-security local mode, and public documentation/health access. |
-| `booking_error_handling.feature` | Stable error response format, validation violations, request IDs, business exception HTTP statuses, and non-leakage of internal failures. |
-| `local_external_clients.feature` | Local schedule, quote, and equipment client stub behavior used for development and acceptance runs before real external contracts exist. |
-| `booking_persistence.feature` | Observable persistence behavior across create/read/list/lifecycle operations, reference uniqueness, pagination stability, and restart-safe data visibility. |
-| `booking_demo.feature` | Coworker-facing demo flow covering local startup, create/read/list/lifecycle/cancel examples, Swagger/OpenAPI access, and local profile expectations. |
+| `public-routes.feature` | Public API surface, health/docs routes, HTTP methods, path conventions, and unsupported-route behavior. |
+| `booking-create.feature` | Booking creation through `POST /api/v1/bookings`, required request data, customer/cargo/equipment validation, generated references, and `PENDING` creation responses. |
+| `booking-read-list.feature` | Lookup by numeric ID or `BKG-YYYY-NNNNN` reference, paginated listing, customer/status filters, and empty-result behavior. |
+| `booking-lifecycle.feature` | Operator-managed `PENDING -> CONFIRMED -> IN_PROGRESS -> COMPLETED` lifecycle behavior and rejection of invalid forward or terminal transitions. |
+| `booking-cancellation.feature` | Customer/service cancellation for `PENDING` and `CONFIRMED` bookings, terminal cancellation behavior, and cancellation outcomes when local equipment release fails. |
+| `auth-ownership.feature` | JWT role behavior, customer ownership checks, service/operator/admin visibility, disabled-security local mode, and public documentation/health access. |
+| `error-handling.feature` | Stable error response format, validation violations, request IDs, business exception HTTP statuses, and non-leakage of internal failures. |
+| `local-clients.feature` | Local schedule, quote, and equipment client stub behavior used for development and acceptance runs before real external contracts exist. |
+| `persistence-runtime.feature` | Observable persistence behavior across create/read/list/lifecycle operations, reference uniqueness, pagination stability, and restart-safe data visibility. |
+| `demo.feature` | Coworker-facing demo flow covering local startup, create/read/list/lifecycle/cancel examples, Swagger/OpenAPI access, and local profile expectations. |
 
 Feature files may be added by later beads. Until a listed file exists, this map
 is the planned contract boundary for that bead.
