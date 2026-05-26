@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 412 |
-| Passed | 335 |
+| Checks recorded | 414 |
+| Passed | 337 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,8 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-26 | `bo-2ju.4` | Pending | Manual source review | Booking creation Gherkin contract against `AGENTS.md`, `IMPLEMENTATION.md`, specs 001, 002, 004, 005, 007, 008, and 009 | Passed | Confirmed `test/features/booking-create.feature` covers valid create, generated `BKG-YYYY-NNNNN` reference, `PENDING` initial status, persisted customer/cargo/equipment details through get-by-reference, multiple equipment lines, missing required fields, unsupported equipment type, empty equipment list, and local schedule/quote stub acceptance. |
+| 2026-05-26 | `bo-2ju.4` | Pending | `git diff --cached --check` | Booking creation feature and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Gherkin feature and evidence entries. |
 | 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `git fetch origin master` | Docker verification branch sync | Passed | Local branch `polecat/obsidian/bo-1v4@mph56rj7` was already at current `origin/master` commit `6301051`. |
 | 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `docker build -t booking-service:bo-ot8.10 .` | Local Docker image build retry from current `master` | Blocked | Local Docker remains unavailable in this workspace: `/bin/bash: line 1: docker: command not found`. No local Docker-compatible fallback (`podman`) is installed. PR #90 moved final Docker image build verification to GitHub Actions on `ubuntu-latest`; run `26300333724` passed. |
 | 2026-05-22 | `bo-1v4` | https://github.com/AgenticFunProject/booking/pull/90 | `docker compose config` | Local Docker Compose validation retry from current `master` | Blocked | Local Docker remains unavailable in this workspace: `/bin/bash: line 1: docker: command not found`. PR #90 moved final Compose validation to GitHub Actions; run `26300333724` passed `docker compose config` in the `Docker build` job. |
