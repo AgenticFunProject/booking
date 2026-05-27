@@ -6,13 +6,45 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 92 |
+| Beads recorded | 93 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 91 |
+| Entries with elapsed time | 92 |
 
 ## Entries
+
+### bo-2ju.13 - Design executable Booking Gherkin runner
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-2ju.13@mpns51ui` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-27T08:06:42Z |
+| Completed UTC | 2026-05-27T08:15:48Z |
+| Elapsed wall time | 9m 06s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `test/features/RUNNER.md`, `test/features/README.md`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `test/features/README.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md` |
+
+Delivered:
+
+- Added `test/features/RUNNER.md` as the future executable Gherkin runner
+  design for the existing black-box contract suite.
+- Identified Java 21, Cucumber JVM on the JUnit Platform, HTTP/JSON tooling,
+  external service startup, scenario-scoped state, reset strategy, JWT fixture
+  behavior, reusable step phrase families, and JSON assertion rules.
+- Documented the boundary between allowed runner infrastructure and prohibited
+  implementation-specific assertions so the contract stays black-box.
+
+Verification:
+
+- Manual source review passed against the bead acceptance criteria,
+  `test/features/README.md`, and specs 001 through 009.
+- `git diff --check` passed.
 
 ### bo-2ju.12 - Define booking demo contract feature
 

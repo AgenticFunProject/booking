@@ -89,8 +89,9 @@ behavior changes.
 
 ## Runner Expectations
 
-The feature files are executable-contract candidates. The runner work is tracked
-separately and must keep these expectations:
+The feature files are executable-contract candidates. The runner design is
+documented in `RUNNER.md`; executable glue and CI wiring remain separate
+follow-up work. The runner must keep these expectations:
 
 - Run scenarios against the service as a black-box HTTP target, not by invoking
   Java classes, repositories, or test-only helpers directly.
