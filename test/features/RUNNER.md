@@ -190,16 +190,17 @@ Not allowed in step glue or assertions:
 - Requiring real Schedule, Quote, or Equipment HTTP endpoints before their
   owning teams publish stable contracts.
 
-## Future CI Hook
+## CI Hook
 
-CI integration is a separate bead. The intended command should be a single Maven
-entrypoint that can run after the normal unit/integration/e2e gates, for
-example:
+CI and local development use a single Maven entrypoint that runs after the
+normal unit/integration/e2e gates:
 
 ```bash
 ./mvnw test -Pcontract
 ```
 
-The CI bead should decide whether to run the contract profile on every pull
-request or on a scheduled/label-triggered job once runner execution time is
-known.
+The current profile discovers every `test/features/*.feature` file and validates
+the executable contract corpus with the `test,local` runtime configuration
+properties that the future HTTP glue will use. When the full Cucumber HTTP
+runner is added, it should keep this command stable and move the assertions from
+corpus validation to black-box HTTP scenario execution.

@@ -1,4 +1,4 @@
-.PHONY: build test test-unit test-integration test-e2e run docker-build docker-up docker-down docker-logs clean swagger
+.PHONY: build test test-unit test-integration test-e2e test-contract run docker-build docker-up docker-down docker-logs clean swagger
 
 APP_NAME := booking-service
 SWAGGER_URL := http://localhost:8081/swagger-ui
@@ -17,6 +17,9 @@ test-integration:
 
 test-e2e:
 	./mvnw test -Dgroups="e2e"
+
+test-contract:
+	./mvnw test -Pcontract
 
 run:
 	./mvnw spring-boot:run -Dspring-boot.run.profiles=local

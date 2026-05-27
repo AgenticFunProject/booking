@@ -138,6 +138,7 @@ Run focused checks locally:
 ./mvnw test -Dgroups="!integration,!e2e"
 ./mvnw test -Dgroups="integration"
 ./mvnw test -Dgroups="e2e"
+./mvnw test -Pcontract
 ./mvnw test -Dtest=BookingServiceCreateTest
 ```
 
@@ -146,9 +147,10 @@ GitHub Actions runs on pushes and pull requests targeting `master` and
 
 1. Sets up Java 21.
 2. Runs unit, integration, and E2E Maven group selectors.
-3. Uploads Surefire reports.
-4. Packages the jar.
-5. Builds the Docker image.
+3. Runs the Gherkin contract suite with `./mvnw test -Pcontract`.
+4. Uploads Surefire reports.
+5. Packages the jar.
+6. Builds the Docker image.
 
 ## Project Structure
 

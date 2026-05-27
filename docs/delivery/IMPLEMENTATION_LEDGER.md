@@ -6,13 +6,50 @@ This ledger records delivery evidence for completed implementation beads.
 
 | Metric | Value |
 | --- | ---: |
-| Beads recorded | 93 |
+| Beads recorded | 94 |
 | PRs merged | 29 |
 | Merge commits recorded | 31 |
 | Verification blockers recorded | 46 |
-| Entries with elapsed time | 92 |
+| Entries with elapsed time | 93 |
 
 ## Entries
+
+### bo-2ju.14 - Add CI execution for Booking Gherkin contract suite
+
+| Field | Value |
+| --- | --- |
+| Status | Pending merge queue submission |
+| Agent | booking/polecats/obsidian |
+| Branch | `polecat/obsidian/bo-2ju.14@mpnsyqxc` |
+| PR | Pending |
+| Merge commit | Pending |
+| Started UTC | 2026-05-27T08:29:25Z |
+| Completed UTC | 2026-05-27T08:36:54Z |
+| Elapsed wall time | 7m 29s |
+| Timing source | Hook attachment timestamp and agent-recorded UTC completion timestamp |
+| Files changed | `.github/workflows/ci.yml`, `Makefile`, `README.md`, `pom.xml`, `test/features/RUNNER.md`, `src/test/java/com/cargo/booking/contract/BookingGherkinContractSuite.java`, `docs/delivery/IMPLEMENTATION_LEDGER.md`, `docs/delivery/QUALITY_LOG.md` |
+| Spec | `IMPLEMENTATION.md`, `AGENTS.md`, `test/features/README.md`, `test/features/RUNNER.md`, `docs/delivery/README.md`, `specs/001_project_setup.md`, `specs/002_domain_model.md`, `specs/003_data_access.md`, `specs/004_business_rules.md`, `specs/005_api_endpoints.md`, `specs/006_security.md`, `specs/007_error_handling.md`, `specs/008_integrations.md`, `specs/009_testing.md`, `specs/010_deployment.md` |
+
+Delivered:
+
+- Added a dedicated Maven `contract` profile and `make test-contract` command
+  for the Booking Gherkin contract suite.
+- Added a CI step that runs `./mvnw test -Pcontract` after unit,
+  integration, and E2E grouped tests.
+- Added `BookingGherkinContractSuite` as the executable corpus gate for
+  `test/features/*.feature`, with clear failure output for missing files,
+  missing tags, duplicate feature names, empty declarations, and `@wip`
+  scenarios.
+- Updated README and runner documentation so local and CI entrypoints use the
+  same stable command while future HTTP/Cucumber glue can replace the corpus
+  assertions behind that command.
+
+Verification:
+
+- `./mvnw compile` passed.
+- `./mvnw test -Pcontract` passed: 10 feature files, 72 scenarios, 16 outlines,
+  1 JUnit test, 0 failures.
+- `git diff --check` passed.
 
 ### bo-2ju.13 - Design executable Booking Gherkin runner
 

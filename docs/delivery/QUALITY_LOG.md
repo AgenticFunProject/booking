@@ -6,8 +6,8 @@ This log records verification commands and outcomes during implementation.
 
 | Metric | Value |
 | --- | ---: |
-| Checks recorded | 433 |
-| Passed | 356 |
+| Checks recorded | 436 |
+| Passed | 359 |
 | Failed | 21 |
 | Blocked/skipped | 58 |
 
@@ -15,6 +15,9 @@ This log records verification commands and outcomes during implementation.
 
 | Date | Bead | PR | Command | Scope | Result | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
+| 2026-05-27 | `bo-2ju.14` | Pending | `./mvnw compile` | Java compile gate after adding the contract Maven profile and suite class | Passed | Main sources compiled successfully with Java 21. |
+| 2026-05-27 | `bo-2ju.14` | Pending | `./mvnw test -Pcontract` | Booking Gherkin contract CI/developer entrypoint | Passed | Ran `BookingGherkinContractSuite`; discovered 10 feature files, 72 scenarios, and 16 scenario outlines under `test/features`; 1 JUnit test, 0 failures, 0 errors, 0 skipped. |
+| 2026-05-27 | `bo-2ju.14` | Pending | `git diff --check` | Contract CI entrypoint, documentation, and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the Maven profile, CI step, Makefile target, suite class, docs, and evidence entries. |
 | 2026-05-27 | `bo-2ju.13` | Pending | Manual source review | Executable Gherkin runner design against bead acceptance criteria, `test/features/README.md`, and specs 001 through 009 | Passed | Confirmed `test/features/RUNNER.md` identifies Java/Cucumber tooling, scenario state, service startup and reset strategy, JWT generation, reusable step phrase families, JSON assertions, and the black-box boundary separating runner infrastructure from contract assertions. |
 | 2026-05-27 | `bo-2ju.13` | Pending | `git diff --check` | Runner design and delivery evidence whitespace check | Passed | No whitespace/diff errors after adding the runner design and evidence entries. |
 | 2026-05-26 | `bo-2ju.12` | https://github.com/AgenticFunProject/booking/pull/105 | Manual source review | Demo Gherkin contract against bead acceptance criteria, `test/features/README.md`, and specs 001 through 009 | Passed | Confirmed `test/features/demo.feature` covers local startup expectations, Swagger/OpenAPI inspection, empty customer-scoped listing, valid booking creation, fetch by reference, list by customer, confirm/start/complete lifecycle actions, final `COMPLETED` status, and stable customer/cargo/equipment details. |
